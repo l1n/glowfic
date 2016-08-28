@@ -9,10 +9,24 @@ class CrudController < ApplicationController
 
   def new
     @model = model_class.new
+    @page_title = "New #{model_name}"
     set_model
   end
 
   def create
+    @model = model_class.new(params[controller_name.singularize])
+    if @model.save
+      flash[:success] = "#{controller_name} created successfully."
+      redirect_to model_path(@model) and return
+    end
+
+
+    flash.now[:error] = {}
+    flash.now[:error][:message] = "Continuity could not be created."
+    flash.now[:error][:array] = @board.errors.full_messages
+    @page_title = "New Continuity"
+    set_available_cowriters
+    render :action => :new
   end
 
   def show
@@ -41,7 +55,7 @@ class CrudController < ApplicationController
   end
 
   def require_permission
-    return unless @model_class.method_defined? :editable_by?
+    return unless model_class.method_defined? :editable_by?
     unless @model.editable_by?(current_user)
       flash[:error] = "You do not have permission to edit this #{controller_name.singularize}."
       redirect_to model_path(@model)

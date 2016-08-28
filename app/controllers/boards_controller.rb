@@ -30,7 +30,7 @@ class BoardsController < ApplicationController
   end
 
   def new
-    @board = Board.new
+    super
     @board.creator = current_user
     @page_title = 'New Continuity'
   end

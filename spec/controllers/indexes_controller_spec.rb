@@ -49,9 +49,9 @@ RSpec.describe IndexesController do
       login
       name = 'ValidSection'
       post :create, params: { index: {name: name} }
-      expect(response).to redirect_to(index_url(assigns(:index)))
-      expect(flash[:success]).to eq("Index created!")
-      expect(assigns(:index).name).to eq(name)
+      expect(response).to redirect_to(index_url(assigns(:model)))
+      expect(flash[:success]).to eq("Index created successfully.")
+      expect(assigns(:model).name).to eq(name)
     end
   end
 
@@ -187,8 +187,8 @@ RSpec.describe IndexesController do
       login
       index = create(:index)
       delete :destroy, params: { id: index.id }
-      expect(response).to redirect_to(index_url(index))
       expect(flash[:error]).to eq('You do not have permission to edit this index.')
+      expect(response).to redirect_to(index_url(index))
     end
 
     it "works" do

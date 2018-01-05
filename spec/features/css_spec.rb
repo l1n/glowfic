@@ -2,7 +2,11 @@ require "spec_helper"
 
 RSpec.feature "Recently updated renders the same", :type => :feature, :js => true do
   before(:each) do
-    26.times { create(:post) }
+    4.times { create(:board).destroy }
+    desired_time = Time.new(2018)
+    Timecop.freeze(desired_time) do
+      26.times { create(:post) }
+    end
   end
 
   scenario "in default" do

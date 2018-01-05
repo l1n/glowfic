@@ -484,6 +484,7 @@ DEPENDENCIES
   nokogiri
   pg (~> 0.21.0)
   pg_search
+  poltergeist
   puma
   rack-cors
   rack-mini-profiler

@@ -9,31 +9,10 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
     end
   end
 
-  scenario "default"
+  shared_examples_for "layout" do |layout|
     before(:each) do
       user = login
-      user.update_attributes(layout: nil)
-    end
-
-    scenario "Recently Updated" do
-      Timecop.freeze(Time.zone.local(2018)) do
-        visit posts_path
-      end
-      expect(page).to match_expectation
-    end
-
-    scenario "User#Edit" do
-      Timecop.freeze(Time.zone.local(2018)) do
-        visit edit_user_path(user.id)
-      end
-      expect(page).to match_expectation
-    end
-  end
-
-  scenario "dark"
-    before(:each) do
-      user = login
-      user.update_attributes(layout: 'dark')
+      user.update_attributes(layout: layout)
     end
 
     scenario "Recently Updated" do
@@ -44,85 +23,9 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
     end
   end
 
-  scenario "starry" do
-    before(:each) do
-      user = login
-      user.update_attributes(layout: 'starry')
-    end
-
-    scenario "Recently Updated" do
-      Timecop.freeze(Time.zone.local(2018)) do
-        visit posts_path
-      end
-      expect(page).to match_expectation
+  ['default', 'dark', 'starry', 'starrydark', 'starrylight', 'monochrome', 'river', 'iconless'].each do |type|
+    context type do
+      it_behaves_like('layout', (type == 'default') ? nil : type)
     end
   end
-
-  scenario "starrydark" do
-    before(:each) do
-      user = login
-      user.update_attributes(layout: 'starrydark')
-    end
-
-    scenario "Recently Updated" do
-      Timecop.freeze(Time.zone.local(2018)) do
-        visit posts_path
-      end
-      expect(page).to match_expectation
-    end
-
-  scenario "starrylight" do
-    before(:each) do
-      user = login
-      user.update_attributes(layout: 'starrylight')
-    end
-
-    scenario "Recently Updated" do
-      Timecop.freeze(Time.zone.local(2018)) do
-        visit posts_path
-      end
-      expect(page).to match_expectation
-    end
-  end
-
-  scenario "monochrome" do
-    before(:each) do
-      user = login
-      user.update_attributes(layout: 'monochrome')
-    end
-
-    scenario "Recently Updated" do
-      Timecop.freeze(Time.zone.local(2018)) do
-        visit posts_path
-      end
-      expect(page).to match_expectation
-    end
-  end
-
-  scenario "river" do
-    before(:each) do
-      user = login
-      user.update_attributes(layout: 'river')
-    end
-
-    scenario "Recently Updated" do
-      Timecop.freeze(Time.zone.local(2018)) do
-        visit posts_path
-      end
-      expect(page).to match_expectation
-    end
-  end
-
-  scenario "iconless" do
-    before(:each) do
-      user = login
-      user.update_attributes(layout: 'iconless')
-    end
-
-    scenario "Recently Updated" do
-      Timecop.freeze(Time.zone.local(2018)) do
-        visit posts_path
-      end
-      expect(page).to match_expectation
-    end
-  end
+end

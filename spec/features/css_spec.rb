@@ -5,12 +5,13 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
 
   shared_examples_for "layout" do |layout|
     let(:user) {
-       user = create(:user, username: 'Jane Doe', email: 'fake303@faker.com', password: 'known')
-       visit root_path
-       fill_in "username", with: user.username
-       fill_in "password", with: 'known'
-       click_button "Log in"
-       user }
+      icon = create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", keyword: "a")
+      user = create(:user, username: 'Jane Doe', email: 'fake303@faker.com', password: 'known', avatar: icon)
+      visit root_path
+      fill_in "username", with: user.username
+      fill_in "password", with: 'known'
+      click_button "Log in"
+      user }
     before(:each) do
       user.update_attributes(layout: layout)
     end
@@ -55,8 +56,8 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
       Timecop.freeze(desired_time) do
         character = create(:character, user: user, name: 'test character 1')
         gallery = create(:gallery, user: user)
-        icon = create(:icon, user: user, galleries: [gallery])
-        2.times { create(:icon, user: user, galleries: [gallery]) }
+        icon = create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", galleries: [gallery])
+        2.times { create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", galleries: [gallery]) }
         character.galleries += [gallery]
         character.update_attributes(default_icon: icon)
         visit edit_character_path(character)

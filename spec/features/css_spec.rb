@@ -64,33 +64,6 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
       expect(page).to match_expectation
     end
 
-    scenario "Post" do
-      Timecop.freeze(desired_time) do
-        other_user = create(:user, username: 'John Doe')
-        post = create(:post, user: other_user, subject: 'test subject', board: create(:board, name: 'test board', id: 5))
-        create(:reply, post: post, user: user)
-        30.times do |i|
-          if i.even? then
-            create(:reply, post: post, user: user)
-          else
-            create(:reply, post: post, user: other_user)
-          end
-        end
-        visit post_path(post, page: 2)
-        sleep(0.5)
-      end
-      expect(page).to match_expectation
-    end
-
-    scenario "Post#Edit" do
-      Timecop.freeze(desired_time) do
-        post = create(:post, user: user, subject: 'test subject', board: create(:board, name: 'test board', id: 5))
-        visit edit_post_path(post)
-        sleep(0.5)
-      end
-      expect(page).to match_expectation
-    end
-
     scenario "Gallery" do
       Timecop.freeze(desired_time) do
         4.times do |i|
@@ -103,6 +76,91 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
         visit gallery_path(gallery)
       end
       expect(page).to match_expectation
+    end
+
+    context "with post"
+      let (:other_user) { create(:user, username: 'John Doe') }
+      let (:character1) { create(:character, name: "Alice", user: user) }
+      let (:post) {
+        post = Timecop.freeze(desired_time) do
+          warnings = Array.new(5) do |i|
+            create(:content_warning, name: "warning #{i+1}", user: user)
+          end
+          settings = Array.new(2) do |i|
+            create(:setting, name: "test setting #{i+1}", user: user)
+          end
+          labels = Array.new(3) do |i|
+            create(:label, name: "test tag #{i+1}", user: user)
+          end
+          create(:post,
+            user: user,
+            character: character1,
+            subject: 'Crypto Problems',
+            description: "test subtitle",
+            board: create(:board, name: 'Testing Area', id: 5),
+            settings: settings,
+            content_warnings: warnings,
+            labels: labels
+          )
+        end
+        post
+      }
+      before (:each) {
+        Timecop.freeze(desired_time) do
+          character2 = create(:character, name: "Bob", user: other_user)
+          30.times do |i|
+            if i.even? then
+              create(:reply, post: post, user: other_user, character: character2)
+            elsif i.odd? then
+              create(:reply, post: post, user: user, character: character1)
+            end
+          end
+        end
+      }
+
+      scenario "Post" do
+        Timecop.freeze(desired_time) do
+          visit post_path(post, page: 2)
+          sleep(0.5)
+        end
+        expect(page).to match_expectation
+      end
+
+      scenario "Post#Edit" do
+        Timecop.freeze(desired_time) do
+          visit edit_post_path(post)
+          sleep(0.5)
+        end
+        expect(page).to match_expectation
+      end
+
+      scenario "Post#Metadata" do
+        Timecop.freeze(desired_time) do
+          character3 = create(:character, name: "Eve", user: user)
+          create(:reply, post: post, user: user, character: character3)
+          visit stats_post_path(post)
+        end
+        expect(page).to match_expectation
+      end
+
+      scenario "Icon Picker" do
+        user.update_attributes(default_editor: 'html')
+        Timecop.freeze(desired_time) do
+          galleries = []
+          3.times do |i|
+            gallery = create(:gallery, user: user)
+            n = if i == 1 then 9 else 3 end
+            n.times do |icon|
+              create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", keyword: i, galleries: [gallery])
+            end
+            galleries += [gallery]
+          end
+          character1.update_attributes(galleries: galleries)
+          visit post_path(post, page: 2)
+        end
+        page.find('#current-icon-holder img').click
+        expect(page).to match_expectation
+      end
     end
   end
 

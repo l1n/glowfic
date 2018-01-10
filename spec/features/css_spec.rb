@@ -19,7 +19,7 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
 
     scenario "Recently Updated" do
       board = Timecop.freeze(desired_time) { create(:board, name: 'Testing Area', creator: user) }
-      post1 = Timecop.freeze(desired_time + 1.minute) { create(:post, user: user, board: board, subject: "test subject 1", num_replies: 24) }
+      post1 = Timecop.freeze(desired_time + 1.minute) { create(:post, user: user, board: board, subject: "test subject 1", num_replies: 24, id: 101) }
       post2 = Timecop.freeze(desired_time + 2.minutes) { create(:post, user: user, board: board, subject: "test subject 2", num_replies: 28) }
       3.upto(76) do |i|
         Timecop.freeze(desired_time + i.minutes) do
@@ -107,6 +107,7 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
         end
         visit gallery_path(gallery)
       end
+      page.find('a', :text => 'Tag1', match: :prefer_exact).hover
       expect(page).to match_expectation
     end
 
@@ -137,7 +138,8 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
             board: create(:board, name: 'Testing Area', id: 5),
             settings: settings,
             content_warnings: warnings,
-            labels: labels
+            labels: labels,
+            id: 80
           )
         end
       end
@@ -160,6 +162,7 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
           visit post_path(post, page: 2)
           sleep(0.5)
         end
+        page.first('a', :text => /^1$/).hover
         expect(page).to match_expectation
       end
 
@@ -177,6 +180,7 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
           create(:reply, post: post, user: user, character: character3, content: "test content")
           visit stats_post_path(post)
         end
+        page.find('a', :text => 'test setting 1', match: :prefer_exact).hover
         expect(page).to match_expectation
       end
 

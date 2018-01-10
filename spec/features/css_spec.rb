@@ -4,16 +4,16 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
   let(:desired_time) { Time.zone.local(2018) }
 
   shared_examples_for "layout" do |layout|
-    let(:user) {
-      icon = create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", keyword: "a")
-      user = create(:user, username: 'Jane Doe', email: 'fake303@faker.com', password: 'known', avatar: icon)
+    let(:icon) { create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", keyword: "a") }
+    let(:user) { create(:user, username: 'Jane Doe', email: 'fake303@faker.com', password: 'known', avatar: icon) }
+
+    before(:each) do
+      user.update_attributes(layout: layout)
+
       visit root_path
       fill_in "username", with: user.username
       fill_in "password", with: 'known'
       click_button "Log in"
-      user }
-    before(:each) do
-      user.update_attributes(layout: layout)
     end
 
     scenario "Recently Updated" do
@@ -71,19 +71,19 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
           create(:gallery_group, user: user, name: "Tag#{i+1}")
         end
         gallery = create(:gallery, user: user, gallery_groups: GalleryGroup.all)
-        10.times do |i|
-          gallery.icons += [create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", keyword: i)]
+        gallery.icons = Array.new(10) do |i|
+          create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", keyword: i)
         end
         visit gallery_path(gallery)
       end
       expect(page).to match_expectation
     end
 
-    context "with post"
-      let (:other_user) { create(:user, username: 'John Doe') }
-      let (:character1) { create(:character, name: "Alice", user: user) }
-      let (:post) {
-        post = Timecop.freeze(desired_time) do
+    context "with post" do
+      let(:other_user) { create(:user, username: 'John Doe') }
+      let(:character1) { create(:character, name: "Alice", user: user) }
+      let(:post) do
+        Timecop.freeze(desired_time) do
           warnings = Array.new(5) do |i|
             create(:content_warning, name: "warning #{i+1}", user: user)
           end
@@ -104,20 +104,20 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
             labels: labels
           )
         end
-        post
-      }
-      before (:each) {
+      end
+
+      before(:each) do
         Timecop.freeze(desired_time) do
           character2 = create(:character, name: "Bob", user: other_user)
           30.times do |i|
-            if i.even? then
+            if i.even?
               create(:reply, post: post, user: other_user, character: character2)
-            elsif i.odd? then
+            elsif i.odd?
               create(:reply, post: post, user: user, character: character1)
             end
           end
         end
-      }
+      end
 
       scenario "Post" do
         Timecop.freeze(desired_time) do
@@ -147,14 +147,13 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
       scenario "Icon Picker" do
         user.update_attributes(default_editor: 'html')
         Timecop.freeze(desired_time) do
-          galleries = []
-          3.times do |i|
+          galleries = Array.new(3) do |i|
             gallery = create(:gallery, user: user)
-            n = if i == 1 then 9 else 3 end
-            n.times do |icon|
+            n = (i == 1) ? 9 : 3
+            n.times do
               create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", keyword: i, galleries: [gallery])
             end
-            galleries += [gallery]
+            gallery
           end
           character1.update_attributes(galleries: galleries)
           visit post_path(post, page: 2)

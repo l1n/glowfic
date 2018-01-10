@@ -4,11 +4,12 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
   let(:desired_time) { Time.zone.local(2018) }
 
   shared_examples_for "layout" do |layout|
-    let(:icon) { create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", keyword: "a") }
-    let(:user) { create(:user, username: 'Jane Doe', email: 'fake303@faker.com', password: 'known', avatar: icon) }
+    let(:user) { create(:user, username: 'Jane Doe', email: 'fake303@faker.com', password: 'known') }
+    let(:other_user) { create(:user, username: 'John Doe') }
 
     before(:each) do
       user.update_attributes(layout: layout)
+      user.update_attributes(avatar: create(:icon, user: user, url: "https://dummyimage.com/100x100/000/fff.png", keyword: "a"))
 
       visit root_path
       fill_in "username", with: user.username
@@ -36,7 +37,6 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
 
     scenario "Board" do
       Timecop.freeze(desired_time) do
-        other_user = create(:user, username: 'John Doe')
         board = create(:board, name: 'Testing Area', id: 3)
         3.times do |i|
           create(:board_section, board: board, name: "Test Section #{i+1}")
@@ -89,7 +89,7 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
         end
         gallery = create(:gallery, user: user, gallery_groups: GalleryGroup.all)
         gallery.icons = Array.new(10) do |i|
-          create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", keyword: i)
+          create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", user: user, keyword: i)
         end
         visit gallery_path(gallery)
       end
@@ -97,7 +97,6 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
     end
 
     context "with post" do
-      let(:other_user) { create(:user, username: 'John Doe') }
       let(:character1) { create(:character, name: "Alice", user: user) }
       let(:post) do
         Timecop.freeze(desired_time) do
@@ -168,7 +167,7 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
             gallery = create(:gallery, user: user)
             n = (i == 1) ? 9 : 3
             n.times do
-              create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", keyword: i, galleries: [gallery])
+              create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", user: user, keyword: i, galleries: [gallery])
             end
             gallery
           end

@@ -174,7 +174,7 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
         expect(page).to match_expectation
       end
 
-      scenario "Post#Metadata" do
+      scenario "Post#Stats" do
         Timecop.freeze(desired_time) do
           character3 = create(:character, name: "Eve", user: user)
           create(:reply, post: post, user: user, character: character3, content: "test content")

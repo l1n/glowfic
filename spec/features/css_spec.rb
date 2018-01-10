@@ -94,10 +94,12 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
     end
 
     scenario "Gallery" do
-      Timecop.freeze(desired_time) do
-        4.times do |i|
-          create(:gallery_group, user: user, name: "Tag#{i+1}")
+      1.upto(4) do |i|
+        Timecop.freeze(desired_time + i.minutes) do
+          create(:gallery_group, user: user, name: "Tag#{i}")
         end
+      end
+      Timecop.freeze(desired_time + 1.day) do
         gallery = create(:gallery, user: user, gallery_groups: GalleryGroup.all)
         gallery.icons = Array.new(10) do |i|
           create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", user: user, keyword: i)
@@ -110,16 +112,22 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
     context "with post" do
       let(:character1) { create(:character, name: "Alice", user: user) }
       let(:post) do
-        Timecop.freeze(desired_time) do
-          warnings = Array.new(5) do |i|
+        warnings = Array.new(5) do |i|
+          Timecop.freeze(desired_time + i.minutes) do
             create(:content_warning, name: "warning #{i+1}", user: user)
           end
-          settings = Array.new(2) do |i|
+        end
+        settings = Array.new(2) do |i|
+          Timecop.freeze(desired_time + i.minutes) do
             create(:setting, name: "test setting #{i+1}", user: user)
           end
-          labels = Array.new(3) do |i|
+        end
+        labels = Array.new(3) do |i|
+          Timecop.freeze(desired_time + i.minutes) do
             create(:label, name: "test tag #{i+1}", user: user)
           end
+        end
+        Timecop.freeze(desired_time + 1.day) do
           create(:post,
             user: user,
             character: character1,

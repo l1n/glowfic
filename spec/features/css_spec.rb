@@ -54,12 +54,29 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
 
     scenario "Character#Edit" do
       Timecop.freeze(desired_time) do
-        character = create(:character, user: user, name: 'test character 1')
+        template = create(:template, user: user, name: "Blank")
+        character = create(:character,
+          user: user,
+          name: 'Alice',
+          template_name: 'Ice',
+          template: template,
+          screenname: 'infosec_problem',
+          settings: [create(:setting, name: "Testing Area"), create(:setting, name: "Crypto Problems")],
+          pb: "Tester",
+          gallery_groups: [create(:gallery_group, name: "Alice"), create(:gallery_group, name: "Eve")],
+          description: "test content"
+        )
         gallery = create(:gallery, user: user)
-        icon = create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", galleries: [gallery])
-        2.times { create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", galleries: [gallery]) }
-        character.galleries += [gallery]
+        icon = create(:icon, url: "https://dummyimage.com/100x100/000/fff.png&text=a", user: user, galleries: [gallery], keyword: 'a')
+        create(:icon, url: "https://dummyimage.com/100x100/000/fff.png&text=b", user: user, galleries: [gallery], keyword: 'b')
+        create(:icon, url: "https://dummyimage.com/100x100/000/fff.png&text=c", user: user, galleries: [gallery], keyword: 'c')
+        character.update_attributes(galleries: [gallery])
         character.update_attributes(default_icon: icon)
+        character.update_attributes(aliases: [
+          create(:alias, character: character, name: 'Alli'),
+          create(:alias, character: character, name: 'Ice'),
+          create(:alias, character: character, name: 'Eve'),
+        ])
         visit edit_character_path(character)
       end
       expect(page).to match_expectation

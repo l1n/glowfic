@@ -31,8 +31,9 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
         post2.mark_read(user)
         visit post_path(post1)
         visit posts_path(page: 2)
-        create(:reply, post: post1, user: user)
-        create(:reply, post: post1, user: user)
+        3.times do
+          create(:reply, post: post1, user: user, content: "test content")
+        end
         visit posts_path
       end
       page.find('a', :text => 'test subject 4').hover
@@ -77,7 +78,7 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
           gallery_groups: [create(:gallery_group, name: "Alice"), create(:gallery_group, name: "Eve")],
           description: "test content"
         )
-        gallery = create(:gallery, user: user)
+        gallery = create(:gallery, user: user, name: "test gallery")
         icon = create(:icon, url: "https://dummyimage.com/100x100/000/fff.png&text=a", user: user, galleries: [gallery], keyword: 'a')
         create(:icon, url: "https://dummyimage.com/100x100/000/fff.png&text=b", user: user, galleries: [gallery], keyword: 'b')
         create(:icon, url: "https://dummyimage.com/100x100/000/fff.png&text=c", user: user, galleries: [gallery], keyword: 'c')
@@ -100,7 +101,7 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
         end
       end
       Timecop.freeze(desired_time + 1.day) do
-        gallery = create(:gallery, user: user, gallery_groups: GalleryGroup.all)
+        gallery = create(:gallery, user: user, name: "test gallery", gallery_groups: GalleryGroup.all)
         gallery.icons = Array.new(10) do |i|
           create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", user: user, keyword: i)
         end
@@ -144,11 +145,11 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
       before(:each) do
         Timecop.freeze(desired_time) do
           character2 = create(:character, name: "Bob", user: other_user)
-          30.times do |i|
-            if i.even?
-              create(:reply, post: post, user: other_user, character: character2)
-            elsif i.odd?
-              create(:reply, post: post, user: user, character: character1)
+          1.upto(30) do |i|
+            if i.odd?
+              create(:reply, post: post, user: other_user, character: character2, content: "test content #{i}")
+            elsif i.even?
+              create(:reply, post: post, user: user, character: character1, content: "test content #{i}")
             end
           end
         end
@@ -173,7 +174,7 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
       scenario "Post#Metadata" do
         Timecop.freeze(desired_time) do
           character3 = create(:character, name: "Eve", user: user)
-          create(:reply, post: post, user: user, character: character3)
+          create(:reply, post: post, user: user, character: character3, content: "test content")
           visit stats_post_path(post)
         end
         expect(page).to match_expectation
@@ -183,7 +184,7 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
         user.update_attributes(default_editor: 'html')
         Timecop.freeze(desired_time) do
           galleries = Array.new(3) do |i|
-            gallery = create(:gallery, user: user)
+            gallery = create(:gallery, name: "test gallery", user: user)
             n = (i == 1) ? 9 : 3
             n.times do
               create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", user: user, keyword: i, galleries: [gallery])

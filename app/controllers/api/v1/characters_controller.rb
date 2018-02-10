@@ -17,7 +17,7 @@ class Api::V1::CharactersController < Api::ApiController
   def index
     queryset = Character.with_name(params[:q].to_s).ordered
     if @post
-      char_ids = @post.replies.select(:character_id).distinct.pluck(:character_id) + [@post.character_id]
+      char_ids = @post.replies.select(:character_id).distinct.pluck(:character_id)
       queryset = queryset.where(id: char_ids)
     end
 

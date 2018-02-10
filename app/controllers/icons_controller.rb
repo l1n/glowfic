@@ -45,8 +45,7 @@ class IconsController < UploadingController
     @page_title = @icon.keyword
     if params[:view] == 'posts'
       arel = Post.arel_table
-      post_ids = Reply.where(icon_id: @icon.id).select(:post_id).distinct.pluck(:post_id)
-      where_calc = arel[:icon_id].eq(@icon.id).or(arel[:id].in(post_ids))
+      where_calc = arel[:id].in(Reply.where(icon_id: @icon.id).select(:post_id).distinct.pluck(:post_id))
       @posts = posts_from_relation(Post.where(where_calc).ordered)
     elsif params[:view] == 'galleries'
       use_javascript('galleries/expander_old')
@@ -87,8 +86,7 @@ class IconsController < UploadingController
     gon.gallery = Hash[all_icons.map { |i| [i.id, {url: i.url, keyword: i.keyword}] }]
     gon.gallery[''] = {url: view_context.image_path('icons/no-icon.png'), keyword: 'No Icon'}
 
-    post_ids = Reply.where(icon_id: @icon.id).select(:post_id).distinct.pluck(:post_id)
-    all_posts = Post.where(icon_id: @icon.id) + Post.where(id: post_ids)
+    all_posts = Post.where(id: Reply.where(icon_id: @icon.id).select(:post_id).distinct.pluck(:post_id))
     @posts = all_posts.uniq
   end
 
@@ -106,8 +104,6 @@ class IconsController < UploadingController
     wheres = {icon_id: @icon.id}
     wheres[:post_id] = params[:post_ids] if params[:post_ids].present?
     UpdateModelJob.perform_later(Reply.to_s, wheres, {icon_id: new_icon.try(:id)})
-    wheres[:id] = wheres.delete(:post_id) if params[:post_ids].present?
-    UpdateModelJob.perform_later(Post.to_s, wheres, {icon_id: new_icon.try(:id)})
 
     flash[:success] = "All uses of this icon will be replaced."
     redirect_to icon_path(@icon)

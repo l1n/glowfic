@@ -157,6 +157,7 @@ class PostsController < WritableController
     preview and return if params[:button_preview].present?
 
     @post.assign_attributes(post_params)
+    @post.written.assign_attributes(written_params)
     @post.board ||= Board.find(3)
     settings = process_tags(Setting, :post, :setting_ids)
     warnings = process_tags(ContentWarning, :post, :content_warning_ids)
@@ -175,6 +176,7 @@ class PostsController < WritableController
         @post.content_warnings = warnings
         @post.labels = labels
         @post.save!
+        @post.written.save!
       end
 
       flash[:success] = "Your post has been updated."
@@ -239,7 +241,7 @@ class PostsController < WritableController
     if params[:character_id].present?
       arel = Post.arel_table
       post_ids = Reply.where(character_id: params[:character_id]).select(:post_id).distinct.pluck(:post_id)
-      where = arel[:character_id].eq(params[:character_id]).or(arel[:id].in(post_ids))
+      where = arel[:id].in(post_ids)
       @search_results = @search_results.where(where)
     end
     @search_results = posts_from_relation(@search_results).paginate(page: page, per_page: 25)

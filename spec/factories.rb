@@ -40,20 +40,33 @@ FactoryBot.define do
     transient do
       with_icon { false }
       with_character { false }
+      character { nil }
+      character_id { nil }
+      character_alias { nil }
+      character_alias_id { nil }
+      icon { nil }
+      icon_id { nil }
+      content { nil }
       num_replies { 0 }
     end
     user
     board
-    description { "" }
-    content { "test content" }
+    description ""
     sequence :subject do |n|
       "test subject #{n}"
     end
-    before(:create) do |post, evaluator|
-      post.character = create(:character, user: post.user) if evaluator.with_character
-      post.icon = create(:icon, user: post.user) if evaluator.with_icon
-    end
     after(:create) do |post, evaluator|
+      reply = create(:reply, user: post.user, post: post)
+      reply.update(character: create(:character, user: post.user)) if evaluator.with_character
+      reply.update(character: evaluator.character) if evaluator.character
+      reply.update(character_id: evaluator.character_id) if evaluator.character_id
+      reply.update(character_alias: evaluator.character_alias) if evaluator.character_alias
+      reply.update(character_alias_id: evaluator.character_alias_id) if evaluator.character_alias_id
+      reply.update(icon: create(:icon, user: post.user)) if evaluator.with_icon
+      reply.update(icon: evaluator.icon) if evaluator.icon
+      reply.update(icon_id: evaluator.icon_id) if evaluator.icon_id
+      reply.update(content: evaluator.content) if evaluator.content
+
       evaluator.num_replies.times do create(:reply, user: post.user, post: post) end
     end
   end

@@ -273,6 +273,10 @@ class Post < ApplicationRecord
     Post.where(board_id: self.board_id, section_id: self.section_id).find_by(section_order: self.section_order + 1)
   end
 
+  def written
+    self.replies.ordered.first
+  end
+
   private
 
   def valid_board

@@ -264,6 +264,14 @@ class PostsController < WritableController
   def preview
     @post ||= Post.new(user: current_user)
     @post.assign_attributes(post_params(false))
+    if @post.written
+      @written = @post.written
+    elsif @post.replies.first
+      @written = @post.replies.first
+    else
+      @written = @post.replies.new(user: current_user)
+      @written.assign_attributes(written_params)
+    end
     @post.board ||= Board.find_by_id(3)
 
     @author_ids = params.fetch(:post, {}).fetch(:unjoined_author_ids, [])
@@ -272,7 +280,6 @@ class PostsController < WritableController
     @content_warnings = process_tags(ContentWarning, :post, :content_warning_ids)
     @labels = process_tags(Label, :post, :label_ids)
 
-    @written = @post
     editor_setup
     @page_title = 'Previewing: ' + @post.subject.to_s
     render :preview

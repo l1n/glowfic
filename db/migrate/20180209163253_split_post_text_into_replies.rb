@@ -1,9 +1,9 @@
 class SplitPostTextIntoReplies < ActiveRecord::Migration[5.1]
   def up
     Post.find_each do |post|
-      Reply.create!(
+      post.replies.ordered.each { |reply| reply.update_columns(reply_order: reply.reply_order+1) }
+      reply = Reply.create!(
         post_id: post.id,
-        reply_order: 0,
         user_id: post.user_id,
         character_id: post.character_id,
         character_alias_id: post.character_alias_id,
@@ -13,6 +13,7 @@ class SplitPostTextIntoReplies < ActiveRecord::Migration[5.1]
         updated_at: post.updated_at,
         skip_post_update: true
       )
+      reply.update_attributes(reply_order: 0)
     end
     change_table :posts do |t|
       t.remove :character_id, :character_alias_id, :icon_id, :content
@@ -27,7 +28,7 @@ class SplitPostTextIntoReplies < ActiveRecord::Migration[5.1]
       t.text :content
     end
     Post.find_each do |post|
-      reply = reply.find_by(reply_order: 0)
+      reply = Reply.find_by(reply_order: 0)
       if post.user_id == reply.user_id
         post.character_id = reply.character_id
         post.character_alias_id = reply.character_alias_id

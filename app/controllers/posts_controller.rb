@@ -115,6 +115,9 @@ class PostsController < WritableController
     @post.content_warnings = process_tags(ContentWarning, :post, :content_warning_ids)
     @post.labels = process_tags(Label, :post, :label_ids)
 
+    reply = @post.replies.new(written_params)
+    reply.user = current_user
+
     unless @post.save
       flash.now[:error] = {}
       flash.now[:error][:array] = @post.errors.full_messages

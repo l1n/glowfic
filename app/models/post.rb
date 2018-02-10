@@ -5,7 +5,6 @@ class Post < ApplicationRecord
   include PgSearch
   include Presentable
   include Viewable
-  include Writable
 
   STATUS_ACTIVE = 0
   STATUS_COMPLETE = 1
@@ -13,6 +12,7 @@ class Post < ApplicationRecord
   STATUS_ABANDONED = 3
 
   belongs_to :board, inverse_of: :posts, optional: false
+  belongs_to :user, optional: false
   belongs_to :section, class_name: 'BoardSection', inverse_of: :posts, optional: true
   belongs_to :last_user, class_name: 'User', inverse_of: false, optional: false
   belongs_to :last_reply, class_name: 'Reply', inverse_of: false, optional: true

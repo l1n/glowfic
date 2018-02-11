@@ -151,11 +151,13 @@ class PostScraper < Object
     content = doc.at_css('.entry-content').inner_html
 
     @post = Post.new
+    written = @post.replies.new
     @post.board_id = @board_id
     @post.section_id = @section_id
     @post.subject = subject
-    @post.content = strip_content(content)
+    written.content = strip_content(content)
     @post.created_at = @post.updated_at = @post.edited_at = created_at
+    written.created_at = @post.updated_at = @post.edited_at = created_at
     @post.status = @status
     @post.is_import = true
 
@@ -166,9 +168,10 @@ class PostScraper < Object
     end
 
     set_from_username(@post, username)
+    set_from_username(written, username)
     @post.last_user_id = @post.user_id
 
-    set_from_icon(@post, img_url, img_keyword)
+    set_from_icon(written, img_url, img_keyword)
 
     Audited.audit_class.as_user(@post.user) do
       @post.save!
@@ -229,7 +232,7 @@ class PostScraper < Object
       CharactersGallery.create!(character_id: character.id, gallery_id: gallery.id)
     end
 
-    tag.character = character
+    tag.character = character unless tag.is_a?(Post)
     tag.user = character.user
   end
 

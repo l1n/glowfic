@@ -62,8 +62,8 @@ RSpec.describe Api::V1::PostsController do
       get :show, params: { id: post.id }
       expect(response).to have_http_status(200)
       expect(response.json['id']).to eq(post.id)
-      expect(response.json['icon']['id']).to eq(post.icon_id)
-      expect(response.json['character']['id']).to eq(post.character_id)
+      expect(response.json['icon']['id']).to eq(post.written.icon_id)
+      expect(response.json['character']['id']).to eq(post.written.character_id)
       expect(response.json['character']['name']).to eq(calias.character.name)
       expect(response.json['character_name']).to eq(calias.name)
     end

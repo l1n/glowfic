@@ -364,76 +364,11 @@ RSpec.describe Post do
     end
   end
 
-  describe "#has_icons?" do
-    let(:user) { create(:user) }
-
-    context "without character" do
-      let(:post) { create(:post, user: user) }
-
-      it "is true with avatar" do
-        icon = create(:icon, user: user)
-        user.update!(avatar: icon)
-        user.reload
-
-        expect(post.character).to be_nil
-        expect(post.has_icons?).to eq(true)
-      end
-
-      it "is false without avatar" do
-        expect(post.character).to be_nil
-        expect(post.has_icons?).not_to eq(true)
-      end
-    end
-
-    context "with character" do
-      let(:character) { create(:character, user: user) }
-      let(:post) { create(:post, user: user, character: character) }
-
-      it "is true with default icon" do
-        icon = create(:icon, user: user)
-        character.update!(default_icon: icon)
-        expect(post.has_icons?).to eq(true)
-      end
-
-      it "is false without galleries" do
-        expect(post.has_icons?).not_to eq(true)
-      end
-
-      it "is true with icons in galleries" do
-        gallery = create(:gallery, user: user)
-        gallery.icons << create(:icon, user: user)
-        character.galleries << gallery
-        expect(post.has_icons?).to eq(true)
-      end
-
-      it "is false without icons in galleries" do
-        character.galleries << create(:gallery, user: user)
-        expect(post.has_icons?).not_to eq(true)
-      end
-    end
-  end
-
   describe "validations" do
     it "requires user" do
       post = create(:post)
       expect(post.valid?).to eq(true)
       post.user = nil
-      expect(post.valid?).not_to eq(true)
-    end
-
-    it "requires user's character" do
-      post = create(:post)
-      character = create(:character)
-      expect(post.user).not_to eq(character.user)
-      post.character = character
-      expect(post.valid?).not_to eq(true)
-    end
-
-    it "requires user's icon" do
-      post = create(:post)
-      icon = create(:icon)
-      expect(post.user).not_to eq(icon.user)
-      post.icon = icon
       expect(post.valid?).not_to eq(true)
     end
 
@@ -797,15 +732,6 @@ RSpec.describe Post do
       expect(reply.character_id).to eq(last_reply.character_id)
     end
 
-    it "copies post details if it belongs to the user" do
-      post = create(:post, with_character: true, with_icon: true)
-      reply = post.build_new_reply_for(post.user)
-      expect(reply).to be_a_new_record
-      expect(reply.user).to eq(post.user)
-      expect(reply.icon_id).to eq(post.character.default_icon_id)
-      expect(reply.character_id).to eq(post.character_id)
-    end
-
     it "uses active character if available" do
       post = create(:post)
       character = create(:character, with_default_icon: true)
@@ -884,25 +810,6 @@ RSpec.describe Post do
         post.touch
       end
       expect(post.reload.has_edit_audits?).to eq(false)
-    end
-
-    it "is true if post has been edited in content" do
-      post = nil
-      Audited.audit_class.as_user(user) do
-        post = create(:post, content: 'original', user: user)
-        post.update!(content: 'blah')
-      end
-      expect(post.reload.has_edit_audits?).to eq(true)
-    end
-
-    it "is true if post has been edited in character" do
-      post = nil
-      Audited.audit_class.as_user(user) do
-        post = create(:post, content: 'original', user: user)
-        char = create(:character, user: user)
-        post.update!(character: char)
-      end
-      expect(post.reload.has_edit_audits?).to eq(true)
     end
 
     it "is true if post has been edited many times" do

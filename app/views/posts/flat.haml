@@ -25,13 +25,13 @@
       .post-container{class: 'post-post'}
         .padding-10
           .post-info-box
-            - if @post.icon
-              .post-icon= icon_tag @post.icon
+            - if @post.written.icon
+              .post-icon= icon_tag @post.written.icon
             .post-info-text
-              - if @post.character
-                .post-character= @post.name
-                - if @post.character.screenname
-                  .post-screenname= breakable_text(@post.character.screenname)
+              - if @post.written.character
+                .post-character= @post.written.name
+                - if @post.written.character.screenname
+                  .post-screenname= breakable_text(@post.written.character.screenname)
               - else
                 .spacer-alt
               .post-author= @post.user.username
@@ -40,7 +40,7 @@
               = image_tag "icons/link.png", title: 'Permalink', alt: 'Permalink'
             = link_to post_path(@post, unread: true), method: :put do
               = image_tag "icons/eye.png", title: 'Mark Unread Here', alt: 'Eye'
-          .post-content= sanitize_written_content(@post.content.to_s).html_safe
+          .post-content= sanitize_written_content(@post.written.content.to_s).html_safe
         .post-footer
           .right-align>
             .padding-5>

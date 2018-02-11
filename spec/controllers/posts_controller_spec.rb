@@ -330,14 +330,16 @@ RSpec.describe PostsController do
           button_preview: true,
           post: {
             subject: 'test',
-            content: 'orign',
-            character_id: char1.id,
-            icon_id: icon.id,
-            character_alias_id: calias.id,
             setting_ids: [setting1.id, '_'+setting2.name, '_other'],
             content_warning_ids: [warning1.id, '_'+warning2.name, '_other'],
             label_ids: [label1.id, '_'+label2.name, '_other'],
             unjoined_author_ids: [user.id, coauthor.id]
+          },
+          reply: {
+            content: 'orign',
+            character_id: char1.id,
+            icon_id: icon.id,
+            character_alias_id: calias.id
           }
         }
         expect(response).to render_template(:preview)
@@ -567,12 +569,14 @@ RSpec.describe PostsController do
       post :create, params: {
         post: {
           subject: 'asubjct',
-          content: 'acontnt',
           setting_ids: [setting1.id, '_'+setting2.name, '_other'],
           content_warning_ids: [warning1.id, '_'+warning2.name, '_other'],
           label_ids: [label1.id, '_'+label2.name, '_other'],
           character_id: char1.id,
           unjoined_author_ids: [user.id, coauthor.id]
+        },
+        reply: {
+          content: 'acontnt'
         }
       }
 
@@ -635,19 +639,21 @@ RSpec.describe PostsController do
         post :create, params: {
           post: {
             subject: 'asubjct',
-            content: 'acontnt',
             description: 'adesc',
             board_id: board.id,
             section_id: section.id,
-            character_id: char.id,
-            icon_id: icon.id,
-            character_alias_id: calias.id,
             privacy: Concealable::ACCESS_LIST,
             viewer_ids: [viewer.id],
             setting_ids: [setting1.id, '_'+setting2.name, '_other'],
             content_warning_ids: [warning1.id, '_'+warning2.name, '_other'],
             label_ids: [label1.id, '_'+label2.name, '_other'],
             unjoined_author_ids: [coauthor.id]
+          },
+          reply: {
+            content: 'acontnt',
+            character_id: char.id,
+            icon_id: icon.id,
+            character_alias_id: calias.id,
           }
         }
       }.to change{Post.count}.by(1)
@@ -1658,15 +1664,17 @@ RSpec.describe PostsController do
           button_preview: true,
           post: {
             subject: 'test',
-            content: 'orign',
-            character_id: char1.id,
-            icon_id: icon.id,
-            character_alias_id: calias.id,
             setting_ids: [setting1.id, '_'+setting2.name, '_other'],
             content_warning_ids: [warning1.id, '_'+warning2.name, '_other'],
             label_ids: [label1.id, '_'+label2.name, '_other'],
             unjoined_author_ids: [coauthor.id],
             viewer_ids: [viewer.id]
+          },
+          reply: {
+            content: 'orign',
+            character_id: char1.id,
+            icon_id: icon.id,
+            character_alias_id: calias.id
           }
         }
         expect(response).to render_template(:preview)
@@ -2074,20 +2082,22 @@ RSpec.describe PostsController do
         put :update, params: {
           id: post.id,
           post: {
-            content: newcontent,
             subject: newsubj,
             description: 'desc',
             board_id: board.id,
             section_id: section.id,
-            character_id: char.id,
-            character_alias_id: calias.id,
-            icon_id: icon.id,
             privacy: Concealable::ACCESS_LIST,
             viewer_ids: [viewer.id],
             setting_ids: [setting.id],
             content_warning_ids: [warning.id],
             label_ids: [tag.id],
             unjoined_author_ids: [coauthor.id]
+          },
+          reply: {
+            content: newcontent,
+            character_id: char.id,
+            character_alias_id: calias.id,
+            icon_id: icon.id
           }
         }
         expect(response).to redirect_to(post_url(post))
@@ -2122,7 +2132,7 @@ RSpec.describe PostsController do
         post = create(:post, user: user, authors: [user, coauthor], authors_locked: true)
         put :update, params: {
           id: post.id,
-          post: {
+          reply: {
             content: "newtext"
           }
         }

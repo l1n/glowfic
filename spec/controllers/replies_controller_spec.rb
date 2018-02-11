@@ -182,7 +182,7 @@ RSpec.describe RepliesController do
       login_as(user)
       reply_post = create(:post)
       reply_post.mark_read(user, reply_post.created_at + 1.second, true)
-      expect(Reply.count).to eq(0)
+      expect(Reply.count - 1).to eq(0)
       char = create(:character, user: user)
       icon = create(:icon, user: user)
       calias = create(:alias, character: char)
@@ -206,7 +206,7 @@ RSpec.describe RepliesController do
       login_as(user)
       reply_post = create(:post, user: user)
       reply_post.mark_read(user, reply_post.created_at + 1.second, true)
-      expect(Reply.count).to eq(0)
+      expect(Reply.count - 1).to eq(0)
 
       post :create, params: { reply: {post_id: reply_post.id, content: 'test content!'} }
       reply = Reply.first
@@ -222,7 +222,7 @@ RSpec.describe RepliesController do
       login_as(user)
       reply_post = create(:post)
       reply_post.mark_read(user, reply_post.created_at + 1.second, true)
-      expect(Reply.count).to eq(0)
+      expect(Reply.count - 1).to eq(0)
 
       post :create, params: { reply: {post_id: reply_post.id, content: 'test content again!'} }
       reply = Reply.first
@@ -239,10 +239,10 @@ RSpec.describe RepliesController do
       reply_post = create(:post)
       reply_old = create(:reply, post: reply_post, user: user)
       reply_post.mark_read(user, reply_old.created_at + 1.second, true)
-      expect(Reply.count).to eq(1)
+      expect(Reply.count - 1).to eq(1)
 
       post :create, params: { reply: {post_id: reply_post.id, content: 'test content the third!'} }
-      expect(Reply.count).to eq(2)
+      expect(Reply.count - 1).to eq(2)
       reply = Reply.ordered.last
       expect(reply).not_to eq(reply_old)
       expect(response).to redirect_to(reply_url(reply, anchor: "reply-#{reply.id}"))
@@ -257,11 +257,11 @@ RSpec.describe RepliesController do
       reply_post = create(:post)
       reply_old = create(:reply, post: reply_post, user: user)
       reply_post.mark_read(user, reply_old.created_at + 1.second, true)
-      expect(Reply.count).to eq(1)
+      expect(Reply.count - 1).to eq(1)
       reply_post.update!(authors_locked: true)
 
       post :create, params: { reply: {post_id: reply_post.id, content: 'test content the third!'} }
-      expect(Reply.count).to eq(2)
+      expect(Reply.count - 1).to eq(2)
       reply = Reply.order(id: :desc).first
       expect(reply).not_to eq(reply_old)
       expect(response).to redirect_to(reply_url(reply, anchor: "reply-#{reply.id}"))
@@ -276,7 +276,7 @@ RSpec.describe RepliesController do
       login_as(user)
       reply_post = create(:post, user: other_user, tagging_authors: [user, other_user], authors_locked: true)
       post :create, params: { reply: {post_id: reply_post.id, content: 'test content!'} }
-      expect(Reply.count).to eq(1)
+      expect(Reply.count - 1).to eq(1)
     end
 
     it "allows replies from owner in a closed post" do
@@ -285,7 +285,7 @@ RSpec.describe RepliesController do
       login_as(user)
       other_post = create(:post, user: user, tagging_authors: [user, other_user], authors_locked: true)
       post :create, params: { reply: {post_id: other_post.id, content: 'more test content!'} }
-      expect(Reply.count).to eq(1)
+      expect(Reply.count - 1).to eq(1)
     end
 
     it "adds authors correctly when a user replies to an open thread" do
@@ -295,7 +295,7 @@ RSpec.describe RepliesController do
       Timecop.freeze(Time.now) do
         post :create, params: { reply: {post_id: reply_post.id, content: 'test content!'} }
       end
-      expect(Reply.count).to eq(1)
+      expect(Reply.count - 1).to eq(1)
       expect(reply_post.tagging_authors).to match_array([user, reply_post.user])
       post_author = reply_post.tagging_post_authors.find_by(user: user)
       expect(post_author.user).to eq(user)
@@ -315,10 +315,10 @@ RSpec.describe RepliesController do
       expect(reply_post.tagging_authors.count).to eq(2)
       expect(reply_post.joined_authors).to include(user)
       expect(reply_post.joined_authors.count).to eq(2)
-      expect(Reply.count).to eq(1)
+      expect(Reply.count - 1).to eq(1)
       reply_post.mark_read(user, old_reply.created_at + 1.second, true)
       post :create, params: { reply: {post_id: reply_post.id, content: 'test content!'} }
-      expect(Reply.count).to eq(2)
+      expect(Reply.count - 1).to eq(2)
       expect(reply_post.tagging_authors).to match_array([user, reply_post.user])
     end
 

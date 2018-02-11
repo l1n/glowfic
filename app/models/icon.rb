@@ -70,7 +70,6 @@ class Icon < ApplicationRecord
   def clear_icon_ids
     ReplyDraft.where(icon_id: id).update_all(icon_id: nil)
     User.where(avatar_id: id).update_all(avatar_id: nil)
-    UpdateModelJob.perform_later(Post.to_s, {icon_id: id}, {icon_id: nil})
     UpdateModelJob.perform_later(Reply.to_s, {icon_id: id}, {icon_id: nil})
   end
 

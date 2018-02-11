@@ -217,15 +217,13 @@ class Post < ApplicationRecord
   end
 
   def total_word_count
-    return word_count unless replies.exists?
     contents = replies.pluck(:content)
     contents[0] = contents[0].split.size
-    word_count + contents.inject{|r, e| r + e.split.size}.to_i
+    contents.inject{|r, e| r + e.split.size}.to_i
   end
 
   def word_count_for(user)
     sum = 0
-    sum = word_count if user_id == user.id
     return sum unless replies.where(user_id: user.id).exists?
 
     contents = replies.where(user_id: user.id).pluck(:content)

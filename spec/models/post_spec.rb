@@ -399,13 +399,13 @@ RSpec.describe Post do
       post = create(:post, content: 'one two three four five')
       create(:reply, post: post, content: 'six seven')
       create(:reply, post: post, content: 'eight')
-      expect(post.word_count).to eq(5)
+      expect(post.written.word_count).to eq(5)
       expect(post.total_word_count).to eq(8)
     end
 
     it "guesses correctly without replies" do
       post = create(:post, content: 'one two three four five')
-      expect(post.word_count).to eq(5)
+      expect(post.written.word_count).to eq(5)
       expect(post.total_word_count).to eq(5)
     end
 

@@ -15,8 +15,8 @@ class PostPresenter
       board: post.board,
       section: post.section,
       user: post.user,
-      character: post.character,
-      character_name: post.name, # handles alias
-      icon: post.icon})
+      character: post.written.character,
+      character_name: post.written.name, # handles alias
+      icon: post.written.icon})
   end
 end

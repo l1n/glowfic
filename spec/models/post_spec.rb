@@ -148,9 +148,9 @@ RSpec.describe Post do
     it "should update when a field is changed" do
       post = create(:post)
       expect(post.edited_at).to eq(post.created_at)
-      post.content = 'new content now'
-      post.save!
-      expect(post.edited_at).not_to eq(post.created_at)
+      post.written.content = 'new content now'
+      post.written.save!
+      expect(post.written.updated_at).not_to eq(post.created_at)
     end
 
     it "should update when multiple fields are changed" do
@@ -283,7 +283,7 @@ RSpec.describe Post do
       expect(post.section_order).to eq(0)
       create(:post, board_id: board.id)
       create(:post, board_id: board.id)
-      post.update!(content: 'new content')
+      post.written.update!(content: 'new content')
       post.reload
       expect(post.section_order).to eq(0)
     end

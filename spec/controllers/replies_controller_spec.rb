@@ -343,7 +343,7 @@ RSpec.describe RepliesController do
       post :create, params: { reply: {post_id: reply_post.id, content: searchable} }
       reply = reply_post.replies.ordered.last
       expect(reply.content).to eq(searchable)
-      expect(reply.reply_order).to eq(0)
+      expect(reply.reply_order).to eq(1)
     end
 
     it "sets reply_order correctly with an existing reply" do
@@ -355,7 +355,7 @@ RSpec.describe RepliesController do
       post :create, params: { reply: {post_id: reply_post.id, content: searchable} }
       reply = reply_post.replies.ordered.last
       expect(reply.content).to eq(searchable)
-      expect(reply.reply_order).to eq(1)
+      expect(reply.reply_order).to eq(2)
     end
 
     it "sets reply_order correctly with multiple existing replies" do
@@ -368,7 +368,7 @@ RSpec.describe RepliesController do
       post :create, params: { reply: {post_id: reply_post.id, content: searchable} }
       reply = reply_post.replies.ordered.last
       expect(reply.content).to eq(searchable)
-      expect(reply.reply_order).to eq(2)
+      expect(reply.reply_order).to eq(3)
     end
   end
 
@@ -627,13 +627,13 @@ RSpec.describe RepliesController do
       login_as(reply_post.user)
       create(:reply, post: reply_post)
       reply = create(:reply, post: reply_post)
-      expect(reply.reply_order).to eq(1)
+      order = reply.reply_order
       expect(reply_post.replies.ordered.last).to eq(reply)
       create(:reply, post: reply_post)
       expect(reply_post.replies.ordered.last).not_to eq(reply)
       reply_post.mark_read(reply_post.user)
       put :update, params: { id: reply.id, reply: {content: 'new content'} }
-      expect(reply.reload.reply_order).to eq(1)
+      expect(reply  .reload.reply_order).to eq(order)
     end
 
     context "preview" do

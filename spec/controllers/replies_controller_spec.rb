@@ -189,7 +189,7 @@ RSpec.describe RepliesController do
 
       post :create, params: { reply: {post_id: reply_post.id, content: 'test!', character_id: char.id, icon_id: icon.id, character_alias_id: calias.id} }
 
-      reply = Reply.first
+      reply = Reply.order(:id).last
       expect(reply).not_to be_nil
       expect(response).to redirect_to(reply_url(reply, anchor: "reply-#{reply.id}"))
       expect(flash[:success]).to eq("Posted!")
@@ -209,7 +209,7 @@ RSpec.describe RepliesController do
       expect(Reply.count - 1).to eq(0)
 
       post :create, params: { reply: {post_id: reply_post.id, content: 'test content!'} }
-      reply = Reply.first
+      reply = Reply.order(:id).last
       expect(response).to redirect_to(reply_url(reply, anchor: "reply-#{reply.id}"))
       expect(reply).not_to be_nil
       expect(flash[:success]).to eq('Posted!')
@@ -225,7 +225,7 @@ RSpec.describe RepliesController do
       expect(Reply.count - 1).to eq(0)
 
       post :create, params: { reply: {post_id: reply_post.id, content: 'test content again!'} }
-      reply = Reply.first
+      reply = Reply.order(:id).last
       expect(response).to redirect_to(reply_url(reply, anchor: "reply-#{reply.id}"))
       expect(reply).not_to be_nil
       expect(flash[:success]).to eq('Posted!')

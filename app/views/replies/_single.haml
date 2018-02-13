@@ -1,4 +1,4 @@
-.post-container{class: [reply.is_a?(Post) ? 'post-post'.freeze : (reply.is_a?(Reply) ? 'post-reply'.freeze : ''), (reply == @unread && current_user.try(:visible_unread?)) ? 'reply-highlighted' : '']}
+.post-container{class: [reply.is_a?(Reply) && reply.reply_order == 0 ? 'post-post'.freeze : (reply.is_a?(Reply) ? 'post-reply'.freeze : ''), (reply == @unread && current_user.try(:visible_unread?)) ? 'reply-highlighted' : '']}
   - if reply.is_a?(Reply) && reply.id.present?
     <a id="reply-#{reply.id}" class="noheight"> </a>
   - if reply == @unread
@@ -27,13 +27,21 @@
       - if reply.id.present?
         = link_to post_or_reply_link(reply), rel: 'alternate'.freeze do
           = image_tag "icons/link.png".freeze, title: 'Permalink'.freeze, alt: 'Permalink'.freeze
-      - if reply.id.present? && (reply.editable_by?(current_user) || (reply.is_a?(Post) && reply.metadata_editable_by?(current_user)))
-        = link_to path_for(reply, 'edit_%s') do
-          = image_tag "icons/pencil.png".freeze, title: 'Edit'.freeze, alt: 'Edit'.freeze
-      - if reply.id.present? && reply.deletable_by?(current_user)
-        = link_to path_for(reply, '%s'), method: :delete, data: { confirm: "Are you sure you wish to delete this #{reply.class.to_s.downcase}?" } do
-          = image_tag "icons/cross.png".freeze, title: 'Delete'.freeze, alt: 'Delete'.freeze
-      - if reply.id.present? && reply.is_a?(Reply) && logged_in?
+      - if reply.id.present? && (reply.editable_by?(current_user) || (reply.reply_order == 0 && reply.post.metadata_editable_by?(current_user)))
+        - if reply.order == 0
+          = link_to path_for(reply.post, 'edit_%s') do
+            = image_tag "icons/pencil.png".freeze, title: 'Edit'.freeze, alt: 'Edit'.freeze
+        - else
+          = link_to path_for(reply, 'edit_%s') do
+            = image_tag "icons/pencil.png".freeze, title: 'Edit'.freeze, alt: 'Edit'.freeze
+      - if reply.id.present?
+        - if reply.reply_order == 0  && reply.post.deletable_by?(current_user)
+          = link_to path_for(reply.post, '%s'), method: :delete, data: { confirm: "Are you sure you wish to delete this #{reply.post.class.to_s.downcase}?" } do
+            = image_tag "icons/cross.png".freeze, title: 'Delete'.freeze, alt: 'Delete'.freeze
+        - elsif reply.deletable_by?(current_user)
+          = link_to path_for(reply, '%s'), method: :delete, data: { confirm: "Are you sure you wish to delete this #{reply.class.to_s.downcase}?" } do
+            = image_tag "icons/cross.png".freeze, title: 'Delete'.freeze, alt: 'Delete'.freeze
+      - if reply.id.present? && reply.reply_order != 0 && logged_in?
         = link_to post_path(@post, unread: true, at_id: reply.id), method: :put do
           = image_tag "icons/eye.png".freeze, title: 'Mark Unread Here'.freeze, alt: 'Mark Unread Here'.freeze
     .post-content= sanitize_written_content(reply.content.to_s).html_safe

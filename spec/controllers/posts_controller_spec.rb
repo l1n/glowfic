@@ -911,7 +911,7 @@ RSpec.describe PostsController do
       end
 
       it "works for unread" do
-        third_reply = post.replies.ordered.limit(3).last
+        third_reply = post.replies.ordered.limit(4).last
         second_last_reply = post.replies.ordered.last(2).first
         user = create(:user)
         post.mark_read(user, third_reply.created_at)

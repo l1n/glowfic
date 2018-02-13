@@ -28,7 +28,7 @@ class SplitPostTextIntoReplies < ActiveRecord::Migration[5.1]
       t.text :content
     end
     Post.find_each do |post|
-      reply = Reply.find_by(reply_order: 0)
+      reply = post.replies.find_by(reply_order: 0)
       if post.user_id == reply.user_id
         post.character_id = reply.character_id
         post.character_alias_id = reply.character_alias_id

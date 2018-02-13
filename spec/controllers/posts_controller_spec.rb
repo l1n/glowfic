@@ -572,11 +572,11 @@ RSpec.describe PostsController do
           setting_ids: [setting1.id, '_'+setting2.name, '_other'],
           content_warning_ids: [warning1.id, '_'+warning2.name, '_other'],
           label_ids: [label1.id, '_'+label2.name, '_other'],
-          character_id: char1.id,
           unjoined_author_ids: [user.id, coauthor.id]
         },
         reply: {
-          content: 'acontnt'
+          content: 'acontnt',
+          character_id: char1.id
         }
       }
 
@@ -585,7 +585,7 @@ RSpec.describe PostsController do
       expect(assigns(:post)).not_to be_persisted
       expect(assigns(:post).user).to eq(user)
       expect(assigns(:post).subject).to eq('asubjct')
-      expect(assigns(:post).content).to eq('acontnt')
+      expect(assigns(:post).replies.first.content).to eq('acontnt')
       expect(assigns(:page_title)).to eq('New Post')
       expect(assigns(:author_ids)).to match_array([user.id, coauthor.id])
 

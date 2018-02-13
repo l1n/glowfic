@@ -118,7 +118,7 @@ class PostsController < WritableController
     @written = @post.replies.new(written_params)
     @written.user = current_user
 
-    unless @post.save && reply.save
+    unless @post.save && @written.save
       flash.now[:error] = {}
       flash.now[:error][:array] = @post.errors.full_messages
       flash.now[:error][:message] = "Your post could not be saved because of the following problems:"

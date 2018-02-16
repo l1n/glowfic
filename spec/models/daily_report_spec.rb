@@ -67,7 +67,7 @@ RSpec.describe DailyReport do
         3.times do create(:reply, post: post, user: post.user) end
       end
       report = DailyReport.new(now)
-      expect(report.posts.first.reply_count - 1).to eq(5)
+      expect(report.posts.first.reply_count).to eq(5)
     end
 
     it "calculates today posts with replies timestamp correctly" do

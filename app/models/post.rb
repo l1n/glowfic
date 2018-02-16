@@ -73,7 +73,7 @@ class Post < ApplicationRecord
   }
 
   scope :with_reply_count, -> {
-    select('(SELECT COUNT(*) FROM replies WHERE replies.post_id = posts.id) AS reply_count')
+    select('(SELECT COUNT(*) FROM replies WHERE replies.post_id = posts.id AND replies.reply_order != 0) AS reply_count')
   }
 
   scope :visible_to, ->(user) {
@@ -247,7 +247,7 @@ class Post < ApplicationRecord
 
   def reply_count
     return read_attribute(:reply_count) if has_attribute?(:reply_count)
-    replies.count
+    replies.where.not(reply_order: 0).count
   end
 
   def has_edit_audits?

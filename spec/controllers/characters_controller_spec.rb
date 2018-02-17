@@ -211,7 +211,7 @@ RSpec.describe CharactersController do
       expect(response.status).to eq(200)
       expect(assigns(:page_title)).to eq(character.name)
       expect(assigns(:posts).size).to eq(25)
-      expect(assigns(:posts)).to match_array(Post.where(id: Reply.where(character_id: @character.id).pluck('distinct post_id')))
+      expect(assigns(:posts)).to match_array(Post.where(id: Reply.where(character_id: character.id).pluck('distinct post_id')).order('tagged_at desc').limit(25))
     end
 
     it "should only show visible posts" do

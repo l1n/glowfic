@@ -151,13 +151,12 @@ class PostScraper < Object
     content = doc.at_css('.entry-content').inner_html
 
     @post = Post.new
-    written = @post.replies.new
+    @written = @post.replies.new
     @post.board_id = @board_id
     @post.section_id = @section_id
     @post.subject = subject
-    written.content = strip_content(content)
-    @post.created_at = @post.updated_at = @post.edited_at = created_at
-    written.created_at = @post.updated_at = @post.edited_at = created_at
+    @written.content = strip_content(content)
+    @post.created_at = @post.updated_at = @post.edited_at = @written.created_at = created_at
     @post.status = @status
     @post.is_import = true
 
@@ -168,13 +167,14 @@ class PostScraper < Object
     end
 
     set_from_username(@post, username)
-    set_from_username(written, username)
+    set_from_username(@written, username)
     @post.last_user_id = @post.user_id
 
-    set_from_icon(written, img_url, img_keyword)
+    set_from_icon(@written, img_url, img_keyword)
 
     Audited.audit_class.as_user(@post.user) do
       @post.save!
+      @written.save!
     end
   end
 

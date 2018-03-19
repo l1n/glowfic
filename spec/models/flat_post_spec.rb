@@ -12,6 +12,8 @@ RSpec.describe FlatPost do
     it "regenerates all flat posts" do
       post = create(:post)
       delete_lock(post)
+      clear_enqueued_jobs
+
       FlatPost.regenerate_all
       expect(GenerateFlatPostJob).to have_been_enqueued.with(post.id).on_queue('high')
     end
@@ -21,6 +23,8 @@ RSpec.describe FlatPost do
       nonpost = Timecop.freeze(post.tagged_at + 2.hours) { create(:post) }
       delete_lock(post)
       delete_lock(nonpost)
+      clear_enqueued_jobs
+
       FlatPost.regenerate_all(post.tagged_at + 1.hours)
       expect(GenerateFlatPostJob).to have_been_enqueued.with(post.id).on_queue('high')
       expect(GenerateFlatPostJob).not_to have_been_enqueued.with(nonpost.id).on_queue('high')
@@ -36,6 +40,8 @@ RSpec.describe FlatPost do
 
       delete_lock(post)
       delete_lock(nonpost)
+      clear_enqueued_jobs
+
       FlatPost.regenerate_all(nil, false)
       expect(GenerateFlatPostJob).to have_been_enqueued.with(post.id).on_queue('high')
       expect(GenerateFlatPostJob).not_to have_been_enqueued.with(nonpost.id).on_queue('high')
@@ -45,6 +51,8 @@ RSpec.describe FlatPost do
       post = create(:post)
       post.flat_post.delete
       delete_lock(post)
+      clear_enqueued_jobs
+
       FlatPost.regenerate_all
       expect(GenerateFlatPostJob).to have_been_enqueued.with(post.id).on_queue('high')
     end

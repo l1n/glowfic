@@ -187,7 +187,7 @@ RSpec.describe Post do
       expect(post.updated_at).to be_the_same_time_as(time - 5.minutes)
       expect(post.audits.count).to eq(1)
 
-      post.character = create(:character, user: post.user)
+      post.written.character = create(:character, user: post.user)
       Timecop.freeze(time) do
         post.save!
       end

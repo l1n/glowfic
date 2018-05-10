@@ -113,4 +113,28 @@ RSpec.describe User do
     icon2 = create(:icon, user: user, keyword: "b")
     expect(user.galleryless_icons).to eq([icon1, icon2, icon3, icon4])
   end
+
+  describe "archive" do
+    it "succeeds" do
+      user = create(:user)
+      user.archive
+      expect(user.deleted).to be(true)
+    end
+
+    it "turns off email notifications" do
+      user = create(:user)
+      user.update!(email_notifications: true)
+      user.archive
+      expect(user.deleted).to be(true)
+      expect(user.email_notifications).to be(false)
+    end
+
+    it "removes ownership of settings" do
+      user = create(:user)
+      setting = create(:setting, user: user, owned: true)
+      user.archive
+      expect(user.deleted).to be(true)
+      expect(setting.reload.owned).to be(false)
+    end
+  end
 end

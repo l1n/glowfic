@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
   def create
     user = User.find_by(username: params[:username])
 
-    if !user
+    if !user or user.deleted?
       flash[:error] = "That username does not exist."
     elsif user.password_resets.active.unused.exists?
       flash[:error] = "The password for this account has been reset. Please check your email."

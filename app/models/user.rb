@@ -73,7 +73,7 @@ class User < ApplicationRecord
 
   def username
     if deleted?
-      "N/A"
+      "(deleted user)"
     else
       self[:username]
     end

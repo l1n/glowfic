@@ -1,7 +1,7 @@
 - attrs = {}
 - attrs = {class: 'section-ordered', data: {id: character_gallery.id, order: character_gallery.section_order}} if local_assigns[:character_gallery]
 %tr.gallery-header{**attrs}
-  %th.padding-10{class: (klass if defined? klass)}
+  %th.old_th_padding-10{class: (klass if defined? klass)}
     = link_to gallery.name, gallery_path(gallery), class: 'gallery-title'
     - if gallery.user_id == current_user.try(:id) and not defined? skip_forms
       = link_to add_gallery_path(gallery), class: 'gallery-add' do

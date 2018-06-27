@@ -11,13 +11,13 @@
 = form_for @character, url: character_path(@character), method: :put do |f|
   %table.form-table
     %tr
-      %th.centered{colspan: 2}= @character.name
+      %th.old_th_centered{colspan: 2}= @character.name
     = render partial: 'editor', locals: {f: f}
 
 %br
 %table.form-table
   %tr
-    %th.centered
+    %th.old_th_centered
       Aliases and Pseudonyms
       - if @character.user_id == current_user.id
         = link_to new_character_alias_path(@character) do

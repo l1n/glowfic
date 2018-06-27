@@ -3,7 +3,7 @@
 %table.search-collapsible
   %thead
     %tr
-      %th.width-150
+      %th.old_th_width-150
         Search Characters
         - if @search_results
           = '- '+@search_results.total_entries.to_s+' results'
@@ -76,5 +76,5 @@
     - if @search_results && @search_results.total_pages > 1
       %tfoot
         %tr
-          %th.width-150.empty
+          %th.old_th_width-150.empty
           %th= render partial: 'posts/paginator', locals: {paginated: @search_results, no_per: true}

@@ -75,7 +75,7 @@
   %table.icon-right-content-box
     %thead
       %tr
-        %th Galleries
+        %th.old_th Galleries
     %tbody
       - if @icon.galleries.exists?
         = render partial: 'galleries/single', collection: @icon.galleries.ordered_by_name, as: :gallery, locals: {klass: 'subber', skip_forms: true}
@@ -92,7 +92,7 @@
   %table.icon-right-content-box
     %thead
       %tr
-        %th{colspan: 2} Stats
+        %th.old_th{colspan: 2} Stats
     %tbody
       %tr
         %th.sub.width-150 Times Used

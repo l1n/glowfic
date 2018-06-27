@@ -7,7 +7,7 @@
         Search Characters
         - if @search_results
           = '- '+@search_results.total_entries.to_s+' results'
-      %th
+      %th.old_th
         - if @search_results
           = render partial: 'posts/paginator', locals: {paginated: @search_results, no_per: true}
     %tbody
@@ -77,4 +77,4 @@
       %tfoot
         %tr
           %th.old_th_width-150.empty
-          %th= render partial: 'posts/paginator', locals: {paginated: @search_results, no_per: true}
+          %th.old_th= render partial: 'posts/paginator', locals: {paginated: @search_results, no_per: true}

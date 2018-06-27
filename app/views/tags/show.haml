@@ -8,7 +8,7 @@
 %table
   %thead
     %tr
-      %th{colspan: 2}
+      %th.old_th{colspan: 2}
         #{@tag.type.titlecase}: #{@tag.name}
         - if @tag.editable_by?(current_user)
           = link_to edit_tag_path(@tag) do
@@ -64,7 +64,7 @@
   %table
     %thead
       %tr
-        %th{colspan: 7} Characters Tagged: #{@tag.name}
+        %th.old_th{colspan: 7} Characters Tagged: #{@tag.name}
     %tbody
       = render partial: 'characters/list_section', locals: {name: nil, characters: @characters.ordered, hide_buttons: true, show_user: true, show_template: true}
   %br
@@ -74,7 +74,7 @@
   %table
     %thead
       %tr
-        %th{colspan: 6} Settings Tagged: #{@tag.name}
+        %th.old_th{colspan: 6} Settings Tagged: #{@tag.name}
     %tbody
       - @tag.child_settings.each do |setting|
         %tr

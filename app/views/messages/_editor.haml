@@ -2,7 +2,7 @@
   = hidden_field_tag :parent_id, @message.parent_id
   %table
     %tr
-      %th{colspan: 2}
+      %th.old_th{colspan: 2}
         - if @message.thread_id.present?
           Reply to Thread
         - else

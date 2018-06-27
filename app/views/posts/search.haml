@@ -7,7 +7,7 @@
         Search Posts
         - if @search_results
           = '- ' + @search_results.total_entries.to_s + ' results'
-      %th
+      %th.old_th
         - if @search_results
           = render partial: 'paginator', locals: {paginated: @search_results}
   %tbody
@@ -56,4 +56,4 @@
     %tfoot
       %tr
         %th.old_th_width-150.empty
-        %th= render partial: 'paginator', locals: {paginated: @search_results}
+        %th.old_th= render partial: 'paginator', locals: {paginated: @search_results}

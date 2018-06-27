@@ -20,7 +20,7 @@
 %table
   %thead
     %tr
-      %th{colspan: 6}= content_for :posts_title
+      %th.old_th{colspan: 6}= content_for :posts_title
     - if @index.description.present?
       %tr
         %td.odd.written-content{colspan: 6}= sanitize_written_content(@index.description).html_safe

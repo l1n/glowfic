@@ -1,7 +1,7 @@
 = form_tag unhide_posts_path, method: :post do
   %table
     %tr
-      %th{colspan: 7}
+      %th.old_th{colspan: 7}
         Hidden from Unread
         = link_to unread_posts_path  do
           .view-button Unread &raquo;

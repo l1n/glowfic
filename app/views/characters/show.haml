@@ -105,7 +105,7 @@
   %table.character-right-content-box
     %thead
       %tr
-        %th{colspan: 2} Info
+        %th.old_th{colspan: 2} Info
     %tbody
       - nicknames = ([@character.template_name] + @character.aliases.ordered.pluck(:name)).compact
       - if nicknames.present?

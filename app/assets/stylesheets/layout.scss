@@ -139,7 +139,7 @@ table { width: 100%; }
   padding: 0;
   margin: 0;
 }
-.old_th, .content-header, .old_th_centered, .old_th_width-150 {
+.old_th, .content-header {
   background-color: $bg_color_head;
   color: $font_color_head;
   padding: 15px;
@@ -147,10 +147,16 @@ table { width: 100%; }
   font-weight: normal;
 }
 .old_th_centered {
+  @extend .old_th;
   text-align: center;
 }
 .old_th_width-150 {
+  @extend .old_th;
   width: 150px;
+}
+.old_th_padding-10 {
+  @extend .old_th;
+  padding: 10px;
 }
 .content-header {
   box-sizing: border-box;
@@ -175,6 +181,7 @@ td, .table-list li { font-size: 14px; }
   background-color: $bg_color_sub;
   color: $font_color_sub;
   font-size: 16px;
+  font-weight: normal;
 }
 .subber {
   padding: 10px 25px;

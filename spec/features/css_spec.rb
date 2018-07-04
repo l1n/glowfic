@@ -8,8 +8,8 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
     let(:other_user) { create(:user, username: 'John Doe') }
 
     before(:each) do
-      user.update_attributes(layout: layout)
-      user.update_attributes(avatar: create(:icon, user: user, url: "https://dummyimage.com/100x100/000/fff.png", keyword: "a"))
+      user.update!(layout: layout)
+      user.update!(avatar: create(:icon, user: user, url: "https://dummyimage.com/100x100/000/fff.png", keyword: "a"))
 
       visit root_path
       fill_in "username", with: user.username
@@ -76,15 +76,15 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
           settings: [create(:setting, name: "Testing Area"), create(:setting, name: "Crypto Problems")],
           pb: "Tester",
           gallery_groups: [create(:gallery_group, name: "Alice"), create(:gallery_group, name: "Eve")],
-          description: "test content"
+          description: "test content",
         )
         gallery = create(:gallery, user: user, name: "test gallery")
         icon = create(:icon, url: "https://dummyimage.com/100x100/000/fff.png&text=a", user: user, galleries: [gallery], keyword: 'a')
         create(:icon, url: "https://dummyimage.com/100x100/000/fff.png&text=b", user: user, galleries: [gallery], keyword: 'b')
         create(:icon, url: "https://dummyimage.com/100x100/000/fff.png&text=c", user: user, galleries: [gallery], keyword: 'c')
-        character.update_attributes(galleries: [gallery])
-        character.update_attributes(default_icon: icon)
-        character.update_attributes(aliases: [
+        character.update!(galleries: [gallery])
+        character.update!(default_icon: icon)
+        character.update!(aliases: [
           create(:alias, character: character, name: 'Alli'),
           create(:alias, character: character, name: 'Ice'),
           create(:alias, character: character, name: 'Eve'),
@@ -139,7 +139,7 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
             settings: settings,
             content_warnings: warnings,
             labels: labels,
-            id: 80
+            id: 80,
           )
         end
       end
@@ -185,7 +185,7 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
       end
 
       scenario "Icon Picker" do
-        user.update_attributes(default_editor: 'html')
+        user.update!(default_editor: 'html')
         Timecop.freeze(desired_time) do
           galleries = Array.new(3) do |i|
             gallery = create(:gallery, name: "test gallery", user: user)
@@ -195,7 +195,7 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
             end
             gallery
           end
-          character1.update_attributes(galleries: galleries)
+          character1.update!(galleries: galleries)
           visit post_path(post, page: 2)
         end
         page.find('#current-icon-holder img').click

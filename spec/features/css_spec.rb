@@ -159,9 +159,69 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
 
       scenario "Post" do
         Timecop.freeze(desired_time) do
+          post.replies.find_by(reply_order: 25).update!(content:
+            <<~HEREDOC
+              <img src=https://dummyimage.com/400x200/000/fff>
+              <hr/>
+              <ul><li>list item a</li><li>list item b</li><li>list item c</li></ul>
+            HEREDOC
+          )
+          post.replies.find_by(reply_order: 26).update!(content:
+            <<~HEREDOC
+              <table><tr><th>A</th><th>B</th><th>C</th></tr><tr><th>1</th><td>foo</td><td></td></tr><tr><th>2</th><td>bar</td><td>foobar</td></tr></table>
+              <hr/>
+              <ol><li>list item a</li><li>list item b</li><li>list item c</li></ol>
+            HEREDOC
+          )
+          post.replies.find_by(reply_order: 27).update!(content:
+            <<~HEREDOC
+              <font style=\"font-variant: small-caps;\">behold the smallcaps test</font>
+              <strong>bold with &lt;strong&gt;</strong>
+              <b>bold with &lt;b&gt;</b>
+              <em>italics with &lt;em&gt;</em>
+              <i>italics with &lt;i&gt;</i>
+              <var>italics with &lt;var&gt;</var>
+              <u>underlined text</u>
+              <strike>strikethrough with &lt;strike&gt;</strike>
+              <s>strikethrough with &lt;s&gt;</s>
+              <del>strikethrough with &lt;del&gt;</del>
+              <small>en&lt;small&gt;ed text</small>
+              <big>em&lt;big&gt;gened text</big>
+              <mark>text highlighed with &lt;mark&gt;</mark>
+              <samp>monospace text with &lt;samp&gt;</samp><h1>h1</h1><h2>h2</h2><h3>h3</h3><h4>h4</h4><h5>h5</h5><h6>h6</h6>H<sub>2</sub>0
+              x<sup>2</sup>
+              <abbr>Ms</abbr> Doe
+              <a href="https://glowfic.com/">live constellation link</a>
+              <a href="localhost:3000/posts/80?page=2">link to this thread</a>
+              <cite>a citation</cite>
+              <cite href="https://github.com/Marri/glowfic/">a citation with a link</cite>
+              <quote>Most &lt;quote&gt;s on the internet are misattributed</quote>
+              <kbd>kbd</kbd><pre>now you can      fancily     use whitespace with  &lt;pre&gt;</pre><details><summary>This is a &lt;summary&gt;</summary>These are the &lt;details&gt;</details>
+              <details>These are more details, now without a summary</details>
+              <details><summary>a new summary</summary> and more details</details>
+            HEREDOC
+          )
+          post.replies.find_by(reply_order: 28).update!(content:
+            <<~HEREDOC
+              <blockquote>even blockquote</blockquote>
+              <hr/>
+              <dl><dt>test</dd><dd>noun. a procedure intended to establish the quality, performance, or reliability of something, especially before it is taken into widespread use.</dt> <dt>code</dd><dd>noun. program instructions</dt></dl>
+            HEREDOC
+          )
+          post.replies.find_by(reply_order: 29).update!(content:
+            <<~HEREDOC
+              <blockquote cite="the Glowfic Constellation">odd blockquote</blockquote>
+              <hr/>
+              <code>Timecop.freeze(desired_time) do
+                  visit post_path(post, page: 2)
+                  sleep(0.5)
+                end</code>
+            HEREDOC
+          )
           visit post_path(post, page: 2)
           sleep(0.5)
         end
+        page.first('summary').click
         page.first('a', :text => /^1$/).hover
         expect(page).to match_expectation
       end

@@ -192,7 +192,7 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
               x<sup>2</sup>
               <abbr>Ms</abbr> Doe
               <a href="https://glowfic.com/">live constellation link</a>
-              <a href="localhost:3000/posts/80?page=2">link to this thread</a>
+              <a href="/">link to test site (visited)</a>
               <cite>a citation</cite>
               <cite href="https://github.com/Marri/glowfic/">a citation with a link</cite>
               <quote>Most &lt;quote&gt;s on the internet are misattributed</quote>
@@ -222,6 +222,7 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
           sleep(0.5)
         end
         page.first('summary').click
+        page.find('#post-menu').click
         page.first('a', :text => /^1$/).hover
         expect(page).to match_expectation
       end
@@ -258,7 +259,9 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
           character1.update!(galleries: galleries)
           visit post_path(post, page: 2)
         end
+        page.find('.post-expander').click
         page.find('#current-icon-holder img').click
+        page.find('#post-menu').hover
         expect(page).to match_expectation
       end
     end

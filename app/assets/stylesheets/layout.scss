@@ -139,7 +139,7 @@ table { width: 100%; }
   padding: 0;
   margin: 0;
 }
-.old_th, .content-header, .search-results-header {
+.table-title, .content-header, .search-results-header {
   background-color: $bg_color_head;
   color: $font_color_head;
   padding: 15px;
@@ -147,15 +147,15 @@ table { width: 100%; }
   font-weight: normal;
 }
 .table-title-centered {
-  @extend .old_th;
+  @extend .table-title;
   text-align: center;
 }
 .search-params-header {
-  @extend .old_th;
+  @extend .table-title;
   width: 150px;
 }
-.old_th_padding-10 {
-  @extend .old_th;
+.table-title_padding-10 {
+  @extend .table-title;
   padding: 10px;
 }
 .content-header {

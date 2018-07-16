@@ -13,7 +13,7 @@
 = form_for @alias, url: character_aliases_path(@character), method: :post do |f|
   %table.form-table
     %tr
-      %th.old_th_centered{colspan: 2}= "New Alias"
+      %th.table-title{colspan: 2}= "New Alias"
     %tr
       %th.sub Name
       %td.even= f.text_field :name, placeholder: "Alias", class: 'text'

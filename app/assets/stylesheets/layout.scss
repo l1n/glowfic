@@ -146,7 +146,7 @@ table { width: 100%; }
   font-size: 18px;
   font-weight: normal;
 }
-.old_th_centered {
+.table-title {
   @extend .old_th;
   text-align: center;
 }

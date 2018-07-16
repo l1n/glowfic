@@ -8,7 +8,7 @@
 = form_for @board, url: board_path(@board), method: :put do |f|
   %table.form-table
     %tr
-      %th.old_th_centered{colspan: 2} Edit Continuity
+      %th.table-title{colspan: 2} Edit Continuity
     = render partial: 'editor', locals: {f: f}
 
 %br

@@ -8,5 +8,5 @@
 = form_for @index, method: :put do |f|
   %table.form-table
     %tr
-      %th.old_th_centered{colspan: 2} Edit Index
+      %th.table-title{colspan: 2} Edit Index
     = render partial: 'editor', locals: {f: f}

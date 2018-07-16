@@ -6,5 +6,5 @@
 = form_for @template, :url => templates_path, :method => :post do |f|
   %table.form-table
     %tr
-      %th.old_th_centered{colspan: 2} New Template
+      %th.table-title{colspan: 2} New Template
     = render partial: 'editor', locals: {f: f}

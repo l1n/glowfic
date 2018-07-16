@@ -7,5 +7,5 @@
 = form_for @index, url: indexes_path, method: :post do |f|
   %table.form-table
     %tr
-      %th.old_th_centered{colspan: 2} Create Index
+      %th.table-title{colspan: 2} Create Index
     = render partial: 'editor', locals: {f: f}

@@ -1,7 +1,7 @@
 = form_for current_user, :url => user_path(current_user), :method => :put do |f|
   %table.form-table
     %tr
-      %th.table-title{colspan: 2} Account Settings
+      %th.table-title-centered{colspan: 2} Account Settings
     %tr
       %th.sub Username
       %td{class: cycle('even', 'odd')}= f.text_field :username, placeholder: "Username", class: 'text', disabled: current_user.salt_uuid.nil?
@@ -90,7 +90,7 @@
 = form_for current_user, :url => password_user_path(current_user), :method => :put do |f|
   %table.form-table#change-password
     %tr
-      %th.table-title{colspan: 2} Change Password
+      %th.table-title-centered{colspan: 2} Change Password
     %tr
       %th.sub Old
       %td{class: cycle('even', 'odd')}= password_field_tag :old_password, params[:old_password], :placeholder => "Old Password", :class => 'text'

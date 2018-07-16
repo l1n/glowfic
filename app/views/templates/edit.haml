@@ -8,5 +8,5 @@
 = form_for @template, url: template_path(@template), method: :put do |f|
   %table.form-table
     %tr
-      %th.table-title{colspan: 2} Edit Template
+      %th.table-title-centered{colspan: 2} Edit Template
     = render partial: 'editor', locals: {f: f}

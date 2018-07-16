@@ -2,7 +2,7 @@
   - icons_present = current_user.galleryless_icons.present?
   %table.form-table{style: (icons_present ? 'width: 100%;' : nil)}
     %tr
-      %th.table-title{colspan: 2}New Gallery
+      %th.table-title-centered{colspan: 2}New Gallery
     %tr
       %th.vtop.sub Name
       %td{class: cycle('even', 'odd')}= f.text_field :name, placeholder: "Gallery Name", class: 'text'

@@ -50,6 +50,7 @@ class IconsController < UploadingController
     elsif params[:view] == 'galleries'
       use_javascript('galleries/expander_old')
     end
+    @meta_og = og_data
   end
 
   def edit
@@ -162,6 +163,26 @@ class IconsController < UploadingController
     else
       redirect_to user_gallery_path(id: 0, user_id: current_user.id)
     end
+  end
+
+  def og_data
+    data = {
+      url: icon_url(@icon),
+      title: @icon.keyword,
+    }
+    galleries = @icon.galleries.pluck(:name)
+    if galleries.present?
+      data[:description] = "Gallery".pluralize(galleries.count) + ": " + galleries.join(', ')
+    else
+      data[:description] = "Galleryless"
+    end
+    data[:description] += ". #{@icon.credit}" if @icon.credit
+    data[:image] = {
+      src: @icon.url,
+      width: '75',
+      height: '75',
+    }
+    data
   end
 
   def icon_params

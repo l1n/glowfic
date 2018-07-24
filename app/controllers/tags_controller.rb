@@ -34,6 +34,7 @@ class TagsController < ApplicationController
     @galleries = @tag.galleries.with_icon_count.ordered_by_name
     @page_title = @tag.name.to_s
     use_javascript('galleries/expander') if @tag.is_a?(GalleryGroup)
+    @meta_og = og_data
   end
 
   def edit
@@ -102,6 +103,25 @@ class TagsController < ApplicationController
   def build_editor
     return unless @tag.is_a?(Setting)
     use_javascript('tags/edit')
+  end
+
+  def og_data
+    data = {
+      url: tag_url(@tag),
+      title: "#{@tag.name} · #{@tag.type.titleize}",
+    }
+    desc = []
+    desc << generate_short(@tag.description) if @tag.description.present?
+    stats = []
+    post_count = @tag.posts.count
+    stats << "#{post_count} " + "post".pluralize(post_count) if post_count > 0
+    gallery_count = @tag.galleries.count
+    stats << "#{gallery_count} " + "gallery".pluralize(gallery_count) if gallery_count > 0
+    character_count = @tag.characters.count
+    stats << "#{character_count} " + "character".pluralize(character_count) if character_count > 0
+    desc << stats.join(', ')
+    data[:description] = desc.join("\n")
+    data
   end
 
   def tag_params

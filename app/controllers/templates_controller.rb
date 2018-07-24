@@ -32,6 +32,7 @@ class TemplatesController < ApplicationController
     where = arel[:character_id].in(character_ids).or(arel[:id].in(post_ids))
     @posts = posts_from_relation(Post.where(where).ordered)
     @page_title = @template.name
+    @meta_og = og_data
   end
 
   def edit
@@ -86,6 +87,19 @@ class TemplatesController < ApplicationController
     return true if @template.user_id == current_user.id
     flash[:error] = "That is not your template."
     redirect_to user_characters_path(current_user)
+  end
+
+  def og_data
+    data = {
+      url: template_url(@template),
+      title: "#{@template.user.username} » #{@template.name}",
+    }
+    desc = []
+    character_count = @template.characters.count
+    desc << generate_short(@template.description) if @template.description.present?
+    desc << "#{character_count} " + "character".pluralize(character_count)
+    data[:description] = desc.join("\n")
+    data
   end
 
   def template_params

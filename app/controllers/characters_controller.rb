@@ -53,6 +53,7 @@ class CharactersController < ApplicationController
   def show
     @page_title = @character.name
     @posts = posts_from_relation(@character.recent_posts)
+    @meta_og = og_data
     use_javascript('characters/show') if @character.user_id == current_user.try(:id)
   end
 
@@ -346,6 +347,31 @@ class CharactersController < ApplicationController
     return unless @character.user == current_user
     @character.build_template unless @character.template
     @character.template.user = current_user
+  end
+
+  def og_data
+    data = { url: character_url(@character) }
+    data[:title] = "#{@character.user.username} » "
+    data[:title] += "#{@character.template.name} » " if @character.template.present?
+    data[:title] += @character.name.to_s
+    data[:title] += " | #{@character.template_name}" if @character.template_name.present?
+    data[:title] += " | #{@character.screenname}" if @character.screenname.present?
+
+    desc = []
+    settings = @character.settings.pluck(:name)
+    desc << "Setting".pluralize(settings.count) + ": " + settings.join(', ') if settings.present?
+    desc << generate_short(@character.description) if @character.description.present?
+    @character.description.present?
+    data[:description] = desc.join("\n")
+
+    if @character.default_icon.present?
+      data[:image] = {
+        src: @character.default_icon.url,
+        width: '75',
+        height: '75',
+      }
+    end
+    data
   end
 
   def character_params

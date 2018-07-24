@@ -31,6 +31,7 @@ class BoardSectionsController < ApplicationController
   def show
     @page_title = @board_section.name
     @posts = posts_from_relation(@board_section.posts.ordered_in_section)
+    @meta_og = og_data
   end
 
   def edit
@@ -84,6 +85,19 @@ class BoardSectionsController < ApplicationController
       flash[:error] = "You do not have permission to edit this continuity."
       redirect_to boards_path and return
     end
+  end
+
+  def og_data
+    data = {
+      url: board_section_url(@board_section),
+      title: "#{@board_section.board.name} » #{@board_section.name}",
+    }
+    desc = []
+    desc << @board_section.board.writers.pluck(:username).sort_by(&:downcase).join(', ') unless @board_section.board.open_to_anyone?
+    post_count = @board_section.posts.count
+    desc << "#{post_count} " + "post".pluralize(post_count)
+    data[:description] = desc.join(' – ')
+    data
   end
 
   def section_params

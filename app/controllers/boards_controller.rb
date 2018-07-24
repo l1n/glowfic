@@ -62,6 +62,7 @@ class BoardsController < ApplicationController
       board_posts = board_posts.ordered
     end
     @posts = posts_from_relation(board_posts, false)
+    @meta_og = og_data
   end
 
   def edit
@@ -146,6 +147,22 @@ class BoardsController < ApplicationController
       flash[:error] = "You do not have permission to edit that continuity."
       redirect_to board_path(@board) and return
     end
+  end
+
+  def og_data
+    data = {
+      url: board_url(@board),
+      title: @board.name,
+    }
+    desc = []
+    desc << @board.writers.pluck(:username).sort_by(&:downcase).join(', ') unless @board.open_to_anyone?
+    post_count = @board.posts.count
+    stats = "#{post_count} " + "post".pluralize(post_count)
+    section_count = @board.board_sections.count
+    stats += " in #{section_count} " + "section".pluralize(section_count) if section_count > 0
+    desc << stats
+    data[:description] = desc.join(' – ')
+    data
   end
 
   def board_params

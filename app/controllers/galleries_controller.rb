@@ -83,6 +83,7 @@ class GalleriesController < UploadingController
 
     @user = @gallery.user
     @page_title = @gallery.name + ' (Gallery)'
+    @meta_og = og_data
   end
 
   def edit
@@ -226,6 +227,16 @@ class GalleriesController < UploadingController
   def setup_editor
     use_javascript('galleries/editor')
     gon.user_id = current_user.id
+  end
+
+  def og_data
+    data = {
+      url: gallery_url(@gallery),
+      title: "#{@gallery.user.username} » #{@gallery.name}",
+    }
+    icon_count = @gallery.icons.count
+    data[:description] = "#{icon_count} " + "icon".pluralize(icon_count)
+    data
   end
 
   def gallery_params

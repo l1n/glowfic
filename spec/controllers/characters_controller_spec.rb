@@ -234,6 +234,33 @@ RSpec.describe CharactersController do
       get :show, params: { id: character.id }
       expect(assigns(:posts)).to eq([post1, post2, post3, post4])
     end
+
+    it "calculates OpenGraph meta" do
+      user = create(:user, username: 'John Doe')
+      character = create(:character,
+        user: user,
+        template: create(:template, name: "A"),
+        name: "Alice",
+        template_name: "Lis",
+        screenname: "player_one",
+        settings: [
+          create(:setting, name: 'Infosec'),
+          create(:setting, name: 'Wander'),
+        ],
+        description: "Alice is a character",
+        with_default_icon: true,
+      )
+
+      get :show, params: { id: character.id }
+
+      meta_og = assigns(:meta_og)
+      expect(meta_og[:url]).to eq(character_url(character))
+      expect(meta_og[:title]).to eq('John Doe » A » Alice | Lis | player_one')
+      expect(meta_og[:description]).to eq("Settings: Infosec, Wander\nAlice is a character")
+      expect(meta_og[:image][:src]).to eq(character.default_icon.url)
+      expect(meta_og[:image][:width]).to eq('75')
+      expect(meta_og[:image][:width]).to eq('75')
+    end
   end
 
   describe "GET edit" do

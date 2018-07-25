@@ -167,6 +167,23 @@ RSpec.describe UsersController do
       get :show, params: { id: user.id }
       expect(assigns(:posts).to_a).to eq([post1, post2, post3])
     end
+
+    it "calculates OpenGraph meta" do
+      user = create(:user, username: 'user')
+      user.update!(avatar: create(:icon))
+      create(:board, name: "Board 1", creator: user)
+      create(:board, name: "Board 2", creator: user)
+
+      get :show, params: { id: user.id }
+
+      meta_og = assigns(:meta_og)
+      expect(meta_og[:url]).to eq(user_url(user))
+      expect(meta_og[:title]).to eq('user')
+      expect(meta_og[:description]).to eq('Board 1, Board 2')
+      expect(meta_og[:image][:src]).to eq(user.avatar.url)
+      expect(meta_og[:image][:width]).to eq('75')
+      expect(meta_og[:image][:width]).to eq('75')
+    end
   end
 
   describe "GET edit" do

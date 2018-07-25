@@ -63,6 +63,47 @@ RSpec.describe TagsController do
       expect(flash[:error]).to eq("Tag could not be found.")
     end
 
+    it "calculates OpenGraph meta for labels" do
+      label = create(:label, name: 'label')
+      create_list(:post, 2, labels: [label])
+
+      get :show, params: { id: label.id }
+
+      meta_og = assigns(:meta_og)
+      expect(meta_og[:url]).to eq(tag_url(label))
+      expect(meta_og[:title]).to eq('label · Label')
+      expect(meta_og[:description]).to eq('2 posts')
+    end
+
+    it "calculates OpenGraph meta for settings" do
+      setting = create(:setting,
+        name: 'setting',
+        description: 'this is an example setting',
+      )
+      create_list(:post, 2, settings: [setting])
+      create_list(:character, 3, settings: [setting])
+
+      get :show, params: { id: setting.id }
+
+      meta_og = assigns(:meta_og)
+      expect(meta_og[:url]).to eq(tag_url(setting))
+      expect(meta_og[:title]).to eq('setting · Setting')
+      expect(meta_og[:description]).to eq("this is an example setting\n2 posts, 3 characters")
+    end
+
+    it "calculates OpenGraph meta for gallery groups" do
+      group = create(:gallery_group, name: 'group')
+      create_list(:gallery, 2, gallery_groups: [group])
+      create_list(:character, 3, gallery_groups: [group])
+
+      get :show, params: { id: group.id }
+
+      meta_og = assigns(:meta_og)
+      expect(meta_og[:url]).to eq(tag_url(group))
+      expect(meta_og[:title]).to eq('group · Gallery Group')
+      expect(meta_og[:description]).to eq('2 galleries, 3 characters')
+    end
+
     context "with views" do
       render_views
       it "succeeds with valid post tag" do

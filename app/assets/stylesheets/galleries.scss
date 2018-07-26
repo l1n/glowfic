@@ -106,3 +106,8 @@
   width: 150px;
   text-align: center;
 }
+
+/* the new gallery table needs to be stretched if there are icons present */
+gallery-new-with-icons {
+  width: 100%;
+}

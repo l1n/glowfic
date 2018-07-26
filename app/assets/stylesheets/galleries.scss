@@ -55,20 +55,38 @@
 #icon-table {
   margin: 0;
   width: 100%;
-
-  .icon-buttons {
-    width: 45px;
-    padding: 0 5px 0 0;
-
-    img { vertical-align: middle; }
-  }
 }
+
 .icon.preview-icon, #icon-table .preview-icon {
   max-height: 27px;
   max-width: 27px;
   margin: 0;
 }
+
 .loading-icon { width: 16px; height: 16px; }
+
+/* The uploading progress bar */
+.progress-bar {
+  margin-left: 5px;
+}
+
+/* The cells on icons#_add_new */
+.icon-table-icon {
+  padding: 0px;
+  width: 15px;
+}
+
+.icon-table-url, .icon-table-keyword, .icon-table-credit {
+  padding: 5px 10px;
+}
+
+.icon-table-buttons {
+  padding: 0 5px 0 0;
+  width: 40px;
+  text-align: right;
+
+  img { vertical-align: middle; }
+}
 
 /* Various tables with icons in previously styled with .green */
 .icons-box {
@@ -86,8 +104,4 @@
   @extend .icons-box;
   width: 150px;
   text-align: center;
-}
-
-.progress-bar {
-  margin-left: 5px;
 }

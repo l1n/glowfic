@@ -151,6 +151,9 @@ button, .button {
 /* Italics on the next button of the daily report if the next day is today */
 .report-next-today { font-style: italic; }
 
+/* Alerts on users#new */
+.alert { margin: 2px 0px; }
+
 /* Bootstrap tweaks */
 .view-button img, #swap-alias, #swap-character, #header img { vertical-align: baseline; }
 span.badge {

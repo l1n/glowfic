@@ -13,6 +13,7 @@
     margin: 0 0.5em 0 0;
     padding: 0;
   }
+
   li {
     display: inline-block;
     margin: 0 0 0 1em;
@@ -65,17 +66,21 @@
     font-size: $font_size_smallerish;
     font-weight: bold; /* not redundant: used for login form */
   }
+
   input {
     vertical-align: middle; /* for login form */
   }
 }
+
 #header-logout { margin-left: 1em; }
+
 #header-form {
   font-weight: normal;
   display: inline;
   input { margin: 2px 0; }
   #header-remember, #header-forms { margin-right: 10px; }
 }
+
 #header-forms, #header-remember, #header-buttons, #header-buttons-links { display: inline; }
 #header-buttons-links, #header-remember { white-space: nowrap; }
 #header-buttons-links a { font-weight: bold; }
@@ -85,6 +90,7 @@
   vertical-align: middle;
   line-height: normal;
 }
+
 #header-links {
   display: none; /* hidden by default, shows up on narrow screens */
   vertical-align: middle;
@@ -97,8 +103,10 @@
   #user-info {
     img, .no-img { display: none; }
   }
+
   #header-form { display: none; }
   #header-links { display: inline-block; }
+
   #logo img {
     padding: 0.2em;
     height: 20px;
@@ -119,13 +127,16 @@
   position: relative;
   padding-bottom: 35px;
 }
+
 #content h1 { line-height: normal; }
+
 @media (max-width: 600px) {
   #content, #tos {
     padding: 10px;
     padding-bottom: 35px;
   }
 }
+
 @media (max-width: 500px) {
   #content, #tos {
     padding: 5px;
@@ -142,11 +153,14 @@
     margin: 0;
     margin-top: 5px;
   }
+
   &.error { background-color: $bg_color_flash_error; }
   &.success { background-color: $bg_color_flash_success; }
   &.inbox { background-color: $bg_color_flash_inbox; }
   &.breadcrumbs { background-color: $bg_color_flash_breadcrumbs; }
 }
+
+
 /* Top-right timestamp on certain timestamped pages */
 .time-loaded {
   font-size: $font_size_mini;
@@ -165,11 +179,13 @@
 
 /* List Tables */
 table { width: 100%; }
+
 .table-list { /* table-style ULs */
   list-style: none;
   padding: 0;
   margin: 0;
 }
+
 th, .content-header {
   background-color: $bg_color_head;
   color: $font_color_head;
@@ -177,6 +193,7 @@ th, .content-header {
   font-size: $font_size_large;
   font-weight: normal;
 }
+
 .content-header {
   box-sizing: border-box;
   width: 100%;
@@ -184,6 +201,7 @@ th, .content-header {
 
   span {
     line-height: 28px;
+
     a {
       color: #EEEEEE;
       &:hover { color: #DDDDDD; }
@@ -192,6 +210,7 @@ th, .content-header {
 
   & > div { overflow: hidden; }
 }
+
 td, .table-list li { font-size: $font_size_small; }
 
 /* Subs and subbers */
@@ -203,6 +222,7 @@ td, .table-list li { font-size: $font_size_small; }
 
   &.width-150 { width: 170px; }
 }
+
 .subber {
   padding: 10px 25px;
   background-color: $bg_color_subber;
@@ -220,6 +240,7 @@ td, .table-list li { font-size: $font_size_small; }
   border-spacing: 0;
 
   th { text-align: center; }
+
   td {
     padding: 5px;
 
@@ -247,6 +268,7 @@ td, .table-list li { font-size: $font_size_small; }
 
   .select2-container input { margin-top: 5px; }
 }
+
 .form-table-ender {
   padding: 10px 25px;
   background-color: $bg_color_subber;
@@ -257,6 +279,7 @@ td, .table-list li { font-size: $font_size_small; }
 
   input { margin: 0; }
 }
+
 @media (max-width: 400px) {
   .form-table { width: 100%; }
 }
@@ -267,7 +290,9 @@ td, .table-list li { font-size: $font_size_small; }
     margin: 3px 0;
     color: $font_color_select2_container;
   }
+
   &, &-dropdown { font-size: $font_size_smallerish; }
+
   input {
     height: 20px;
     margin: 0;
@@ -309,18 +334,22 @@ td, .table-list li { font-size: $font_size_small; }
   width: 20px;
   height: 17px;
 }
+
 .icon-view {
   width: 15px;
   height: 15px;
 }
+
 /* Tag label buttons, like seen on the gallery page */
 .tag-box {
   display: inline;
   margin-left: 5px;
 }
+
 .tag-item-link:hover {
   color: unset;
 }
+
 .tag-item {
   display: inline-block;
   margin: 2px 0;
@@ -331,6 +360,7 @@ td, .table-list li { font-size: $font_size_small; }
   font-weight: normal;
   border-radius: 5px;
 }
+
 .even .tag-item { background-color: $bg_color_tag_item_even; }
 .odd .tag-item { background-color: $bg_color_tag_item_odd; }
 // tr.gallery-tags .tag-item { color: $font_color_tag_item_gallery; }
@@ -343,6 +373,7 @@ td, .table-list li { font-size: $font_size_small; }
   word-wrap: break-word;
   table-layout: fixed;
 }
+
 .right-content-box { float: left; }
 .user-info-box { width: 200px; }
 .icon-info-box { width: 150px; }
@@ -360,35 +391,42 @@ td, .table-list li { font-size: $font_size_small; }
   margin-bottom: 0;
   padding-left: 15px;
 }
+
 /* Keeps unread table from padding excessively for the checkboxes */
 .checkbox {
   height: 12px;
   margin: 0;
   vertical-align: middle;
 }
+
 #signup .sub { width: 90px; }
 .continuity-spacer { height: 20px; }
 .post-ignored { opacity: 0.3; }
+
 #loading img {
   height: 20px;
   width: 20px;
 }
+
 .section-warning {
   background-color: rgb(208, 110, 110);
   background-color: rgba(255, 0, 0, 0.4);
   padding: 5px;
 }
+
 .section-ordered-handle {
   cursor: move;
   display: inline-block;
 
   img { vertical-align: text-bottom; }
 }
+
 .continuity-header {
   padding: 10px 25px;
   font-size: $font_size_smallish;
   font-weight: bold;
 }
+
 #homepage-content {
   padding: 20px;
 }
@@ -401,6 +439,7 @@ td, .table-list li { font-size: $font_size_small; }
   background-color: $bg_color_search_box;
   color: $font_color_search_box;
 }
+
 .search-icon-preview { vertical-align: middle; }
 .search-icon-keyword { padding-left: 5px; }
 
@@ -408,6 +447,7 @@ td, .table-list li { font-size: $font_size_small; }
 @media (max-width: 600px) {
   .search-collapsible {
     .empty { display: none; }
+
     > thead > tr > th, > tbody > tr > td, > tfoot > tr > th {
       box-sizing: border-box;
       display: block;
@@ -431,6 +471,7 @@ td, .table-list li { font-size: $font_size_small; }
 
   a { color: $font_color_header_link; }
   a:hover { color: $font_color_header_link_hover; }
+
   div {
     padding: 5px;
     padding-left: 20px;
@@ -446,6 +487,7 @@ The copy box can't be invisible/hidden or copy fails but opacity works
   font-weight: bold;
   height: 20px;
 }
+
 #_hiddenCopyText_ {
   height: 0px;
   width: 0px;
@@ -453,8 +495,10 @@ The copy box can't be invisible/hidden or copy fails but opacity works
   padding: 0px;
   margin: 0px;
 }
+
 #tag-search-name {
   margin: 0px 5px;
   width: 210px;
 }
+
 #tag-search { margin-left: 5px; }

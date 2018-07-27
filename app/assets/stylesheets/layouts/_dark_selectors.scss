@@ -1,9 +1,15 @@
 @import 'variables';
 
 /* - main page */
-body { background-color: $bg_color_page; color: $font_color_page; }
+body {
+  background-color: $bg_color_page;
+  color: $font_color_page;
+}
 
-#content { background-color: $bg_color_page; color: $font_color_content; }
+#content {
+  background-color: $bg_color_page;
+  color: $font_color_content;
+}
 
 /* - header */
 #header {
@@ -28,13 +34,25 @@ a {
 .flash {
   a, a:visited { color: $font_color_flash_link; }
   a:hover { color: $font_color_flash_hover; }
-  &.breadcrumbs { background-color: $bg_color_flash_breadcrumbs; color: $font_color_flash_breadcrumbs; }
-  &.success { background-color: $bg_color_flash_success; color: $font_color_flash_success; }
+  &.breadcrumbs {
+    background-color: $bg_color_flash_breadcrumbs;
+    color: $font_color_flash_breadcrumbs;
+  }
+  &.success {
+    background-color: $bg_color_flash_success;
+    color: $font_color_flash_success;
+  }
   &.error { background-color: $bg_color_flash_error; }
-  &.inbox { background-color: $bg_color_flash_inbox; color: $font_color_flash_inbox; }
+  &.inbox {
+    background-color: $bg_color_flash_inbox;
+    color: $font_color_flash_inbox;
+  }
 }
 
-.search-box { background-color: $bg_color_search_box; color: $font_color_search_box; }
+.search-box {
+  background-color: $bg_color_search_box;
+  color: $font_color_search_box;
+}
 .spacer-alt { background-color: $bg_color_spacer_alt; }
 
 /* - misc */
@@ -45,9 +63,18 @@ a {
 }
 
 /* - content headers */
-th, .content-header { background-color: $bg_color_head; color: $font_color_head; }
-.sub { background-color: $bg_color_sub; color: $font_color_sub; }
-.subber, .form-table-ender { background-color: $bg_color_subber; color: $font_color_subber; }
+th, .content-header {
+  background-color: $bg_color_head;
+  color: $font_color_head;
+}
+.sub {
+  background-color: $bg_color_sub;
+  color: $font_color_sub;
+}
+.subber, .form-table-ender {
+  background-color: $bg_color_subber;
+  color: $font_color_subber;
+}
 
 /* - content */
 .even, .post-post, .post-reply:nth-child(even), #post-editor {
@@ -65,7 +92,10 @@ th, .content-header { background-color: $bg_color_head; color: $font_color_head;
   }
 }
 
-.post-subheader { background-color: $bg_color_post_description; color: $font_color_post_description; }
+.post-subheader {
+  background-color: $bg_color_post_description;
+  color: $font_color_post_description;
+}
 .post-navheader { background-color: $bg_color_navheader; }
 
 // TODO: darken post-menu-box to fit with the rest of this theme
@@ -75,12 +105,24 @@ th, .content-header { background-color: $bg_color_head; color: $font_color_head;
 .post-expander { background-color: $bg_color_expander; }
 
 .post-icon { background-color: $bg_color_post_icon; }
-#current-icon-dropdown { background-color: $bg_color_post_icon; color: $font_color_icon_selector; }
+#current-icon-dropdown {
+  background-color: $bg_color_post_icon;
+  color: $font_color_icon_selector;
+}
 #reply-icon-selector { background-color: $bg_color_icon_selector; }
 
-.post-character { background-color: $bg_color_post_character; color: $font_color_post_info; }
-.post-screenname { background-color: $bg_color_post_screenname; color: $font_color_post_info; }
-.post-author { background-color: $bg_color_post_author; color: $font_color_post_info; }
+.post-character {
+  background-color: $bg_color_post_character;
+  color: $font_color_post_info;
+}
+.post-screenname {
+  background-color: $bg_color_post_screenname;
+  color: $font_color_post_info;
+}
+.post-author {
+  background-color: $bg_color_post_author;
+  color: $font_color_post_info;
+}
 
 #post-menu-box { color: $font_color_post_menu }
 
@@ -93,7 +135,10 @@ table { border-color: #555; } // TODO: what does this style
 .icon-credit { background-color: $bg_color_icon_credit; }
 
 /* - tag items */
-.tag-item, tr.gallery-tags .tag-item { background-color: $bg_color_tag_item; color: $font_color_tag_item; }
+.tag-item, tr.gallery-tags .tag-item {
+  background-color: $bg_color_tag_item;
+  color: $font_color_tag_item;
+}
 
 /* - link-boxes */
 .link-box {
@@ -119,7 +164,13 @@ table { border-color: #555; } // TODO: what does this style
 @import 'dark_themes_selectors';
 
 /* TODO: do this for starrydark */
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active { background-color: $bg_color_popup_button; border-color: $border_color_popup_button; }
-.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus, .ui-button:hover, .ui-button:focus { background-color: $bg_color_popup_button; border-color: $border_color_popup_button; }
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
+  background-color: $bg_color_popup_button;
+  border-color: $border_color_popup_button;
+}
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus, .ui-button:hover, .ui-button:focus {
+  background-color: $bg_color_popup_button;
+  border-color: $border_color_popup_button;
+}
 .ui-widget-content a { color: $font_color_popup_link; }
 /* TODO: hover, click */

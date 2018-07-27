@@ -1,9 +1,11 @@
 @import 'variables';
+
 .gallery-box {
   cursor: pointer;
   width: 20px;
   text-align: center;
 }
+
 /* The + / - symbol to minimize a gallery */
 .gallery-minmax, .add-gallery-icon { cursor: pointer; }
 .gallery-title { height: 5px; } /* So that when a gallery is minimized there is spacing */
@@ -15,6 +17,7 @@
   padding: 10px;
   .icon { margin: 5px; }
 }
+
 .gallery-icon, .character-icon-item {
   display: inline-block;
   margin-bottom: 10px;
@@ -35,6 +38,7 @@
   right: 12px;
   cursor: pointer;
 }
+
 .delete-button {
   box-sizing: border-box;
   height: 1.5em;
@@ -47,6 +51,7 @@
 
   a, a:visited, a:hover { color: $font_color_mini_delete; }
 }
+
 .select-button input {
   width: 1.5em;
   height: 1.5em;
@@ -65,6 +70,7 @@
     img { vertical-align: middle; }
   }
 }
+
 .icon.preview-icon, #icon-table .preview-icon {
   max-height: 27px;
   max-width: 27px;
@@ -75,6 +81,7 @@
   width: 16px;
   height: 16px;
 }
+
 /* Various tables with icons in previously styled with .green */
 .icons-box {
   background-color: $bg_color_icon;

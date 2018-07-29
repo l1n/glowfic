@@ -352,8 +352,7 @@ class CharactersController < ApplicationController
   def og_data
     data = { url: character_url(@character) }
     character_desc = [@character.name, @character.template_name, @character.screenname].select(&:present?).join(' | ')
-    data[:title] = [@character.user.username, @character.template.name, character_desc].select(&:present?).join(' » ')
-
+    data[:title] = [@character.user.username, @character.template.try(:name), character_desc].select(&:present?).join(' » ')
     desc = []
     settings = @character.settings.pluck(:name)
     desc << "Setting".pluralize(settings.count) + ": " + settings.join(', ') if settings.present?

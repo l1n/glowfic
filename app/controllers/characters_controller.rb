@@ -351,17 +351,13 @@ class CharactersController < ApplicationController
 
   def og_data
     data = { url: character_url(@character) }
-    data[:title] = "#{@character.user.username} » "
-    data[:title] += "#{@character.template.name} » " if @character.template.present?
-    data[:title] += @character.name.to_s
-    data[:title] += " | #{@character.template_name}" if @character.template_name.present?
-    data[:title] += " | #{@character.screenname}" if @character.screenname.present?
+    character_desc = [@character.name, @character.template_name, @character.screenname].select(&:present?).join(' | ')
+    data[:title] = [@character.user.username, @character.template.name, character_desc].select(&:present?).join(' » ')
 
     desc = []
     settings = @character.settings.pluck(:name)
     desc << "Setting".pluralize(settings.count) + ": " + settings.join(', ') if settings.present?
     desc << generate_short(@character.description) if @character.description.present?
-    @character.description.present?
     data[:description] = desc.join("\n")
 
     if @character.default_icon.present?

@@ -161,7 +161,9 @@ class BoardsController < ApplicationController
     section_count = @board.board_sections.count
     stats += " in #{section_count} " + "section".pluralize(section_count) if section_count > 0
     desc << stats
-    data[:description] = desc.join(' – ')
+    desc2 = [desc.join(' – ')]
+    desc2 << generate_short(@board.description) if @board.description.present?
+    data[:description] = desc2.join("\n")
     data
   end
 

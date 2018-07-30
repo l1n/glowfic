@@ -106,10 +106,6 @@ class TagsController < ApplicationController
   end
 
   def og_data
-    data = {
-      url: tag_url(@tag),
-      title: "#{@tag.name} · #{@tag.type.titleize}",
-    }
     desc = []
     desc << generate_short(@tag.description) if @tag.description.present?
     stats = []
@@ -120,8 +116,11 @@ class TagsController < ApplicationController
     character_count = @tag.characters.count
     stats << "#{character_count} " + "character".pluralize(character_count) if character_count > 0
     desc << stats.join(', ')
-    data[:description] = desc.join("\n")
-    data
+    {
+      url: tag_url(@tag),
+      title: "#{@tag.name} · #{@tag.type.titleize}",
+      description: desc.join("\n"),
+    }
   end
 
   def tag_params

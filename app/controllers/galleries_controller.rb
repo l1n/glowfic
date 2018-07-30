@@ -230,13 +230,12 @@ class GalleriesController < UploadingController
   end
 
   def og_data
-    data = {
+    icon_count = @gallery.icons.count
+    {
       url: gallery_url(@gallery),
       title: "#{@gallery.user.username} » #{@gallery.name}",
+      description: "#{icon_count} " + "icon".pluralize(icon_count),
     }
-    icon_count = @gallery.icons.count
-    data[:description] = "#{icon_count} " + "icon".pluralize(icon_count)
-    data
   end
 
   def gallery_params

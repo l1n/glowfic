@@ -88,16 +88,15 @@ class BoardSectionsController < ApplicationController
   end
 
   def og_data
-    data = {
-      url: board_section_url(@board_section),
-      title: "#{@board_section.board.name} » #{@board_section.name}",
-    }
     desc = []
     desc << @board_section.board.writers.pluck(:username).sort_by(&:downcase).join(', ') unless @board_section.board.open_to_anyone?
     post_count = @board_section.posts.count
     desc << "#{post_count} " + "post".pluralize(post_count)
-    data[:description] = desc.join(' – ')
-    data
+    {
+      url: board_section_url(@board_section),
+      title: "#{@board_section.board.name} » #{@board_section.name}",
+      description: desc.join(' – '),
+    }
   end
 
   def section_params

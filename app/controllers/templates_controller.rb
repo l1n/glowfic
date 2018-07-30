@@ -90,16 +90,15 @@ class TemplatesController < ApplicationController
   end
 
   def og_data
-    data = {
-      url: template_url(@template),
-      title: "#{@template.user.username} » #{@template.name}",
-    }
     desc = []
     character_count = @template.characters.count
     desc << generate_short(@template.description) if @template.description.present?
     desc << "#{character_count} " + "character".pluralize(character_count)
-    data[:description] = desc.join("\n")
-    data
+    {
+      url: template_url(@template),
+      title: "#{@template.user.username} » #{@template.name}",
+      description: desc.join("\n"),
+    }
   end
 
   def template_params

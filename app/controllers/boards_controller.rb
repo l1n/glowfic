@@ -150,10 +150,6 @@ class BoardsController < ApplicationController
   end
 
   def og_data
-    data = {
-      url: board_url(@board),
-      title: @board.name,
-    }
     metadata = []
     metadata << @board.writers.pluck(:username).sort_by(&:downcase).join(', ') unless @board.open_to_anyone?
     post_count = @board.posts.count
@@ -163,8 +159,11 @@ class BoardsController < ApplicationController
     metadata << stats
     desc = [metadata.join(' – ')]
     desc << generate_short(@board.description) if @board.description.present?
-    data[:description] = desc.join("\n")
-    data
+    {
+      url: board_url(@board),
+      title: @board.name,
+      description: desc.join("\n"),
+    }
   end
 
   def board_params

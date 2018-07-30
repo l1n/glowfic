@@ -166,23 +166,23 @@ class IconsController < UploadingController
   end
 
   def og_data
-    data = {
-      url: icon_url(@icon),
-      title: @icon.keyword,
-    }
     galleries = @icon.galleries.pluck(:name)
     if galleries.present?
-      data[:description] = "Gallery".pluralize(galleries.count) + ": " + galleries.join(', ')
+      desc = "Gallery".pluralize(galleries.count) + ": " + galleries.join(', ')
     else
-      data[:description] = "Galleryless"
+      desc = "Galleryless"
     end
-    data[:description] += ". #{@icon.credit}" if @icon.credit
-    data[:image] = {
-      src: @icon.url,
-      width: '75',
-      height: '75',
+    desc += ". #{@icon.credit}" if @icon.credit
+    {
+      url: icon_url(@icon),
+      title: @icon.keyword,
+      description: desc,
+      image: {
+        src: @icon.url,
+        width: '75',
+        height: '75',
+      }
     }
-    data
   end
 
   def icon_params

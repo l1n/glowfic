@@ -231,10 +231,14 @@ class GalleriesController < UploadingController
 
   def og_data
     icon_count = @gallery.icons.count
+    desc = ["#{icon_count} " + "icon".pluralize(icon_count)]
+    tags = @gallery.gallery_groups_data.pluck(:name)
+    tag_count = tags.count
+    desc << "Tag".pluralize(tag_count) + ": " + generate_short(tags.join(', ')) if tag_count > 0
     {
       url: gallery_url(@gallery),
       title: "#{@gallery.user.username} » #{@gallery.name}",
-      description: "#{icon_count} " + "icon".pluralize(icon_count),
+      description: desc.join("\n"),
     }
   end
 

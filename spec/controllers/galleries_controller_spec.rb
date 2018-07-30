@@ -210,6 +210,23 @@ RSpec.describe GalleriesController do
         expect(meta_og[:title]).to eq('user » gallery')
         expect(meta_og[:description]).to eq('16 icons')
       end
+
+      it "calculates OpenGraph meta for a gallery with gallery groups" do
+        user = create(:user, username: 'user')
+        gallery = create(:gallery,
+          name: 'gallery',
+          user: user,
+          gallery_groups: [create(:gallery_group), create(:gallery_group)],
+        )
+        create_list(:icon, 16, gallery_ids: [gallery.id])
+        get :show, params: { id: gallery.id }
+
+        meta_og = assigns(:meta_og)
+        expect(meta_og.keys).to match_array([:url, :title, :description])
+        expect(meta_og[:url]).to eq(gallery_url(gallery))
+        expect(meta_og[:title]).to eq("user » gallery")
+        expect(meta_og[:description]).to eq("16 icons\nTags: Tag1, Tag2")
+      end
     end
   end
 

@@ -113,8 +113,9 @@ class UsersController < ApplicationController
     arel = Board.arel_table
     where = arel[:creator_id].eq(@user.id).or(arel[:id].in(board_ids))
     boards = Board.where(where).ordered
-    if boards.count > 0
-      desc = "Continuities: " + generate_short(boards.pluck(:name) * ', ')
+    board_count = boards.count
+    if board_count > 0
+      desc = "Continuity".pluralize(board_count) + ": " + generate_short(boards.pluck(:name) * ', ')
     else
       desc = "No continuities."
     end

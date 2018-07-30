@@ -235,7 +235,24 @@ RSpec.describe CharactersController do
       expect(assigns(:posts)).to eq([post1, post2, post3, post4])
     end
 
-    it "calculates OpenGraph meta" do
+    it "calculates OpenGraph meta for basic character" do
+      user = create(:user, username: 'John Doe')
+      character = create(:character,
+        user: user,
+        name: "Alice",
+        screenname: "player_one",
+        description: "Alice is a character",
+      )
+
+      get :show, params: { id: character.id }
+
+      meta_og = assigns(:meta_og)
+      expect(meta_og[:url]).to eq(character_url(character))
+      expect(meta_og[:title]).to eq('John Doe » Alice | player_one')
+      expect(meta_og[:description]).to eq("Alice is a character")
+    end
+
+    it "calculates OpenGraph meta for expanded character" do
       user = create(:user, username: 'John Doe')
       character = create(:character,
         user: user,

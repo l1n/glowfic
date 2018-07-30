@@ -154,16 +154,16 @@ class BoardsController < ApplicationController
       url: board_url(@board),
       title: @board.name,
     }
-    desc = []
-    desc << @board.writers.pluck(:username).sort_by(&:downcase).join(', ') unless @board.open_to_anyone?
+    metadata = []
+    metadata << @board.writers.pluck(:username).sort_by(&:downcase).join(', ') unless @board.open_to_anyone?
     post_count = @board.posts.count
     stats = "#{post_count} " + "post".pluralize(post_count)
     section_count = @board.board_sections.count
     stats += " in #{section_count} " + "section".pluralize(section_count) if section_count > 0
-    desc << stats
-    desc2 = [desc.join(' – ')]
-    desc2 << generate_short(@board.description) if @board.description.present?
-    data[:description] = desc2.join("\n")
+    metadata << stats
+    desc = [metadata.join(' – ')]
+    desc << generate_short(@board.description) if @board.description.present?
+    data[:description] = desc.join("\n")
     data
   end
 

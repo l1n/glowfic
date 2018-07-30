@@ -96,6 +96,7 @@ RSpec.describe TemplatesController do
       get :show, params: { id: template.id }
 
       meta_og = assigns(:meta_og)
+      expect(meta_og.keys).to match_array([:url, :title, :description])
       expect(meta_og[:url]).to eq(template_url(template))
       expect(meta_og[:title]).to eq('user » template')
       expect(meta_og[:description]).to eq("This is an example template.\n3 characters")

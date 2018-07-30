@@ -129,6 +129,7 @@ RSpec.describe BoardSectionsController do
       get :show, params: { id: section.id }
 
       meta_og = assigns(:meta_og)
+      expect(meta_og.keys).to match_array([:url, :title, :description])
       expect(meta_og[:url]).to eq(board_section_url(section))
       expect(meta_og[:title]).to eq('board » section')
       expect(meta_og[:description]).to eq('Jane Doe, John Doe – 1 post')

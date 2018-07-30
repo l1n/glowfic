@@ -247,6 +247,7 @@ RSpec.describe CharactersController do
       get :show, params: { id: character.id }
 
       meta_og = assigns(:meta_og)
+      expect(meta_og.keys).to match_array([:url, :title, :description])
       expect(meta_og[:url]).to eq(character_url(character))
       expect(meta_og[:title]).to eq('John Doe » Alice | player_one')
       expect(meta_og[:description]).to eq("Alice is a character")
@@ -271,11 +272,13 @@ RSpec.describe CharactersController do
       get :show, params: { id: character.id }
 
       meta_og = assigns(:meta_og)
+      expect(meta_og.keys).to match_array([:url, :title, :description, :image])
       expect(meta_og[:url]).to eq(character_url(character))
       expect(meta_og[:title]).to eq('John Doe » A » Alice | Lis | player_one')
       expect(meta_og[:description]).to eq("Settings: Infosec, Wander\nAlice is a character")
+      expect(meta_og[:image].keys).to match_array([:src, :width, :height])
       expect(meta_og[:image][:src]).to eq(character.default_icon.url)
-      expect(meta_og[:image][:width]).to eq('75')
+      expect(meta_og[:image][:height]).to eq('75')
       expect(meta_og[:image][:width]).to eq('75')
     end
   end

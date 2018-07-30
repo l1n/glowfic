@@ -186,9 +186,11 @@ RSpec.describe IconsController do
       get :show, params: { id: icon.id }
 
       meta_og = assigns(:meta_og)
+      expect(meta_og.keys).to match_array([:url, :title, :description, :image])
       expect(meta_og[:url]).to eq(icon_url(icon))
       expect(meta_og[:title]).to eq('icon')
       expect(meta_og[:description]).to eq('Galleries: gallery 1, gallery 2')
+      expect(meta_og[:image].keys).to match_array([:src, :width, :height])
       expect(meta_og[:image][:src]).to eq(icon.url)
       expect(meta_og[:image][:width]).to eq('75')
       expect(meta_og[:image][:width]).to eq('75')

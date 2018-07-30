@@ -253,6 +253,7 @@ RSpec.describe BoardsController do
       get :show, params: { id: board.id }
 
       meta_og = assigns(:meta_og)
+      expect(meta_og.keys).to match_array([:url, :title, :description])
       expect(meta_og[:url]).to eq(board_url(board))
       expect(meta_og[:title]).to eq('board')
       expect(meta_og[:description]).to eq("Jane Doe, John Doe – 1 post\nsample board")

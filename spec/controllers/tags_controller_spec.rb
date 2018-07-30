@@ -70,6 +70,7 @@ RSpec.describe TagsController do
       get :show, params: { id: label.id }
 
       meta_og = assigns(:meta_og)
+      expect(meta_og.keys).to match_array([:url, :title, :description])
       expect(meta_og[:url]).to eq(tag_url(label))
       expect(meta_og[:title]).to eq('label · Label')
       expect(meta_og[:description]).to eq('2 posts')
@@ -86,6 +87,7 @@ RSpec.describe TagsController do
       get :show, params: { id: setting.id }
 
       meta_og = assigns(:meta_og)
+      expect(meta_og.keys).to match_array([:url, :title, :description])
       expect(meta_og[:url]).to eq(tag_url(setting))
       expect(meta_og[:title]).to eq('setting · Setting')
       expect(meta_og[:description]).to eq("this is an example setting\n2 posts, 3 characters")
@@ -99,6 +101,7 @@ RSpec.describe TagsController do
       get :show, params: { id: group.id }
 
       meta_og = assigns(:meta_og)
+      expect(meta_og.keys).to match_array([:url, :title, :description])
       expect(meta_og[:url]).to eq(tag_url(group))
       expect(meta_og[:title]).to eq('group · Gallery Group')
       expect(meta_og[:description]).to eq('2 galleries, 3 characters')

@@ -174,6 +174,7 @@ RSpec.describe UsersController do
       get :show, params: { id: user.id }
 
       meta_og = assigns(:meta_og)
+      expect(meta_og.keys).to match_array([:url, :title, :description])
       expect(meta_og[:url]).to eq(user_url(user))
       expect(meta_og[:title]).to eq('user')
       expect(meta_og[:description]).to eq('No continuities.')
@@ -188,9 +189,11 @@ RSpec.describe UsersController do
       get :show, params: { id: user.id }
 
       meta_og = assigns(:meta_og)
+      expect(meta_og.keys).to match_array([:url, :title, :description, :image])
       expect(meta_og[:url]).to eq(user_url(user))
       expect(meta_og[:title]).to eq('user')
       expect(meta_og[:description]).to eq('Continuities: Board 1, Board 2')
+      expect(meta_og[:image].keys).to match_array([:src, :width, :height])
       expect(meta_og[:image][:src]).to eq(user.avatar.url)
       expect(meta_og[:image][:width]).to eq('75')
       expect(meta_og[:image][:width]).to eq('75')

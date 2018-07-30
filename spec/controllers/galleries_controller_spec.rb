@@ -205,6 +205,7 @@ RSpec.describe GalleriesController do
         get :show, params: { id: gallery.id }
 
         meta_og = assigns(:meta_og)
+        expect(meta_og.keys).to match_array([:url, :title, :description])
         expect(meta_og[:url]).to eq(gallery_url(gallery))
         expect(meta_og[:title]).to eq('user » gallery')
         expect(meta_og[:description]).to eq('16 icons')

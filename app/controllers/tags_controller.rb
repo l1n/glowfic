@@ -117,7 +117,7 @@ class TagsController < ApplicationController
     stats << "#{character_count} " + "character".pluralize(character_count) if character_count > 0
     desc << stats.join(', ')
     title = [@tag.name]
-    title << @tag.user if @tag.owned?
+    title << @tag.user.username if @tag.owned?
     title << @tag.type.titleize
     {
       url: tag_url(@tag),

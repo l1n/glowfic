@@ -216,7 +216,7 @@ RSpec.describe GalleriesController do
         gallery = create(:gallery,
           name: 'gallery',
           user: user,
-          gallery_groups: [create(:gallery_group), create(:gallery_group)],
+          gallery_groups: [create(:gallery_group, name: "Tag 1"), create(:gallery_group, name: "Tag 2")],
         )
         create_list(:icon, 16, gallery_ids: [gallery.id])
         get :show, params: { id: gallery.id }
@@ -225,7 +225,7 @@ RSpec.describe GalleriesController do
         expect(meta_og.keys).to match_array([:url, :title, :description])
         expect(meta_og[:url]).to eq(gallery_url(gallery))
         expect(meta_og[:title]).to eq("user » gallery")
-        expect(meta_og[:description]).to eq("16 icons\nTags: Tag1, Tag2")
+        expect(meta_og[:description]).to eq("16 icons\nTags: Tag 1, Tag 2")
       end
     end
   end

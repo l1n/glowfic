@@ -76,7 +76,7 @@ RSpec.describe TagsController do
       expect(meta_og[:description]).to eq('2 posts')
     end
 
-    it "calculates OpenGraph meta for settings" do
+    it "calculates OpenGraph meta for unowned settings" do
       setting = create(:setting,
         name: 'setting',
         description: 'this is an example setting',
@@ -90,6 +90,25 @@ RSpec.describe TagsController do
       expect(meta_og.keys).to match_array([:url, :title, :description])
       expect(meta_og[:url]).to eq(tag_url(setting))
       expect(meta_og[:title]).to eq('setting · Setting')
+      expect(meta_og[:description]).to eq("this is an example setting\n2 posts, 3 characters")
+    end
+
+    it "calculates OpenGraph meta for owned settings" do
+      setting = create(:setting,
+        name: 'setting',
+        user: create(:user, username: "User"),
+        description: 'this is an example setting',
+        owned: true,
+      )
+      create_list(:post, 2, settings: [setting])
+      create_list(:character, 3, settings: [setting])
+
+      get :show, params: { id: setting.id }
+
+      meta_og = assigns(:meta_og)
+      expect(meta_og.keys).to match_array([:url, :title, :description])
+      expect(meta_og[:url]).to eq(tag_url(setting))
+      expect(meta_og[:title]).to eq('setting · User · Setting')
       expect(meta_og[:description]).to eq("this is an example setting\n2 posts, 3 characters")
     end
 

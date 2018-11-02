@@ -26,9 +26,10 @@ RSpec.describe PostsController do
       26.times do create(:post) end
       oldest = Post.ordered_by_id.first
       next_oldest = Post.ordered_by_id.second
-      oldest.update!(description: "just to make it update")
+      oldest.update!(status: Post::STATUS_COMPLETE)
       get :index
       ids_fetched = controller.instance_variable_get('@posts').map(&:id)
+      expect(ids_fetched.count).to eq(25)
       expect(ids_fetched).not_to include(next_oldest.id)
     end
 

@@ -157,7 +157,8 @@ class PostsController < WritableController
     preview and return if params[:button_preview].present?
 
     @post.assign_attributes(post_params)
-    @post.written.assign_attributes(written_params)
+    @written = @post.written
+    @written.assign_attributes(written_params)
     @post.board ||= Board.find(3)
     settings = process_tags(Setting, :post, :setting_ids)
     warnings = process_tags(ContentWarning, :post, :content_warning_ids)
@@ -176,7 +177,7 @@ class PostsController < WritableController
         @post.content_warnings = warnings
         @post.labels = labels
         @post.save!
-        @post.written.save!
+        @written.save!
       end
 
       flash[:success] = "Your post has been updated."

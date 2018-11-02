@@ -118,7 +118,14 @@ class PostsController < WritableController
     @written = @post.replies.new(written_params)
     @written.user = current_user
 
-    unless @post.save && @written.save
+    begin
+      Post.transaction do
+        @post.save!
+        @written.save!
+      end
+      flash[:success] = "You have successfully posted."
+      redirect_to post_path(@post)
+    rescue ActiveRecord::RecordInvalid
       flash.now[:error] = {}
       flash.now[:error][:array] = @post.errors.full_messages
       flash.now[:error][:message] = "Your post could not be saved because of the following problems:"
@@ -126,9 +133,6 @@ class PostsController < WritableController
       @page_title = 'New Post'
       render :new and return
     end
-
-    flash[:success] = "You have successfully posted."
-    redirect_to post_path(@post)
   end
 
   def show

@@ -879,13 +879,13 @@ RSpec.describe PostsController do
       it "shows error if reply not found" do
         get :show, params: { id: post.id, at_id: -1 }
         expect(flash[:error]).to eq("Could not locate specified reply, defaulting to first page.")
-        expect(assigns(:replies).count - 1).to eq(5)
+        expect(assigns(:replies).count).to eq(5)
       end
 
       it "shows error if unread not logged in" do
         get :show, params: { id: post.id, at_id: 'unread' }
         expect(flash[:error]).to eq("Could not locate specified reply, defaulting to first page.")
-        expect(assigns(:replies).count - 1).to eq(5)
+        expect(assigns(:replies).count).to eq(5)
       end
 
       it "shows error if no unread" do
@@ -894,13 +894,13 @@ RSpec.describe PostsController do
         login_as(user)
         get :show, params: { id: post.id, at_id: 'unread' }
         expect(flash[:error]).to eq("Could not locate specified reply, defaulting to first page.")
-        expect(assigns(:replies).count - 1).to eq(5)
+        expect(assigns(:replies).count).to eq(5)
       end
 
       it "shows error when reply is wrong post" do
         get :show, params: { id: post.id, at_id: create(:reply).id }
         expect(flash[:error]).to eq("Could not locate specified reply, defaulting to first page.")
-        expect(assigns(:replies).count - 1).to eq(5)
+        expect(assigns(:replies).count).to eq(5)
       end
 
       it "works for specified reply" do

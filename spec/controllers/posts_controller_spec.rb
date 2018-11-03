@@ -1695,10 +1695,10 @@ RSpec.describe PostsController do
         expect(assigns(:post).written).to eq(assigns(:written))
         expect(assigns(:post).user).to eq(user)
         expect(assigns(:post).subject).to eq('test')
-        expect(assigns(:post).written.content).to eq('orign')
-        expect(assigns(:post).written.character).to eq(char1)
-        expect(assigns(:post).written.icon).to eq(icon)
-        expect(assigns(:post).written.character_alias).to eq(calias)
+        expect(assigns(:written).content).to eq('orign')
+        expect(assigns(:written).character).to eq(char1)
+        expect(assigns(:written).icon).to eq(icon)
+        expect(assigns(:written).character_alias).to eq(calias)
         expect(assigns(:page_title)).to eq('Previewing: test')
 
         # editor_setup:

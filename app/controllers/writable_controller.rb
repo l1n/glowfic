@@ -66,6 +66,8 @@ class WritableController < ApplicationController
       self.page = cur_page = cur_page.to_i
     end
 
+    read_at = @post.read_time_for(@replies) if logged_in?
+
     @replies = @replies
       .select("replies.*, characters.name, characters.screenname, icons.keyword, icons.url, users.username, character_aliases.name as alias")
       .where('replies.reply_order > 0')
@@ -117,7 +119,7 @@ class WritableController < ApplicationController
         @reply = @post.build_new_reply_for(current_user)
       end
 
-      @post.mark_read(current_user, @post.read_time_for(@replies + [@post.written]))
+      @post.mark_read(current_user, read_at)
     end
 
     @warnings = @post.content_warnings if display_warnings?

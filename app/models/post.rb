@@ -33,6 +33,8 @@ class Post < ApplicationRecord
   has_many :indexes, inverse_of: :posts, through: :index_posts
   has_many :index_sections, inverse_of: :posts, through: :index_posts
 
+  has_one :written, -> { where(reply_order: 0) }, class_name: 'Reply'
+
   attr_accessor :is_import
   attr_writer :skip_edited
 
@@ -267,10 +269,6 @@ class Post < ApplicationRecord
   def next_post
     return unless self.board.ordered?
     Post.where(board_id: self.board_id, section_id: self.section_id).find_by(section_order: self.section_order + 1)
-  end
-
-  def written
-    self.replies.find_by(reply_order: 0)
   end
 
   def editable_by?(editor)

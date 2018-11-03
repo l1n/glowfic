@@ -273,8 +273,8 @@ class PostsController < WritableController
       @written = @post.replies.first
     else
       @written = @post.replies.new(user: current_user)
-      @written.assign_attributes(written_params)
     end
+    @written.assign_attributes(written_params)
     @post.board ||= Board.find_by_id(3)
 
     @author_ids = params.fetch(:post, {}).fetch(:unjoined_author_ids, [])

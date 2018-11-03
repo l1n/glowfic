@@ -344,13 +344,13 @@ RSpec.describe PostsController do
           }
         }
         expect(response).to render_template(:preview)
+        expect(assigns(:post).written).to eq(assigns(:written))
         expect(assigns(:written)).to be_an_instance_of(Reply)
         expect(assigns(:written)).to be_a_new_record
         expect(assigns(:written).user).to eq(user)
         expect(assigns(:written).character).to eq(char1)
         expect(assigns(:written).icon).to eq(icon)
         expect(assigns(:written).character_alias).to eq(calias)
-        expect(assigns(:written)).to eq(assigns(:written))
         expect(assigns(:page_title)).to eq('Previewing: test')
         expect(assigns(:author_ids)).to match_array([user.id, coauthor.id])
 

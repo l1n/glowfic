@@ -168,7 +168,7 @@ class PostsController < WritableController
     warnings = process_tags(ContentWarning, :post, :content_warning_ids)
     labels = process_tags(Label, :post, :label_ids)
 
-    if current_user.id != @post.user_id && @post.written.audit_comment.blank? && @post.audit_comment.blank? && !@post.author_ids.include?(current_user.id)
+    if current_user.id != @post.user_id && @written.audit_comment.blank? && @post.audit_comment.blank? && !@post.author_ids.include?(current_user.id)
       flash[:error] = "You must provide a reason for your moderator edit."
       editor_setup
       render :edit and return

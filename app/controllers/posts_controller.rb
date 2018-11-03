@@ -427,8 +427,8 @@ class PostsController < WritableController
       :content,
       :character_id,
       :icon_id,
+      :character_alias_id,
       :audit_comment,
-      :character_alias_id
     )
   end
 end

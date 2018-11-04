@@ -9,6 +9,7 @@ AllCops:
     - 'db/migrate/2016*'
     - 'db/migrate/2017*'
     - 'db/seeds.rb'
+    - 'db/seeds/*'
     - 'spec/spec_helper.rb'
 
 Rails:

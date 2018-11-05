@@ -94,9 +94,9 @@ class PostsController < WritableController
     @post = Post.new(user: current_user)
     @post.board_id = params[:board_id]
     @post.section_id = params[:section_id]
-    @written = @post.replies.new(user: current_user, post_id: @post.id, reply_order: 0)
-    @written.character = current_user.active_character
-    @written.icon_id = (current_user.active_character ? current_user.active_character.default_icon.try(:id) : current_user.avatar_id)
+    @post.written = @post.replies.new(user: current_user, post_id: @post.id, reply_order: 0)
+    @post.written.character = current_user.active_character
+    @post.written.icon_id = (current_user.active_character ? current_user.active_character.default_icon.try(:id) : current_user.avatar_id)
     @page_title = 'New Post'
 
     @permitted_authors -= [current_user]
@@ -108,21 +108,18 @@ class PostsController < WritableController
 
   def create
     import_thread and return if params[:button_import].present?
-    preview and return if params[:button_preview].present?
 
-    @post = current_user.posts.new(post_params)
+    @post = current_user.posts(post_params)
+    @post.written = @post.replies.new(written_params)
+    @post.written.user = current_user
+
+    preview and return if params[:button_preview].present?
     @post.settings = process_tags(Setting, :post, :setting_ids)
     @post.content_warnings = process_tags(ContentWarning, :post, :content_warning_ids)
     @post.labels = process_tags(Label, :post, :label_ids)
 
-    @written = @post.replies.new(written_params)
-    @written.user = current_user
-
     begin
-      Post.transaction do
-        @post.save!
-        @written.save!
-      end
+      @post.save!
       flash[:success] = "You have successfully posted."
       redirect_to post_path(@post)
     rescue ActiveRecord::RecordInvalid
@@ -158,17 +155,17 @@ class PostsController < WritableController
 
     change_status and return if params[:status].present?
     change_authors_locked and return if params[:authors_locked].present?
-    preview and return if params[:button_preview].present?
 
     @post.assign_attributes(post_params)
-    @written = @post.written
-    @written.assign_attributes(written_params)
+    @post.written.assign_attributes(written_params)
+    preview and return if params[:button_preview].present?
+
     @post.board ||= Board.find(3)
     settings = process_tags(Setting, :post, :setting_ids)
     warnings = process_tags(ContentWarning, :post, :content_warning_ids)
     labels = process_tags(Label, :post, :label_ids)
 
-    if current_user.id != @post.user_id && @written.audit_comment.blank? && @post.audit_comment.blank? && !@post.author_ids.include?(current_user.id)
+    if current_user.id != @post.user_id && @post.written.audit_comment.blank? && @post.audit_comment.blank? && !@post.author_ids.include?(current_user.id)
       flash[:error] = "You must provide a reason for your moderator edit."
       editor_setup
       render :edit and return
@@ -181,7 +178,7 @@ class PostsController < WritableController
         @post.content_warnings = warnings
         @post.labels = labels
         @post.save!
-        @written.save!
+        @post.written.save!
       end
 
       flash[:success] = "Your post has been updated."
@@ -269,16 +266,6 @@ class PostsController < WritableController
   private
 
   def preview
-    @post ||= Post.new(user: current_user)
-    @post.assign_attributes(post_params(false))
-    if @post.written
-      @written = @post.written
-    elsif @post.replies.first
-      @written = @post.replies.first
-    else
-      @written = @post.replies.new(user: current_user)
-    end
-    @written.assign_attributes(written_params)
     @post.board ||= Board.find_by_id(3)
 
     @author_ids = params.fetch(:post, {}).fetch(:unjoined_author_ids, [])

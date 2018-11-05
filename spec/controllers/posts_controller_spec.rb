@@ -204,7 +204,7 @@ RSpec.describe PostsController do
 
       expect(response).to have_http_status(200)
       expect(assigns(:post)).to be_new_record
-      expect(assigns(:written).character).to eq(char1)
+      expect(assigns(:post).written.character).to eq(char1)
 
       # editor_setup:
       expect(assigns(:javascripts)).to include('posts/editor')
@@ -344,13 +344,12 @@ RSpec.describe PostsController do
           }
         }
         expect(response).to render_template(:preview)
-        expect(assigns(:post).written).to eq(assigns(:written))
-        expect(assigns(:written)).to be_an_instance_of(Reply)
-        expect(assigns(:written)).to be_a_new_record
-        expect(assigns(:written).user).to eq(user)
-        expect(assigns(:written).character).to eq(char1)
-        expect(assigns(:written).icon).to eq(icon)
-        expect(assigns(:written).character_alias).to eq(calias)
+        expect(assigns(:post).written).to be_an_instance_of(Reply)
+        expect(assigns(:post).written).to be_a_new_record
+        expect(assigns(:post).written.user).to eq(user)
+        expect(assigns(:post).written.character).to eq(char1)
+        expect(assigns(:post).written.icon).to eq(icon)
+        expect(assigns(:post).written.character_alias).to eq(calias)
         expect(assigns(:page_title)).to eq('Previewing: test')
         expect(assigns(:author_ids)).to match_array([user.id, coauthor.id])
 
@@ -388,9 +387,9 @@ RSpec.describe PostsController do
         login_as(user)
         post :create, params: { button_preview: true }
         expect(response).to render_template(:preview)
-        expect(assigns(:written)).to be_an_instance_of(Reply)
-        expect(assigns(:written)).to be_a_new_record
-        expect(assigns(:written).user).to eq(user)
+        expect(assigns(:post).written).to be_an_instance_of(Reply)
+        expect(assigns(:post).written).to be_a_new_record
+        expect(assigns(:post).written.user).to eq(user)
       end
     end
 
@@ -586,7 +585,7 @@ RSpec.describe PostsController do
       expect(assigns(:post)).not_to be_persisted
       expect(assigns(:post).user).to eq(user)
       expect(assigns(:post).subject).to eq('asubjct')
-      expect(assigns(:written).content).to eq('acontnt')
+      expect(assigns(:post).written.content).to eq('acontnt')
       expect(assigns(:page_title)).to eq('New Post')
       expect(assigns(:author_ids)).to match_array([user.id, coauthor.id])
 
@@ -1707,15 +1706,14 @@ RSpec.describe PostsController do
           }
         }
         expect(response).to render_template(:preview)
-        expect(assigns(:written)).to be_an_instance_of(Reply)
-        expect(assigns(:written)).not_to be_a_new_record
-        expect(assigns(:post).written).to eq(assigns(:written))
+        expect(assigns(:post).written).to be_an_instance_of(Reply)
+        expect(assigns(:post).written).not_to be_a_new_record
         expect(assigns(:post).user).to eq(user)
         expect(assigns(:post).subject).to eq('test')
-        expect(assigns(:written).content).to eq('orign')
-        expect(assigns(:written).character).to eq(char1)
-        expect(assigns(:written).icon).to eq(icon)
-        expect(assigns(:written).character_alias).to eq(calias)
+        expect(assigns(:post).written.content).to eq('orign')
+        expect(assigns(:post).written.character).to eq(char1)
+        expect(assigns(:post).written.icon).to eq(icon)
+        expect(assigns(:post).written.character_alias).to eq(calias)
         expect(assigns(:page_title)).to eq('Previewing: test')
 
         # editor_setup:
@@ -1767,7 +1765,7 @@ RSpec.describe PostsController do
         post = create(:post, user: user)
         put :update, params: { id: post.id, button_preview: true }
         expect(response).to render_template(:preview)
-        expect(assigns(:written).user).to eq(user)
+        expect(assigns(:post).written.user).to eq(user)
       end
 
       it "saves a draft" do

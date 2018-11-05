@@ -99,7 +99,8 @@ class RepliesController < WritableController
       redirect_to post_path(draft.post, page: :unread, anchor: :unread) and return
     elsif params[:button_preview]
       draft = make_draft
-      preview(ReplyDraft.reply_from_draft(draft)) and return
+      @reply = ReplyDraft.reply_from_draft(draft)
+      preview and return
     end
 
     reply = Reply.new(reply_params)
@@ -116,7 +117,8 @@ class RepliesController < WritableController
         pluraled = num > 1 ? "have been #{num} new replies" : "has been 1 new reply"
         flash.now[:error] = "There #{pluraled} since you last viewed this post."
         draft = make_draft
-        preview(ReplyDraft.reply_from_draft(draft)) and return
+        @reply = ReplyDraft.reply_from_draft(draft)
+        preview and return
       end
 
       if reply.user_id.present? && params[:allow_dupe].blank?
@@ -127,7 +129,8 @@ class RepliesController < WritableController
             flash.now[:error] = "This looks like a duplicate. Did you attempt to post this twice? Please resubmit if this was intentional."
             @allow_dupe = true
             draft = make_draft(false)
-            preview(ReplyDraft.reply_from_draft(draft)) and return
+            @reply = ReplyDraft.reply_from_draft(draft)
+            preview and return
           end
         end
       end
@@ -160,7 +163,7 @@ class RepliesController < WritableController
 
   def update
     @reply.assign_attributes(reply_params)
-    preview(@reply) and return if params[:button_preview]
+    preview and return if params[:button_preview]
 
     if current_user.id != @reply.user_id && @reply.audit_comment.blank?
       flash[:error] = "You must provide a reason for your moderator edit."
@@ -229,11 +232,8 @@ class RepliesController < WritableController
     end
   end
 
-  def preview(written)
-    @written = written
-    @post = @written.post
-    @written.user = current_user unless @written.user
-
+  def preview
+    @post = @reply.post
     @page_title = @post.subject
 
     editor_setup

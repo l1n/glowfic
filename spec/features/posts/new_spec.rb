@@ -55,7 +55,7 @@ RSpec.feature "Creating posts", :type => :feature do
       expect(page).to have_field('reply_content', with: 'test content')
       fill_in 'Subject', with: 'other subject'
       fill_in "reply_content", with: "other content"
-      click_button 'Save'
+      click_button 'Post'
     end
     expect(page).to have_no_selector(".error")
     expect(page).to have_selector('.success', text: 'successfully posted.')

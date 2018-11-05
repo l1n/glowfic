@@ -34,9 +34,12 @@ class SplitPostTextIntoReplies < ActiveRecord::Migration[5.1]
         post.character_alias_id = reply.character_alias_id
         post.icon_id = reply.icon_id
         post.content = reply.content
+        post.save!
       else
-        raise "Post user does not match inital reply's user"
+        raise "Post user does not match initial reply's user"
       end
+      # mass-shift the reply order here to avoid it doing them one at a time
+      reply.destroy!
     end
   end
 end

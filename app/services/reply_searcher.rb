@@ -1,12 +1,12 @@
 class ReplySearcher < Searcher
-  def search(user_id: nil, character_id: nil, icon_id: nil, subj_content: nil, sort: nil, post: nil, template_id: nil, condensed: nil)
+  def search(user_id: nil, character_id: nil, icon_id: nil, board_id: nil, content: nil, sort: nil, post: nil, template_id: nil, condensed: nil)
     @search_results = @search_results.where(user_id: user_id) if user_id.present?
     @search_results = @search_results.where(character_id: character_id) if character_id.present?
     @search_results = @search_results.where(icon_id: icon_id) if icon_id.present?
 
-    if subj_content.present?
-      @search_results = @search_results.search(subj_content).with_pg_search_highlight
-      exact_phrases = subj_content.scan(/"([^"]*)"/)
+    if content.present?
+      @search_results = @search_results.search(content).with_pg_search_highlight
+      exact_phrases = content.scan(/"([^"]*)"/)
       if exact_phrases.present?
         exact_phrases.each do |phrase|
           phrase = phrase.first.strip
@@ -16,19 +16,19 @@ class ReplySearcher < Searcher
       end
     end
 
-    append_rank = subj_content.present? ? ', rank DESC' : ''
+    append_rank = content.present? ? ', rank DESC' : ''
     if sort == 'created_new'
       @search_results = @search_results.except(:order).order('replies.created_at DESC' + append_rank)
     elsif sort == 'created_old'
       @search_results = @search_results.except(:order).order('replies.created_at ASC' + append_rank)
-    elsif subj_content.blank?
+    elsif content.blank?
       @search_results = @search_results.order('replies.created_at DESC')
     end
 
     if post
       @search_results = @search_results.where(post_id: post.id)
-    elsif params[:board_id].present?
-      post_ids = Post.where(board_id: params[:board_id]).pluck(:id)
+    elsif board_id.present?
+      post_ids = Post.where(board_id: board_id).pluck(:id)
       @search_results = @search_results.where(post_id: post_ids)
     end
 

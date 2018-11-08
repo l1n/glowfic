@@ -262,6 +262,7 @@ class CharactersController < ApplicationController
       end
     end
     @templates = searcher.templates
+    @users = searcher.users
   end
 
   private

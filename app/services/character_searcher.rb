@@ -9,7 +9,7 @@ class CharacterSearcher < Searcher
   def search(user_id: nil, template_id: nil, name: nil, search_name: nil, search_screenname: nil, search_nickname: nil)
     @search_results = search_users(user_id) if user_id.present?
 
-    @search_results = search_templates(template_id, user_id) if template_id.present || user_id.present
+    @search_results = search_templates(template_id, user_id) if template_id.present? || user_id.present?
 
     @search_results = search_names(name: name, search_name: search_name, search_screenname: search_screenname, search_nickname: search_nickname) if name.present?
 

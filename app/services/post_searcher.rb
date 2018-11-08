@@ -2,7 +2,7 @@ class PostSearcher < Searcher
   def search(board_id: nil, setting_id: nil, subject: nil, completed: false, author_ids: [], character_id: nil)
     @search_results = @search_results.where(board_id: board_id) if board_id.present?
     @search_results = search_settings(setting_id) if setting_id.present?
-    @search_results = search_subject(subject) if subject.present?
+    @search_results = search_subjects(subject) if subject.present?
     @search_results = @search_results.where(status: Post::STATUS_COMPLETE) if completed.present?
     @search_results = search_authors(author_ids) if author_ids.present?
     @search_results = search_characters(character_id) if character_id.present?

@@ -31,10 +31,10 @@ class PostSearcher < Searcher
     @search_results.where(id: post_ids.uniq)
   end
 
-  def search_characters
+  def search_characters(character_id)
     arel = Post.arel_table
-    post_ids = Reply.where(character_id: params[:character_id]).select(:post_id).distinct.pluck(:post_id)
-    where = arel[:character_id].eq(params[:character_id]).or(arel[:id].in(post_ids))
+    post_ids = Reply.where(character_id: character_id).select(:post_id).distinct.pluck(:post_id)
+    where = arel[:character_id].eq(character_id).or(arel[:id].in(post_ids))
     @search_results.where(where)
   end
 end

@@ -1,10 +1,6 @@
 class CharacterSearcher < Searcher
-  attr_reader :templates, :users
-
   def initialize(search:, templates:)
-    @templates = templates
-    @users = []
-    super(search)
+    super
   end
 
   def search(user_id: nil, params:, page:)

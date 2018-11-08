@@ -1,9 +1,6 @@
 class ReplySearcher < Searcher
-  attr_reader :templates
-
   def initialize(search:, templates:)
-    @templates = templates
-    super(search)
+    super
   end
 
   def search(user_id: nil, params:, post: nil, page:)

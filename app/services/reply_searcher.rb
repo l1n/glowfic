@@ -1,4 +1,11 @@
 class ReplySearcher < Searcher
+  attr_reader :templates
+
+  def init(search:, templates:)
+    super(search)
+    @templates = templates
+  end
+
   def search(user_id: nil, character_id: nil, icon_id: nil, board_id: nil, content: nil, sort: nil, post: nil, template_id: nil, condensed: nil)
     @search_results = @search_results.where(user_id: user_id) if user_id.present?
     @search_results = @search_results.where(character_id: character_id) if character_id.present?

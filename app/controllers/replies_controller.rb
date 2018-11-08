@@ -33,8 +33,9 @@ class RepliesController < WritableController
 
     return unless params[:commit].present?
 
-    searcher = ReplySearcher.new(Reply.unscoped)
+    searcher = ReplySearcher.new(search: Reply.unscoped, templates: @templates)
     @search_results = searcher.search(user_id: params[:author_id], character_id: params[:character_id], icon_id: params[:icon_id], board_id: params[:board_id], content: params[:subj_content], sort: params[:sort], post: @post, template_id: params[:template_id], condensed: params[:condensed])
+    @templates = searcher.templates
   end
 
   def create

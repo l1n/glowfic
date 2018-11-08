@@ -1,4 +1,11 @@
 class CharacterSearcher < Searcher
+  attr_reader :templates
+
+  def init(search:, templates:)
+    super(search)
+    @templates = templates
+  end
+
   def search(user_id: nil, template_id: nil, name: nil, search_name: nil, search_screenname: nil, search_nickname: nil)
     @search_results = search_users(user_id) if user_id.present?
 

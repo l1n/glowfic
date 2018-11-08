@@ -249,8 +249,9 @@ class CharactersController < ApplicationController
     @templates = []
     return unless params[:commit].present?
 
-    searcher = CharacterSearcher.new(Character.unscoped)
+    searcher = CharacterSearcher.new(search: Character.unscoped, templates: @templates)
     @search_results = searcher.search(user_id: params[:author_id], template_id: params[:template_id], name: params[:name])
+    @templates = searcher.templates
   end
 
   private

@@ -6,6 +6,7 @@ class PostSearcher < Searcher
     @search_results = @search_results.where(status: Post::STATUS_COMPLETE) if params[:completed].present?
     @search_results = search_authors(params[:author_id]) if params[:author_id].present?
     @search_results = search_characters(params[:character_id]) if params[:character_id].present?
+    @search_results
   end
 
   def search_settings(setting_id)

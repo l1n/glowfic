@@ -8,12 +8,10 @@ class CharacterSearcher < Searcher
 
   def search(user_id: nil, params:, page:)
     @search_results = search_users(user_id) if user_id.present?
-
     @search_results = search_templates(params[:template_id], user_id) if params[:template_id].present? || user_id.present?
-
     @search_results = search_names(params) if params[:name].present?
-
     @search_results = do_search(@search_results, page)
+    @search_results
   end
 
   private

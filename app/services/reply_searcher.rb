@@ -9,7 +9,7 @@ class ReplySearcher < Searcher
   def search(user_id: nil, params:, post: nil, page:)
     @search_results = @search_results.where(user_id: user_id) if user_id.present?
     @search_results = @search_results.where(character_id: params[:character_id]) if params[:character_id].present?
-    @search_results = @search_results.where(icon_id: icon_id) if params[:icon_id].present?
+    @search_results = @search_results.where(icon_id: params[:icon_id]) if params[:icon_id].present?
 
     @search_results = search_content(params[:content], params[:sort]) if params[:content].present?
 
@@ -31,6 +31,7 @@ class ReplySearcher < Searcher
         .select('icons.keyword, icons.url')
         .left_outer_joins(:icon)
     end
+    @search_results
   end
 
   def search_content(content, sort)

@@ -8,7 +8,7 @@ class Searcher < Object
 
   private
 
-  def do_search(search_results)
+  def do_search(search_results, page)
     search_results.ordered.paginate(page: page, per_page: 25)
   end
 end

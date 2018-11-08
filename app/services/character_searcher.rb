@@ -21,7 +21,7 @@ class CharacterSearcher < Searcher
     if @users.present?
       @search_results = @search_results.where(user_id: user_id)
     else
-      flash.now[:error] = "The specified author could not be found."
+      errors.add(:user, "could not be found.")
     end
   end
 
@@ -31,13 +31,13 @@ class CharacterSearcher < Searcher
       template = @templates.first
       if template.present?
         if @users.present? && template.user_id != @users.first.id
-          flash.now[:error] = "The specified author and template do not match; template filter will be ignored."
+          errors.add(:base, "The specified author and template do not match; template filter will be ignored.")
           @templates = []
         else
           @search_results = @search_results.where(template_id: template_id)
         end
       else
-        flash.now[:error] = "The specified template could not be found."
+        errors.add(:template, "could not be found.")
       end
     elsif user_id.present?
       @templates = Template.where(user_id: user_id).ordered.limit(25)

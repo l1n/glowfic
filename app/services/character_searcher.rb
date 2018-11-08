@@ -1,5 +1,5 @@
 class CharacterSearcher < Searcher
-  def initialize(search:, templates:)
+  def initialize(search:, templates:, users: [])
     super
   end
 
@@ -25,8 +25,7 @@ class CharacterSearcher < Searcher
 
   def search_templates(template_id, user_id)
     if template_id.present?
-      @templates = Template.where(id: template_id)
-      template = @templates.first
+      template = Template.find_by(id: template_id)
       if template.present?
         if @users.present? && template.user_id != @users.first.id
           errors.add(:base, "The specified author and template do not match; template filter will be ignored.")
@@ -34,9 +33,11 @@ class CharacterSearcher < Searcher
           @search_results
         else
           @search_results = @search_results.where(template_id: template_id)
+          @templates = [template]
         end
       else
         errors.add(:template, "could not be found.")
+        @templates = []
         @search_results
       end
     elsif user_id.present?

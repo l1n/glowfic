@@ -1,5 +1,5 @@
 class ReplySearcher < Searcher
-  def initialize(search:, templates:)
+  def initialize(search:, templates:, users:)
     super
   end
 
@@ -65,10 +65,21 @@ class ReplySearcher < Searcher
 
   def search_templates(template_id, user_id)
     if template_id.present?
-      @templates = Template.where(id: template_id)
-      if @templates.first.present?
-        character_ids = Character.where(template_id: @templates.first.id).pluck(:id)
-        @search_results.where(character_id: character_ids)
+      template = Template.find_by(id: template_id)
+      if template.present?
+        if @users.present? && template.user_id != @users.first.id
+          errors.add(:base, "The specified author and template do not match; template filter will be ignored.")
+          @templates = []
+          @search_results
+        else
+          @templates = [template]
+          character_ids = Character.where(template_id: template.id).pluck(:id)
+          @search_results.where(character_id: character_ids)
+        end
+      else
+        errors.add(:template, "could not be found.")
+        @templates = []
+        @search_results
       end
     elsif user_id.present?
       @templates = @templates.where(user_id: user_id)

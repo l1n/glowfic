@@ -10,11 +10,8 @@ class ReplySearcher < Searcher
     @search_results = @search_results.where(user_id: user_id) if user_id.present?
     @search_results = @search_results.where(character_id: params[:character_id]) if params[:character_id].present?
     @search_results = @search_results.where(icon_id: params[:icon_id]) if params[:icon_id].present?
-
     @search_results = search_content(params[:content], params[:sort]) if params[:content].present?
-
     @search_results = search_posts(post, params[:board_id]) if post || params[:board_id].present?
-
     @search_results = search_templates(params[:template_id], user_id) if params[:template_id].present? || user_id.present?
 
     @search_results = @search_results
@@ -69,10 +66,11 @@ class ReplySearcher < Searcher
       @templates = Template.where(id: template_id)
       if @templates.first.present?
         character_ids = Character.where(template_id: @templates.first.id).pluck(:id)
-        @search_results = @search_results.where(character_id: character_ids)
+        @search_results.where(character_id: character_ids)
       end
     elsif user_id.present?
       @templates = @templates.where(user_id: user_id)
+      @search_results
     end
   end
 end

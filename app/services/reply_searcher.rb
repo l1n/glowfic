@@ -6,16 +6,16 @@ class ReplySearcher < Searcher
     @templates = templates
   end
 
-  def search(user_id: nil, character_id: nil, icon_id: nil, board_id: nil, content: nil, sort: nil, post: nil, template_id: nil, condensed: nil)
+  def search(user_id: nil, params: nil, post: nil)
     @search_results = @search_results.where(user_id: user_id) if user_id.present?
-    @search_results = @search_results.where(character_id: character_id) if character_id.present?
-    @search_results = @search_results.where(icon_id: icon_id) if icon_id.present?
+    @search_results = @search_results.where(character_id: params[:character_id]) if params[:character_id].present?
+    @search_results = @search_results.where(icon_id: icon_id) if params[:icon_id].present?
 
-    @search_results = search_content(content, sort) if content.present?
+    @search_results = search_content(params[:content], params[:sort]) if params[:content].present?
 
-    @search_results = search_posts(post, board_id) if post || board_id.present?
+    @search_results = search_posts(post, params[:board_id]) if post || params[:board_id].present?
 
-    @search_results = search_templates(template_id, user_id) if template_id.present? || user_id.present?
+    @search_results = search_templates(params[:template_id], user_id) if params[:template_id].present? || user_id.present?
 
     @search_results = @search_results
       .select('replies.*, characters.name, characters.screenname, users.username')
@@ -26,7 +26,7 @@ class ReplySearcher < Searcher
       .paginate(page: page, per_page: 25)
       .includes(:post)
 
-    unless condensed
+    unless params[:condensed]
       @search_results = @search_results
         .select('icons.keyword, icons.url')
         .left_outer_joins(:icon)

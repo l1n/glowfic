@@ -9,13 +9,7 @@ class Searcher < Object
 
   attr_accessor :name
   attr_reader   :errors
-  
+
   def search()
-  end
-
-  private
-
-  def do_search(search_results, page)
-    search_results.ordered.paginate(page: page, per_page: 25)
   end
 end

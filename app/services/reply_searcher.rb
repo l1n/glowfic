@@ -7,10 +7,10 @@ class ReplySearcher < Searcher
     @search_results = @search_results.where(user_id: user_id) if user_id.present?
     @search_results = @search_results.where(character_id: params[:character_id]) if params[:character_id].present?
     @search_results = @search_results.where(icon_id: params[:icon_id]) if params[:icon_id].present?
-    @search_results = search_content(params[:subj_content]) if params[:subj_content].present?
-    @search_resuslts = sort(params[:sort], params[:subject_content]) if params[:sort].present?
-    @search_results = search_posts(post, params[:board_id]) if post || params[:board_id].present?
-    @search_results = search_templates(params[:template_id], user_id) if params[:template_id].present? || user_id.present?
+    search_content(params[:subj_content]) if params[:subj_content].present?
+    sort(params[:sort], params[:subject_content]) if params[:sort].present?
+    search_posts(post, params[:board_id]) if post || params[:board_id].present?
+    search_templates(params[:template_id], user_id) if params[:template_id].present? || user_id.present?
 
     @search_results = @search_results
       .select('replies.*, characters.name, characters.screenname, users.username')
@@ -39,7 +39,6 @@ class ReplySearcher < Searcher
         @search_results = @search_results.where("replies.content LIKE ?", "%#{phrase}%")
       end
     end
-    @search_results
   end
 
   def sort(sort, content)
@@ -51,15 +50,14 @@ class ReplySearcher < Searcher
     elsif content.blank?
       @search_results = @search_results.order('replies.created_at DESC')
     end
-    @search_results
   end
 
   def search_posts(post, board_id)
     if post
-      @search_results.where(post_id: post.id)
+      @search_results = @search_results.where(post_id: post.id)
     elsif board_id.present?
       post_ids = Post.where(board_id: board_id).pluck(:id)
-      @search_results.where(post_id: post_ids)
+      @search_results = @search_results.where(post_id: post_ids)
     end
   end
 
@@ -70,7 +68,7 @@ class ReplySearcher < Searcher
         if @users.blank? || template.user_id == @users.first.id
           @templates = [template]
           character_ids = Character.where(template_id: template.id).pluck(:id)
-          @search_results.where(character_id: character_ids)
+          @search_results = @search_results.where(character_id: character_ids)
         else
           errors.add(:base, "The specified author and template do not match; template filter will be ignored.")
           @templates = []
@@ -82,6 +80,5 @@ class ReplySearcher < Searcher
     elsif user_id.present?
       @templates = @templates.where(user_id: user_id).ordered.limit(25)
     end
-    @search_results
   end
 end

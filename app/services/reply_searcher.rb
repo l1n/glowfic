@@ -61,24 +61,8 @@ class ReplySearcher < Searcher
     end
   end
 
-  def search_templates(template_id, user_id)
-    if template_id.present?
-      template = Template.find_by(id: template_id)
-      if template.present?
-        if @users.blank? || template.user_id == @users.first.id
-          @templates = [template]
-          character_ids = Character.where(template_id: template.id).pluck(:id)
-          @search_results = @search_results.where(character_id: character_ids)
-        else
-          errors.add(:base, "The specified author and template do not match; template filter will be ignored.")
-          @templates = []
-        end
-      else
-        errors.add(:template, "could not be found.")
-        @templates = []
-      end
-    elsif user_id.present?
-      @templates = @templates.where(user_id: user_id).ordered.limit(25)
-    end
+  def do_search_templates(template)
+    character_ids = Character.where(template_id: template.id).pluck(:id)
+    @search_results = @search_results.where(character_id: character_ids)
   end
 end

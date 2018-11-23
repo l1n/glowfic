@@ -114,10 +114,9 @@ class UsersController < ApplicationController
     @day = calculate_day
     daystart = ActiveRecord::Base.connection.quote(@day.beginning_of_day)
     dayend = ActiveRecord::Base.connection.quote(@day.end_of_day)
-    @posts = Post.where(user: current_user).where('created_at between ? AND ?', daystart, dayend).pluck(:content)
     @replies = Reply.where(user: current_user).where('created_at between ? AND ?', daystart, dayend).pluck(:content)
 
-    @total = @posts + @replies
+    @total = @replies
     if @total.empty?
       @total = 0
     else

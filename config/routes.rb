@@ -94,7 +94,7 @@ Rails.application.routes.draw do
   # Indexes
   resources :indexes
   resources :index_sections, except: [:index]
-  resources :index_posts, only: [:new, :create, :destroy]
+  resources :index_posts, only: [:new, :create, :edit, :update, :destroy]
 
   # Blocks
   resources :blocks, except: [:show]

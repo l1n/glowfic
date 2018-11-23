@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 class IndexPostsController < ApplicationController
   before_action :login_required
+  before_action :find_index_post, only: [:edit, :update]
 
   def new
     unless (index = Index.find_by_id(params[:index_id]))
@@ -39,6 +40,18 @@ class IndexPostsController < ApplicationController
     render :new
   end
 
+  def update
+    unless @index_post.update_attributes(index_params)
+      flash.now[:error] = {}
+      flash.now[:error][:message] = "Index could not be saved"
+      flash.now[:error][:array] = @index_post.errors.full_messages
+      render action: :edit and return
+    end
+
+    flash[:success] = "Index post has been updated."
+    redirect_to index_path(@index_post.index)
+  end
+
   def destroy
     unless (index_post = IndexPost.find_by_id(params[:id]))
       flash[:error] = "Index post could not be found."
@@ -65,5 +78,9 @@ class IndexPostsController < ApplicationController
 
   def index_params
     params.fetch(:index_post, {}).permit(:description, :index_id, :index_section_id, :post_id)
+  end
+
+  def find_index_post
+    @index_post = IndexPost.find_by_id(params[:id])
   end
 end

@@ -101,10 +101,12 @@ RSpec.feature "Renders the same:", :type => :feature, :js => true do
         end
       end
       Timecop.freeze(desired_time + 1.day) do
-        gallery = create(:gallery, user: user, name: "test gallery", gallery_groups: GalleryGroup.all)
+        gallery = create(:gallery, user: user, name: "test gallery", gallery_groups: GalleryGroup.ordered_by_id)
         gallery.icons = Array.new(10) do |i|
           create(:icon, url: "https://dummyimage.com/100x100/000/fff.png", user: user, keyword: i)
         end
+        expect(gallery.gallery_groups_data.map(&:id)).to eq([1, 2, 3, 4])
+        expect(gallery.gallery_groups_data.map(&:name)).to eq(["Tag1", "Tag2", "Tag3", "Tag4"])
         visit gallery_path(gallery)
       end
       page.find('a', :text => 'Tag1', match: :prefer_exact).hover

@@ -1,5 +1,5 @@
 BASEDIR=~/git/glowfic
-DIFFERENCE=test
+DIFFERENCE=difference
 
 function execute () {
   if check_dir $1; then

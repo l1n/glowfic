@@ -30,7 +30,7 @@ tmux-server-*
 # Ignore test files
 coverage/*
 spec/examples.txt
-wraith/out_now/*
+wraith/now/*
 
 # Ignore DB backups
 /db/backups/*

@@ -1,3 +1,5 @@
+# class must declare model_params to use
+
 class CrudController < ApplicationController
   before_action :login_required, only: [:new, :create, :edit, :update, :destroy]
   before_action :find_model, only: [:show, :edit, :update, :destroy]
@@ -5,12 +7,6 @@ class CrudController < ApplicationController
   before_action :require_view_permission, only: [:show, :edit, :update, :destroy]
   before_action :require_edit_permission, only: [:edit, :update]
   before_action :require_delete_permission, only: :destroy
-  after_action :set_model, only: [:new, :edit]
-
-  # from BoardsController
-  # name.titlecase = Boards
-  # name.classify = Board (model_name)
-  # model_name
 
   def index
     @page_title = controller_name.titlecase
@@ -18,18 +14,18 @@ class CrudController < ApplicationController
 
   def new
     @page_title = "New #{model_name}"
-    @model = model_class.new
-    before_create
+    set_model(model_class.new)
   end
 
   def create
-    @model = model_class.new(permitted_params)
-    before_create
+    model = model_class.new(model_params)
 
-    unless @model.save
+    unless model.save
       flash.now[:error] = {}
       flash.now[:error][:message] = "#{model_name} could not be created."
       flash.now[:error][:array] = @model.errors.full_messages
+      @page_title = "New #{model_name}"
+      set_model(model)
       setup_editor
       render action: :new and return
     end
@@ -119,15 +115,11 @@ class CrudController < ApplicationController
     @msp ||= send("#{controller_name}_path")
   end
 
-  def set_model
-    instance_variable_set("@#{controller_name.singularize}", @model)
+  def set_model(model)
+    instance_variable_set("@#{controller_name.singularize}", model)
   end
 
   def setup_editor
-    # pass
-  end
-
-  def before_create
     # pass
   end
 end

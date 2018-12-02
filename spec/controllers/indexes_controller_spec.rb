@@ -49,9 +49,10 @@ RSpec.describe IndexesController do
       login
       name = 'ValidSection'
       post :create, params: { index: {name: name} }
-      expect(response).to redirect_to(index_url(assigns(:model)))
+      model = Index.last
+      expect(response).to redirect_to(index_url(model))
       expect(flash[:success]).to eq("Index created successfully.")
-      expect(assigns(:model).name).to eq(name)
+      expect(model.name).to eq(name)
     end
   end
 

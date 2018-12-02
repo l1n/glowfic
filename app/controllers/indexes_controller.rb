@@ -13,23 +13,6 @@ class IndexesController < CrudController
     @sectionless = @sectionless.select { |p| p.visible_to?(current_user) }
   end
 
-  def edit
-    @page_title = "Edit Index: #{@index.name}"
-  end
-
-  def update
-    unless @index.update(index_params)
-      flash.now[:error] = {}
-      flash.now[:error][:message] = "Index could not be saved because of the following problems:"
-      flash.now[:error][:array] = @index.errors.full_messages
-      @page_title = "Edit Index: #{@index.name}"
-      render action: :edit and return
-    end
-
-    flash[:success] = "Index saved!"
-    redirect_to index_path(@index)
-  end
-
   def destroy
     @index.destroy!
     flash[:success] = "Index deleted."
@@ -43,11 +26,11 @@ class IndexesController < CrudController
 
   private
 
-  def permitted_params
+  def model_params
     params.fetch(:index, {}).permit(:name, :description, :privacy, :open_to_anyone)
   end
 
-  def before_create
-    @model.user = current_user
+  def set_params(new_index)
+    new_index.user = current_user
   end
 end

@@ -23,7 +23,6 @@ module Owable
     validate :valid_coauthors, on: :create
     validate :valid_new_coauthors, on: :update
 
-
     def opt_out_of_owed(user)
       return unless (author = author_for(user))
       author.destroy and return true unless author.joined?

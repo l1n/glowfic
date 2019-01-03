@@ -40,10 +40,10 @@ module Listable
   def visible_to(posts, user=nil)
     if user
       posts.where(privacy: Concealable::PUBLIC)
-        .or(where(privacy: Concealable::REGISTERED))
-        .or(where(privacy: Concealable::ACCESS_LIST, user_id: user.id))
-        .or(where(privacy: Concealable::ACCESS_LIST, id: PostViewer.where(user_id: user.id).select(:post_id)))
-        .or(where(privacy: Concealable::PRIVATE, user_id: user.id))
+        .or(posts.where(privacy: Concealable::REGISTERED))
+        .or(posts.where(privacy: Concealable::ACCESS_LIST, user_id: user.id))
+        .or(posts.where(privacy: Concealable::ACCESS_LIST, id: PostViewer.where(user_id: user.id).select(:post_id)))
+        .or(posts.where(privacy: Concealable::PRIVATE, user_id: user.id))
     else
       posts.where(privacy: Concealable::PUBLIC)
     end

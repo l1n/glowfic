@@ -4,7 +4,6 @@ require Rails.root.join('lib', 'memorylogic')
 class ApplicationController < ActionController::Base
   include Authentication
   include Memorylogic
-  include Listable
 
   protect_from_forgery with: :exception
   before_action :check_tos
@@ -136,6 +135,17 @@ class ApplicationController < ActionController::Base
     end
   end
   helper_method :post_or_reply_link
+
+  def posts_from_relation(relation, no_tests: true, with_pagination: true, select: '')
+    PostList.new(relation, no_tests: no_tests, with_pagination: with_pagination, select: select)
+    PostList.posts
+  end
+
+  helper_method :posts_from_relation
+
+  attr_reader :unread_ids, :opened_ids
+  # unread_ids does not necessarily include fully unread posts
+  helper_method :unread_ids, :opened_ids
 
   def generate_short(msg)
     short_msg = Glowfic::Sanitizers.full(msg) # strip all tags, replacing appropriately with spaces

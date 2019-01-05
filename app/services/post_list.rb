@@ -1,25 +1,18 @@
-module Listable
-  extend ActiveSupport::Concern
+class PostList
+  extend ActiveModel::Translation
+  extend ActiveModel::Validations
 
-  included do
-    helper_method :posts_from_relation
+  attr_reader :errors
 
-    attr_reader :unread_ids, :opened_ids
-    # unread_ids does not necessarily include fully unread posts
-    helper_method :unread_ids, :opened_ids
+  def initialize(relation, no_tests: true, with_pagination: true, select: '')
+    @posts = expand(relation)
+    @no_tests = no_tests
+    @pagination = with_pagination
+    @select = select
+    @errors = ActiveModel::Errors.new(self)
   end
 
-  def posts_from_relation(relation, no_tests: true, with_pagination: true, select: '')
-    posts = relation
-      .select('posts.*, boards.name as board_name, users.username as last_user_name'+ select)
-      .joins(:board)
-      .joins(:last_user)
-      .includes(:authors)
-      .with_has_content_warnings
-      .with_reply_count
-
-    posts = visible_to(posts, current_user)
-
+  def posts
     posts = posts.paginate(page: page, per_page: 25) if with_pagination
     posts = posts.no_tests if no_tests
 
@@ -35,6 +28,20 @@ module Listable
     end
 
     posts
+  end
+
+  private
+
+  def expand(relation)
+    posts = relation
+      .select('posts.*, boards.name as board_name, users.username as last_user_name'+ select)
+      .joins(:board)
+      .joins(:last_user)
+      .includes(:authors)
+      .with_has_content_warnings
+      .with_reply_count
+
+    visible_to(posts, current_user)
   end
 
   def visible_to(posts, user=nil)

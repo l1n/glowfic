@@ -34,7 +34,7 @@ class RepliesController < WritableController
     return unless params[:commit].present?
 
     searcher = ReplySearcher.new(templates: @templates, users: @users)
-    @search_results = searcher.search(user_id: params[:author_id], post: @post, params: params, page: page)
+    @search_results = searcher.search(post: @post, params: params, page: page)
     @templates = searcher.templates
   end
 

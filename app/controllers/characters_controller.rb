@@ -250,7 +250,7 @@ class CharactersController < ApplicationController
     return unless params[:commit].present?
 
     searcher = CharacterSearcher.new(templates: @templates)
-    @search_results = searcher.search(user_id: params[:author_id], params: params, page: page)
+    @search_results = searcher.search(params: params, page: page)
     if searcher.errors.present?
       if searcher.errors.count == 1
         flash.now[:error] = searcher.errors.full_messages.first

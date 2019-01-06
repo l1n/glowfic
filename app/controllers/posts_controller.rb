@@ -223,7 +223,7 @@ class PostsController < WritableController
 
     return unless params[:commit].present?
 
-    searcher = PostSearcher.new(search: Post.ordered)
+    searcher = PostSearcher.new
     @search_results = searcher.search(params: params)
     @search_results = posts_from_relation(@search_results).paginate(page: page, per_page: 25)
   end

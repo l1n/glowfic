@@ -1,4 +1,8 @@
 class PostSearcher < Searcher
+  def initialize(search: Post.ordered)
+    super
+  end
+
   def search(params:)
     @search_results = @search_results.where(board_id: params[:board_id]) if params[:board_id].present?
     search_settings(params[:setting_id]) if params[:setting_id].present?

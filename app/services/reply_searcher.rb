@@ -1,5 +1,5 @@
 class ReplySearcher < Searcher
-  def initialize(search:, templates:, users:)
+  def initialize(search: Reply.unscoped, templates:, users:)
     super
   end
 

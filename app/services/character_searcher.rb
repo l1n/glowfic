@@ -1,5 +1,5 @@
 class CharacterSearcher < Searcher
-  def initialize(search:, templates:, users: [])
+  def initialize(search: Character.unscoped, templates:, users: [])
     super
   end
 

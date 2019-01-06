@@ -10,7 +10,7 @@ class ReplySearcher < Searcher
     search_content(params[:subj_content]) if params[:subj_content].present?
     sort(params[:sort], params[:subject_content]) if params[:sort].present?
     search_posts(post, params[:board_id]) if post || params[:board_id].present?
-    search_templates(params[:template_id], user_id) if params[:template_id].present? || user_id.present?
+    search_templates(params[:template_id], params[:author_id]) if params[:template_id].present? || params[:author_id].present?
 
     @search_results = @search_results
       .select('replies.*, characters.name, characters.screenname, users.username')

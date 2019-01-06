@@ -5,7 +5,7 @@ class CharacterSearcher < Searcher
 
   def search(params:, page:)
     search_users(params[:author_id]) if params[:author_id].present?
-    search_templates(params[:template_id], user_id) if params[:template_id].present? || user_id.present?
+    search_templates(params[:template_id], params[:author_id]) if params[:template_id].present? || params[:author_id].present?
     search_names(params) if params[:name].present?
     @search_results = @search_results.ordered.paginate(page: page, per_page: 25) unless errors.present?
     @search_results

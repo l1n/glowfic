@@ -2,7 +2,7 @@ class PostList
   extend ActiveModel::Translation
   extend ActiveModel::Validations
 
-  attr_reader :errors, :posts
+  attr_reader :errors, :posts, :opened_ids, :unread_ids
 
   def initialize(relation, no_tests: true, with_pagination: true, select: '', user: nil)
     @no_tests = no_tests

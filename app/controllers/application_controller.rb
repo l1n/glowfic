@@ -137,8 +137,10 @@ class ApplicationController < ActionController::Base
   helper_method :post_or_reply_link
 
   def posts_from_relation(relation, no_tests: true, with_pagination: true, select: '')
-    list = PostList.new(relation, no_tests: no_tests, with_pagination: with_pagination, select: select, user: current_user)
-    list.posts
+    post_list = PostList.new(relation, no_tests: no_tests, with_pagination: with_pagination, select: select, user: current_user)
+    @opened_ids = post_list.opened_ids
+    @unread_ids = post_list.unread_ids
+    post_list.posts
   end
 
   helper_method :posts_from_relation

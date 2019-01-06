@@ -37,9 +37,7 @@ class PostSearcher < Searcher
   end
 
   def search_characters(character_id)
-    arel = Post.arel_table
     post_ids = Reply.where(character_id: character_id).select(:post_id).distinct.pluck(:post_id)
-    where = arel[:character_id].eq(character_id).or(arel[:id].in(post_ids))
-    @search_results = @search_results.where(where)
+    @search_results = @search_results.where(character_id: character_id).or(@search_results.where(id: post_ids))
   end
 end

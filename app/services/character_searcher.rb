@@ -22,10 +22,6 @@ class CharacterSearcher < Searcher
     end
   end
 
-  def do_search_templates(template)
-    @search_results = @search_results.where(template_id: template.id)
-  end
-
   def search_names(params)
     where_calc = []
     where_calc << "name LIKE ?" if params[:search_name].present?

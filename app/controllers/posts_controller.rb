@@ -153,7 +153,7 @@ class PostsController < WritableController
     change_authors_locked and return if params[:authors_locked].present?
     preview and return if params[:button_preview].present?
 
-    @post.assign_attributes(post_params)
+    @post.assign_attributes(post_params(false))
     @post.board ||= Board.find(3)
     settings = process_tags(Setting, :post, :setting_ids)
     warnings = process_tags(ContentWarning, :post, :content_warning_ids)
@@ -171,6 +171,12 @@ class PostsController < WritableController
         @post.settings = settings
         @post.content_warnings = warnings
         @post.labels = labels
+        params.fetch(:post, {}).permit(unjoined_author_ids: [])&.each do |author_id|
+          @post.unjoined_post_authors.build(user_id: author_id)
+        end
+        params.fetch(:post, {}).permit(viewer_ids: [])&.each do |viewer_id|
+          @post.post_viewers.build(user_id: viewer_id)
+        end
         @post.save!
       end
 

@@ -10,7 +10,7 @@ class PostList
   end
 
   def format_posts(user: nil, with_pagination: true, page: nil)
-    @posts = visible_to(user: user)
+    @posts = @posts.visible_to(user)
 
     @posts = @posts.paginate(page: page, per_page: 25) if with_pagination
 
@@ -42,17 +42,5 @@ class PostList
     posts = posts.no_tests if no_tests
 
     posts
-  end
-
-  def visible_to(user:, posts: @posts)
-    if user
-      posts.where(privacy: Concealable::PUBLIC)
-        .or(posts.where(privacy: Concealable::REGISTERED))
-        .or(posts.where(privacy: Concealable::ACCESS_LIST, user_id: user.id))
-        .or(posts.where(privacy: Concealable::ACCESS_LIST, id: PostViewer.where(user_id: user.id).select(:post_id)))
-        .or(posts.where(privacy: Concealable::PRIVATE, user_id: user.id))
-    else
-      posts.where(privacy: Concealable::PUBLIC)
-    end
   end
 end

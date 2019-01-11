@@ -31,9 +31,6 @@ Layout/ClosingHeredocIndentation:
   Exclude:
     - 'db/migrate/**/*'
 
-Layout/ClosingParenthesisIndentation:
-  Enabled: false
-
 Layout/EmptyLineAfterMagicComment:
   Enabled: false
 
@@ -52,9 +49,6 @@ Layout/EndAlignment:
 
 Layout/EndOfLine:
   EnforcedStyle: lf
-
-Layout/FirstParameterIndentation:
-  Enabled: false
 
 Layout/IndentationWidth:
   Enabled: true
@@ -81,9 +75,6 @@ Layout/MultilineMethodCallIndentation:
   Exclude:
     - 'app/models/post.rb'
 
-Layout/MultilineMethodDefinitionBraceLayout:
-  Enabled: false
-
 Layout/MultilineOperationIndentation:
   Enabled: false
 
@@ -105,13 +96,7 @@ Layout/SpaceInsideBlockBraces:
 Layout/SpaceInsideHashLiteralBraces:
   Enabled: false
 
-Layout/SpaceInsidePercentLiteralDelimiters:
-  Enabled: false
-
 Layout/SpaceInsideRangeLiteral:
-  Enabled: false
-
-Layout/TrailingBlankLines:
   Enabled: false
 
 #################### Lint ################################

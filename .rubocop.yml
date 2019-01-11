@@ -16,7 +16,7 @@ Rails:
 #################### Layout ##############################
 
 Layout/AlignHash:
-  Enabled: false
+  EnforcedHashRocketStyle: table
 
 Layout/AlignParameters:
   Enabled: false
@@ -214,10 +214,6 @@ Rails/DynamicFindBy:
   Whitelist:
     - find_by_sql
     - find_by_id
-
-Rails/HasManyOrHasOneDependent:
-  Exclude:
-    - 'app/models/user.rb'
 
 Rails/SaveBang:
   Enabled: true

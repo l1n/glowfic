@@ -102,7 +102,8 @@ Lint/HandleExceptions:
     - 'spec/jobs/generate_flat_post_job_spec.rb'
 
 Lint/ParenthesesAsGroupedExpression:
-  Enabled: false
+  Exclude:
+    - 'spec/**/*'
 
 Lint/RescueException:
   Exclude:
@@ -160,7 +161,8 @@ Naming/PredicateName:
   Enabled: false
 
 Naming/VariableNumber:
-  Enabled: false
+  Exclude:
+    - 'spec/**/*'
 
 Naming/UncommunicativeMethodParamName:
   AllowedNames:
@@ -201,11 +203,10 @@ Style/Alias:
 Style/AndOr:
   Enabled: false
 
-Style/ArrayJoin:
-  Enabled: false
+  EnforcedStyle: 'conditionals'
 
 Style/AsciiComments:
-  Enabled: false
+  AllowedChars: ['–', '…']
 
 Style/AutoResourceCleanup:
   Enabled: true
@@ -220,7 +221,7 @@ Style/BracesAroundHashParameters:
   Enabled: false
 
 Style/ClassAndModuleChildren:
-  Enabled: false
+  EnforcedStyle: 'compact'
 
 Style/CommandLiteral:
   Enabled: false
@@ -253,7 +254,7 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 
 Style/GlobalVars:
-  Enabled: false
+  AllowedVariables: ['$redis']
 
 Style/GuardClause:
   Enabled: false
@@ -307,7 +308,8 @@ Style/RedundantSelf:
   Enabled: false
 
 Style/RegexpLiteral:
-  Enabled: false
+  EnforcedStyle: 'slashes'
+  AllowInnerSlashes: true
 
 Style/SignalException:
   Enabled: false
@@ -323,6 +325,7 @@ Style/StringMethods:
 
 Style/SymbolArray:
   Enabled: false
+  EnforcedStyle: 'brackets'
 
 Style/TernaryParentheses:
   Enabled: false

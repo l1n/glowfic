@@ -151,9 +151,6 @@ Metrics/PerceivedComplexity:
 Naming/AccessorMethodName:
   Enabled: false
 
-Naming/AsciiIdentifiers:
-  Enabled: false
-
 Naming/MemoizedInstanceVariableName:
   Enabled: false
 
@@ -197,12 +194,7 @@ Rails/Output:
 
 ################## Style #################################
 
-Style/Alias:
-  Enabled: false
-
 Style/AndOr:
-  Enabled: false
-
   EnforcedStyle: 'conditionals'
 
 Style/AsciiComments:
@@ -210,9 +202,6 @@ Style/AsciiComments:
 
 Style/AutoResourceCleanup:
   Enabled: true
-
-Style/BeginBlock:
-  Enabled: false
 
 Style/BlockDelimiters:
   Enabled: false
@@ -222,9 +211,6 @@ Style/BracesAroundHashParameters:
 
 Style/ClassAndModuleChildren:
   EnforcedStyle: 'compact'
-
-Style/CommandLiteral:
-  Enabled: false
 
 Style/CommentAnnotation:
   Enabled: false
@@ -241,15 +227,6 @@ Style/DoubleNegation:
 Style/EmptyMethod:
   Enabled: false
 
-Style/Encoding:
-  Enabled: false
-
-Style/FormatString:
-  Enabled: false
-
-Style/FormatStringToken:
-  Enabled: false
-
 Style/FrozenStringLiteralComment:
   Enabled: false
 
@@ -262,19 +239,7 @@ Style/GuardClause:
 Style/HashSyntax:
   Enabled: false
 
-Style/IfWithSemicolon:
-  Enabled: false
-
-Style/InfiniteLoop:
-  Enabled: false
-
 Style/Lambda:
-  Enabled: false
-
-Style/ModuleFunction:
-  Enabled: false
-
-Style/MultilineMemoization:
   Enabled: false
 
 Style/MutableConstant:
@@ -283,16 +248,10 @@ Style/MutableConstant:
 Style/NumericPredicate:
   Enabled: false
 
-Style/OneLineConditional:
-  Enabled: false
-
 Style/ParallelAssignment:
   Enabled: false
 
 Style/PercentLiteralDelimiters:
-  Enabled: false
-
-Style/PercentQLiterals:
   Enabled: false
 
 Style/Proc:
@@ -310,12 +269,6 @@ Style/RedundantSelf:
 Style/RegexpLiteral:
   EnforcedStyle: 'slashes'
   AllowInnerSlashes: true
-
-Style/SignalException:
-  Enabled: false
-
-Style/SingleLineMethods:
-  Enabled: false
 
 Style/StringLiterals:
   Enabled: false
@@ -338,21 +291,6 @@ Style/TrailingCommaInArrayLiteral:
 Style/TrailingCommaInHashLiteral:
   Enabled: false
   EnforcedStyleForMultiline: 'comma'
-
-Style/TrailingUnderscoreVariable:
-  Enabled: true
-
-Style/UnneededCapitalW:
-  Enabled: false
-
-Style/VariableInterpolation:
-  Enabled: false
-
-Style/WhenThen:
-  Enabled: false
-
-Style/WhileUntilModifier:
-  Enabled: false
 
 Style/WordArray:
   Enabled: false

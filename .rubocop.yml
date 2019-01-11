@@ -37,14 +37,7 @@ Layout/EmptyLineAfterMagicComment:
 Layout/EmptyLineAfterGuardClause:
   Enabled: false
 
-Layout/EmptyLinesAroundAccessModifier:
-  Enabled: true
-
-Layout/EmptyLinesAroundExceptionHandlingKeywords:
-  Enabled: true
-
 Layout/EndAlignment:
-  Enabled: true
   EnforcedStyleAlignWith: 'variable'
 
 Layout/EndOfLine:
@@ -55,11 +48,9 @@ Layout/IndentationWidth:
   Width: 2
 
 Layout/IndentArray:
-  Enabled: true
   EnforcedStyle: 'consistent'
 
 Layout/IndentHash:
-  Enabled: true
   EnforcedStyle: 'consistent'
 
 Layout/IndentHeredoc:

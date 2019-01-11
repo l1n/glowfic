@@ -320,9 +320,6 @@ Style/SingleLineMethods:
 Style/StringLiterals:
   Enabled: false
 
-Style/StringMethods:
-  Enabled: true
-
 Style/SymbolArray:
   Enabled: false
   EnforcedStyle: 'brackets'

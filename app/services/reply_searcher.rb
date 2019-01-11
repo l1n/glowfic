@@ -3,7 +3,7 @@ class ReplySearcher < Searcher
     super
   end
 
-  def search(params:, post: nil, page:)
+  def search(params:, post: nil, page: 1)
     @search_results = @search_results.where(user_id: params[:author_id]) if params[:author_id].present?
     @search_results = @search_results.where(character_id: params[:character_id]) if params[:character_id].present?
     @search_results = @search_results.where(icon_id: params[:icon_id]) if params[:icon_id].present?

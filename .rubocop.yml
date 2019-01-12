@@ -192,7 +192,7 @@ Style/AndOr:
   EnforcedStyle: 'conditionals'
 
 Style/AsciiComments:
-  AllowedChars: ['–', '…']
+  Enabled: false
 
 Style/AutoResourceCleanup:
   Enabled: true

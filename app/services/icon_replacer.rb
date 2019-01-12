@@ -5,14 +5,14 @@ class IconReplacer < Replacer
 
   def setup(user:, no_icon_url:)
     all_icons = if @icon.has_gallery?
-      @icon.galleries.map(&:icons).flatten.uniq.compact - [@icon]
+      @icon.galleries.flat_map(&:icons).uniq.compact - [@icon]
     else
-      current_user.galleryless_icons - [@icon]
+      user.galleryless_icons - [@icon]
     end
     @alts = all_icons.sort_by{|i| i.keyword.downcase }
 
     @gallery = Hash[all_icons.map { |i| [i.id, {url: i.url, keyword: i.keyword}] }]
-    @gallery[''] = {url: view_context.image_path('icons/no-icon.png'), keyword: 'No Icon'}
+    @gallery[''] = {url: no_icon_url, keyword: 'No Icon'}
 
     post_ids = Reply.where(icon_id: @icon.id).select(:post_id).distinct.pluck(:post_id)
     all_posts = Post.where(icon_id: @icon.id) + Post.where(id: post_ids)
@@ -21,14 +21,10 @@ class IconReplacer < Replacer
 
   def replace(user:, params:)
     unless params[:icon_dropdown].blank? || (new_icon = Icon.find_by_id(params[:icon_dropdown]))
-      flash[:error] = "Icon could not be found."
-      redirect_to replace_icon_path(@icon) and return
+      raise ApiError, "Icon could not be found."
     end
 
-    if new_icon && new_icon.user_id != current_user.id
-      flash[:error] = "That is not your icon."
-      redirect_to replace_icon_path(@icon) and return
-    end
+    raise ApiError, "That is not your icon." if new_icon && new_icon.user_id != user.id
 
     wheres = {icon_id: @icon.id}
     wheres[:post_id] = params[:post_ids] if params[:post_ids].present?

@@ -13,37 +13,23 @@ class CharacterReplacer < Replacer
   end
 
   def replace(params:, user:)
-    unless params[:icon_dropdown].blank? || (new_char = Character.find_by_id(params[:icon_dropdown]))
-      raise ApiError, "Character could not be found."
-    end
+    new_char = check_target(dropdown: params[:icon_dropdown], user: user)
 
-    raise ApiError, "That is not your character." if new_char && new_char.user_id != user.id
+    orig_alias = params[:orig_alias].to_i ? check_alias(id: params[:orig_alias], state: 'old') : nil
 
-    orig_alias = nil
-    if params[:orig_alias].present? && params[:orig_alias] != 'all'
-      orig_alias = CharacterAlias.find_by_id(params[:orig_alias])
-      raise ApiError, "Invalid old alias." unless orig_alias && orig_alias.character_id == @character.id
-    end
+    new_alias = check_alias(id: params[:alias_dropdown], character: new_char, state: 'new')
 
-    new_alias_id = nil
-    if params[:alias_dropdown].present?
-      new_alias = CharacterAlias.find_by_id(params[:alias_dropdown])
-      raise ApiError, "Invalid new alias." unless new_alias && new_alias.character_id == new_char.try(:id)
-      new_alias_id = new_alias.id
-    end
+    @success_msg = params[:post_ids].present? ? " in the specified " + 'post'.pluralize(params[:post_ids].size) : ''
 
-    @success_msg = ''
     wheres = {character_id: @character.id}
-    updates = {character_id: new_char.try(:id), character_alias_id: new_alias_id}
-
-    if params[:post_ids].present?
-      wheres[:post_id] = params[:post_ids]
-      @success_msg = " in the specified " + 'post'.pluralize(params[:post_ids].size)
-    end
+    wheres[:post_id] = params[:post_ids] if params[:post_ids].present?
 
     if @character.aliases.exists? && params[:orig_alias] != 'all'
       wheres[:character_alias_id] = orig_alias.try(:id)
     end
+
+    updates = {character_id: new_char.try(:id)}
+    updates[:character_alias_id] = new_alias.id if new_alias.present?
 
     UpdateModelJob.perform_later(Reply.to_s, wheres, updates)
     wheres[:id] = wheres.delete(:post_id) if params[:post_ids].present?
@@ -88,5 +74,23 @@ class CharacterReplacer < Replacer
   def find_posts
     reply_posts = Post.where(id: Reply.where(character_id: @character.id).select(:character_id).distinct.pluck(:post_id))
     (Post.where(character_id: @character.id) + reply_posts).uniq
+  end
+
+  def check_target(dropdown:, user:)
+    unless dropdown.blank? || (new_char = Character.find_by(id: dropdown))
+      raise ApiError, "Character could not be found."
+    end
+
+    raise ApiError, "That is not your character." if new_char && new_char.user_id != user.id
+
+    new_char
+  end
+
+  def check_alias(id:, character: @character, state:)
+    if id.present?
+      alias_obj = CharacterAlias.find_by(id: id)
+      raise ApiError, "Invalid #{state} alias." unless alias_obj && alias_obj.character_id == character.id
+      alias_obj
+    end
   end
 end

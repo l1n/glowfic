@@ -109,7 +109,7 @@ class PostsController < WritableController
   def create
     import_thread and return if params[:button_import].present?
 
-    @post = current_user.posts(post_params)
+    @post = current_user.posts.new(post_params)
     @post.written = @post.replies.new(written_params)
     @post.written.user = current_user
 

@@ -6,7 +6,7 @@ class CharacterCu < Object
   def initialize(character:, user:, params:)
     @character = character
     @user = user
-    @params = character_params(params)
+    @params = params
     @settings = process_tags(Setting, :character, :setting_ids)
     @gallery_groups = process_tags(GalleryGroup, :character, :gallery_group_ids)
   end
@@ -19,7 +19,7 @@ class CharacterCu < Object
   private
 
   def build
-    @character.assign_attributes(@params)
+    @character.assign_attributes(character_params(@params))
     build_template
   end
 

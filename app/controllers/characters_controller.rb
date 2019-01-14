@@ -61,13 +61,12 @@ class CharactersController < ApplicationController
 
   def update
     updater = CharacterUpdater.new(user: current_user, character: @character, params: params)
-    updater.perform
 
     begin
       updater.perform
     rescue ApiError, ActiveRecord::RecordInvalid => e
       @page_title = "Edit Character: " + @character.name
-      if e.type == NoModNoteError
+      if e.class == NoModNoteError
         flash.now[:error] = "You must provide a reason for your moderator edit."
       else
         flash.now[:error] = {

@@ -31,6 +31,13 @@ class CharacterCu < Object
     end
   end
 
+  def build_template
+    return unless @params[:new_template].present?
+    return unless @character.user == @user
+    @character.build_template unless @character.template
+    @character.template.user = @user
+  end
+
   def character_params(params)
     permitted = [
       :name,
@@ -47,12 +54,5 @@ class CharacterCu < Object
       permitted.insert(0, :default_icon_id)
     end
     params.fetch(:character, {}).permit(permitted)
-  end
-
-  def build_template
-    return unless @params[:new_template].present?
-    return unless @character.user == @user
-    @character.build_template unless @character.template
-    @character.template.user = @user
   end
 end

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 class CharactersController < ApplicationController
-  include Taggable
-
   before_action :login_required, except: [:index, :show, :facecasts, :search]
   before_action :find_character, only: [:show, :edit, :update, :duplicate, :destroy, :replace, :do_replace]
   before_action :find_group, only: :index
@@ -67,7 +65,7 @@ class CharactersController < ApplicationController
     rescue ApiError, ActiveRecord::RecordInvalid => e
       @page_title = "Edit Character: " + @character.name
       if e.class == NoModNoteError
-        flash.now[:error] = "You must provide a reason for your moderator edit."
+        flash.now[:error] = e.message
       else
         flash.now[:error] = {
           message: "Your character could not be saved.",

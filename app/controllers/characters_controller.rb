@@ -31,23 +31,22 @@ class CharactersController < ApplicationController
   end
 
   def create
-    @character = Character.new(user: current_user)
-    @character.assign_attributes(character_params)
-    @character.settings = process_tags(Setting, :character, :setting_ids)
-    @character.gallery_groups = process_tags(GalleryGroup, :character, :gallery_group_ids)
-    build_template
-
-    if @character.save
+    creater = CharacterCreater.new(user: current_user, params: params)
+    @character = creater.character
+    begin
+      creater.perform
+    rescue ActiveRecord::RecordInvalid
+      @page_title = "New Character"
+      flash.now[:error] = {
+        message: "Your character could not be saved.",
+        array: @character.errors.full_messages,
+      }
+      build_editor
+      render :new
+    else
       flash[:success] = "Character saved successfully."
-      redirect_to character_path(@character) and return
+      redirect_to character_path(@character)
     end
-
-    @page_title = "New Character"
-    flash.now[:error] = {}
-    flash.now[:error][:message] = "Your character could not be saved."
-    flash.now[:error][:array] = @character.errors.full_messages
-    build_editor
-    render :new
   end
 
   def show
@@ -61,32 +60,26 @@ class CharactersController < ApplicationController
   end
 
   def update
-    @character.assign_attributes(character_params)
-    build_template
-
-    # TODO once assign_attributes doesn't save, use @character.audit_comment and uncomment clearing
-    if current_user.id != @character.user_id && params.fetch(:character, {})[:audit_comment].blank?
-      flash[:error] = "You must provide a reason for your moderator edit."
-      build_editor
-      render :edit and return
-    end
-    # @character.audit_comment = nil if @character.changes.empty?
+    updater = CharacterUpdater.new(user: current_user, character: @character, params: params)
+    updater.perform
 
     begin
-      Character.transaction do
-        @character.settings = process_tags(Setting, :character, :setting_ids)
-        @character.gallery_groups = process_tags(GalleryGroup, :character, :gallery_group_ids)
-        @character.save!
-      end
-      flash[:success] = "Character saved successfully."
-      redirect_to character_path(@character)
-    rescue ActiveRecord::RecordInvalid
+      updater.perform
+    rescue ApiError, ActiveRecord::RecordInvalid => e
       @page_title = "Edit Character: " + @character.name
-      flash.now[:error] = {}
-      flash.now[:error][:message] = "Your character could not be saved."
-      flash.now[:error][:array] = @character.errors.full_messages
+      if e.type == ApiError
+        flash.now[:error] = "You must provide a reason for your moderator edit."
+      else
+        flash.now[:error] = {
+          message: "Your character could not be saved.",
+          array: @character.errors.full_messages,
+        }
+      end
       build_editor
       render :edit
+    else
+      flash[:success] = "Character saved successfully."
+      redirect_to character_path(@character)
     end
   end
 
@@ -329,31 +322,6 @@ class CharactersController < ApplicationController
     gon.mod_editing = (user != current_user)
     groups = @character.try(:gallery_groups) || []
     gon.gallery_groups = groups.map {|group| group.as_json(include: [:gallery_ids], user_id: user.id) }
-  end
-
-  def build_template
-    return unless params[:new_template].present?
-    return unless @character.user == current_user
-    @character.build_template unless @character.template
-    @character.template.user = current_user
-  end
-
-  def character_params
-    permitted = [
-      :name,
-      :template_name,
-      :screenname,
-      :template_id,
-      :pb,
-      :description,
-      :audit_comment,
-      ungrouped_gallery_ids: [],
-    ]
-    if @character.user == current_user
-      permitted.last[:template_attributes] = [:name, :id]
-      permitted.insert(0, :default_icon_id)
-    end
-    params.fetch(:character, {}).permit(permitted)
   end
 
   # logic replicated from page_view

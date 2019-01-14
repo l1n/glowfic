@@ -85,8 +85,7 @@ class IconsController < UploadingController
     gon.gallery = Hash[all_icons.map { |i| [i.id, {url: i.url, keyword: i.keyword}] }]
     gon.gallery[''] = {url: view_context.image_path('icons/no-icon.png'), keyword: 'No Icon'}
 
-    all_posts = Post.where(id: Reply.where(icon_id: @icon.id).select(:post_id).distinct.pluck(:post_id))
-    @posts = all_posts.uniq
+    @posts = Post.where(id: Reply.where(icon_id: @icon.id).select(:post_id).distinct.pluck(:post_id))
   end
 
   def do_replace

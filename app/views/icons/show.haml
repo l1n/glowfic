@@ -95,7 +95,7 @@
     %tbody
       %tr
         %th.sub.width-150 Times Used
-        %td.even=(replies_using.count).to_s
+        %td.even= replies_using.count.to_s
       %tr
         %th.sub.width-150 Posts In
-        %td.even= (replies_using.pluck('distinct post_id')).uniq.count
+        %td.even= (replies_using.select(:post_id).distinct.count

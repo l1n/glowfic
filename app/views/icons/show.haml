@@ -98,4 +98,4 @@
         %td.even= replies_using.count.to_s
       %tr
         %th.sub.width-150 Posts In
-        %td.even= (replies_using.select(:post_id).distinct.count
+        %td.even= replies_using.select(:post_id).distinct.count

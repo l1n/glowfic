@@ -1,4 +1,4 @@
-class CharacterCu < Object
+class Character::Cu < Object
   include Taggable
 
   attr_reader :character
@@ -13,7 +13,7 @@ class CharacterCu < Object
 
   def perform
     build
-    save
+    save!
   end
 
   private
@@ -23,7 +23,7 @@ class CharacterCu < Object
     build_template
   end
 
-  def save
+  def save!
     Character.transaction do
       @character.settings = @settings
       @character.gallery_groups = @gallery_groups

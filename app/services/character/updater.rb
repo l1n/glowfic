@@ -1,4 +1,4 @@
-class CharacterUpdater < CharacterCu
+class Character::Updater < Character::Cu
   def perform
     build
     # TODO once assign_attributes doesn't save, use @character.audit_comment and uncomment clearing

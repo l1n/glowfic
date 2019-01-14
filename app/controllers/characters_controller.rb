@@ -29,7 +29,7 @@ class CharactersController < ApplicationController
   end
 
   def create
-    creater = CharacterCreater.new(user: current_user, params: params)
+    creater = Character::Creater.new(user: current_user, params: params)
     @character = creater.character
     begin
       creater.perform
@@ -58,7 +58,7 @@ class CharactersController < ApplicationController
   end
 
   def update
-    updater = CharacterUpdater.new(user: current_user, character: @character, params: params)
+    updater = Character::Updater.new(user: current_user, character: @character, params: params)
 
     begin
       updater.perform

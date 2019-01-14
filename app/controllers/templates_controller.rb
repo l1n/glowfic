@@ -28,9 +28,7 @@ class TemplatesController < ApplicationController
     @user = @template.user
     character_ids = @template.characters.pluck(:id)
     post_ids = Reply.where(character_id: character_ids).select(:post_id).distinct.pluck(:post_id)
-    arel = Post.arel_table
-    where = arel[:id].in(post_ids)
-    @posts = posts_from_relation(Post.where(where).ordered)
+    @posts = posts_from_relation(Post.where(id: post_ids).ordered)
     @page_title = @template.name
   end
 

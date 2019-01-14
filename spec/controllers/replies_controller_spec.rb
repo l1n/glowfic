@@ -635,7 +635,7 @@ RSpec.describe RepliesController do
       expect(reply_post.replies.ordered.last).not_to eq(reply)
       reply_post.mark_read(reply_post.user)
       put :update, params: { id: reply.id, reply: {content: 'new content'} }
-      expect(reply  .reload.reply_order).to eq(order)
+      expect(reply.reload.reply_order).to eq(order)
     end
 
     context "preview" do

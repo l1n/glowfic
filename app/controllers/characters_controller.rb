@@ -29,7 +29,7 @@ class CharactersController < ApplicationController
   end
 
   def create
-    creater = Character::Creater.new(user: current_user, params: params)
+    creater = Character::Creator.new(user: current_user, params: params)
     @character = creater.character
     begin
       creater.perform

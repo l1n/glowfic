@@ -3,15 +3,33 @@ class CharacterCu < Object
 
   attr_reader :character
 
-  def initialize(user:, params:)
+  def initialize(character:, user:, params:)
+    @character = character
     @user = user
     @params = character_params(params)
+    @settings = process_tags(Setting, :character, :setting_ids)
+    @gallery_groups = process_tags(GalleryGroup, :character, :gallery_group_ids)
   end
 
   def perform
+    build
+    save
   end
 
   private
+
+  def build
+    @character.assign_attributes(@params)
+    build_template
+  end
+
+  def save
+    Character.transaction do
+      @character.settings = @settings
+      @character.gallery_groups = @gallery_groups
+      @character.save!
+    end
+  end
 
   def character_params(params)
     permitted = [

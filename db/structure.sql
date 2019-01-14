@@ -951,9 +951,6 @@ CREATE TABLE public.posts (
     board_id integer NOT NULL,
     user_id integer NOT NULL,
     subject character varying NOT NULL,
-    content text,
-    character_id integer,
-    icon_id integer,
     privacy integer DEFAULT 0 NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
@@ -965,8 +962,7 @@ CREATE TABLE public.posts (
     last_reply_id integer,
     edited_at timestamp without time zone,
     tagged_at timestamp without time zone,
-    authors_locked boolean DEFAULT false,
-    character_alias_id integer
+    authors_locked boolean DEFAULT false
 );
 
 
@@ -1803,13 +1799,6 @@ CREATE INDEX auditable_index ON public.audits USING btree (auditable_id, auditab
 
 
 --
--- Name: idx_fts_post_content; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX idx_fts_post_content ON public.posts USING gin (to_tsvector('english'::regconfig, COALESCE(content, ''::text)));
-
-
---
 -- Name: idx_fts_post_subject; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2125,24 +2114,10 @@ CREATE INDEX index_posts_on_board_id ON public.posts USING btree (board_id);
 
 
 --
--- Name: index_posts_on_character_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_posts_on_character_id ON public.posts USING btree (character_id);
-
-
---
 -- Name: index_posts_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE INDEX index_posts_on_created_at ON public.posts USING btree (created_at);
-
-
---
--- Name: index_posts_on_icon_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_posts_on_icon_id ON public.posts USING btree (icon_id);
 
 
 --
@@ -2368,6 +2343,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171127031443'),
 ('20171227030824'),
 ('20180109003825'),
+('20180209163253'),
 ('20180928230642'),
 ('20181113044923'),
 ('20181127010456');

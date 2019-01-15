@@ -1,14 +1,27 @@
-class Character::Cu < Object
+class Character::Saver < Object
   include Taggable
 
   attr_reader :character
 
-  def initialize(character:, user:, params:)
+  def initialize(character: nil, user:, params:)
+    character ||= Character.new(user: user)
     @character = character
     @user = user
     @params = params
     @settings = process_tags(Setting, :character, :setting_ids)
     @gallery_groups = process_tags(GalleryGroup, :character, :gallery_group_ids)
+  end
+
+  def perform_create
+    perform
+  end
+
+  def perform_update
+    build
+    # TODO once assign_attributes doesn't save, use @character.audit_comment and uncomment clearing
+    raise NoModNoteError if @user.id != @character.user_id && @params.fetch(:character, {})[:audit_comment].blank?
+    # @character.audit_comment = nil if @character.changes.empty?
+    save!
   end
 
   def perform
@@ -19,7 +32,7 @@ class Character::Cu < Object
   private
 
   def build
-    @character.assign_attributes(character_params(@params))
+    @character.assign_attributes(character_params)
     build_template
   end
 
@@ -38,7 +51,7 @@ class Character::Cu < Object
     @character.template.user = @user
   end
 
-  def character_params(params)
+  def character_params
     permitted = [
       :name,
       :template_name,
@@ -53,6 +66,6 @@ class Character::Cu < Object
       permitted.last[:template_attributes] = [:name, :id]
       permitted.insert(0, :default_icon_id)
     end
-    params.fetch(:character, {}).permit(permitted)
+    @params.fetch(:character, {}).permit(permitted)
   end
 end

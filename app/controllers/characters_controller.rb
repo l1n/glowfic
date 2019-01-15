@@ -29,10 +29,10 @@ class CharactersController < ApplicationController
   end
 
   def create
-    creater = Character::Creator.new(user: current_user, params: params)
+    creater = Character::Saver.new(user: current_user, params: params)
     @character = creater.character
     begin
-      creater.perform
+      creater.perform_create
     rescue ActiveRecord::RecordInvalid
       @page_title = "New Character"
       flash.now[:error] = {
@@ -58,10 +58,10 @@ class CharactersController < ApplicationController
   end
 
   def update
-    updater = Character::Updater.new(user: current_user, character: @character, params: params)
+    updater = Character::Saver.new(user: current_user, character: @character, params: params)
 
     begin
-      updater.perform
+      updater.perform_update
     rescue ApiError, ActiveRecord::RecordInvalid => e
       @page_title = "Edit Character: " + @character.name
       if e.class == NoModNoteError

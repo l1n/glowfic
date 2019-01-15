@@ -8,12 +8,6 @@ class Character::Saver < Object
     @character = character
     @user = user
     @params = params
-    @settings = process_tags(Setting, :character, :setting_ids)
-    @gallery_groups = process_tags(GalleryGroup, :character, :gallery_group_ids)
-  end
-
-  def perform_create
-    perform
   end
 
   def perform_update
@@ -29,6 +23,8 @@ class Character::Saver < Object
     save!
   end
 
+  alias_method :perform_create, :perform
+
   private
 
   def build
@@ -38,8 +34,8 @@ class Character::Saver < Object
 
   def save!
     Character.transaction do
-      @character.settings = @settings
-      @character.gallery_groups = @gallery_groups
+      @character.settings = process_tags(Setting, :character, :setting_ids)
+      @character.gallery_groups = process_tags(GalleryGroup, :character, :gallery_group_ids)
       @character.save!
     end
   end

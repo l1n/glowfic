@@ -3,13 +3,13 @@ module Taggable
 
   def process_tags(klass, obj_param, id_param)
     if defined?(params)
-      process_tags_actual(klass, obj_param, id_param, params)
+      process_tags_actual(klass, obj_param, id_param, params, current_user)
     else
-      process_tags_actual(klass, obj_param, id_param, @params)
+      process_tags_actual(klass, obj_param, id_param, @params, @user)
     end
   end
 
-  def process_tags_actual(klass, obj_param, id_param, params)
+  def process_tags_actual(klass, obj_param, id_param, params, current_user)
     # fetch and clean tag ids
     ids = params.fetch(obj_param, {}).fetch(id_param, [])
     ids = ids.reject(&:blank?).map(&:to_s)

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 class GalleriesController < UploadingController
-  include Taggable
-
   before_action :login_required, except: [:index, :show]
   before_action :find_gallery, only: [:destroy, :edit, :update] # assumes login_required
   before_action :setup_new_icons, only: [:add, :icon]
@@ -34,19 +32,22 @@ class GalleriesController < UploadingController
   end
 
   def create
-    @gallery = Gallery.new(gallery_params)
-    @gallery.user = current_user
-    @gallery.gallery_groups = process_tags(GalleryGroup, :gallery, :gallery_group_ids)
-
-    unless @gallery.save
-      flash.now[:error] = "Your gallery could not be saved."
+    @gallery = Gallery.new(user: current_user)
+    creater = Gallery::Saver.new(@gallery, user: current_user, params: params)
+    begin
+      creater.perform
+    rescue ActiveRecord::RecordInvalid
       @page_title = 'New Gallery'
+      flash.now[:error] = {
+        message: "Your gallery could not be saved.",
+        array: @gallery.errors.full_messages,
+      }
       setup_editor
-      render :new and return
+      render :new
+    else
+      flash[:success] = "Gallery saved successfully."
+      redirect_to gallery_path(@gallery)
     end
-
-    flash[:success] = "Gallery saved successfully."
-    redirect_to gallery_path(@gallery)
   end
 
   def add
@@ -92,25 +93,23 @@ class GalleriesController < UploadingController
   end
 
   def update
-    @gallery.assign_attributes(gallery_params)
-
+    updater = Gallery::Saver.new(@gallery, user: current_user, params: params)
     begin
-      Gallery.transaction do
-        @gallery.gallery_groups = process_tags(GalleryGroup, :gallery, :gallery_group_ids)
-        @gallery.save!
-      end
-      flash[:success] = "Gallery saved."
-      redirect_to edit_gallery_path(@gallery)
+      updater.perform
     rescue ActiveRecord::RecordInvalid
-      flash.now[:error] = {}
-      flash.now[:error][:message] = "Gallery could not be saved."
-      flash.now[:error][:array] = @gallery.errors.full_messages
       @page_title = 'Edit Gallery: ' + @gallery.name_was
+      flash.now[:error] = {
+        message: "Gallery could not be saved.",
+        array: @gallery.errors.full_messages,
+      }
       use_javascript('galleries/uploader')
       use_javascript('galleries/edit')
       setup_editor
       set_s3_url
       render :edit
+    else
+      flash[:success] = "Gallery saved."
+      redirect_to edit_gallery_path(@gallery)
     end
   end
 
@@ -221,19 +220,6 @@ class GalleriesController < UploadingController
   def setup_editor
     use_javascript('galleries/editor')
     gon.user_id = current_user.id
-  end
-
-  def gallery_params
-    params.fetch(:gallery, {}).permit(
-      :name,
-      galleries_icons_attributes: [
-        :id,
-        :_destroy,
-        icon_attributes: [:url, :keyword, :credit, :id, :_destroy, :s3_key]
-      ],
-      icon_ids: [],
-      ungrouped_gallery_ids: [],
-    )
   end
 
   def icon_params(paramset)

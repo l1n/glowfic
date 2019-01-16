@@ -1,5 +1,5 @@
 class Generic::Saver < Object
-  def initialize(user:, params:, model:)
+  def initialize(model, user:, params:)
     @user = user
     @params = params
     @model = model

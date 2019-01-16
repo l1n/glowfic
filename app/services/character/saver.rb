@@ -3,10 +3,9 @@ class Character::Saver < Generic::Saver
 
   attr_reader :character
 
-  def initialize(character: nil, user:, params:)
-    character ||= Character.new(user: user)
+  def initialize(character, user:, params:)
+    super
     @character = character
-    super(user: user, params: params, model: character)
     @settings = process_tags(Setting, :character, :setting_ids)
     @gallery_groups = process_tags(GalleryGroup, :character, :gallery_group_ids)
   end

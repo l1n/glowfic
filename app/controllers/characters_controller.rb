@@ -29,8 +29,8 @@ class CharactersController < ApplicationController
   end
 
   def create
-    creater = Character::Saver.new(user: current_user, params: params)
-    @character = creater.character
+    @character = Character.new(user: current_user)
+    creater = Character::Saver.new(@character, user: current_user, params: params)
     begin
       creater.perform_create
     rescue ActiveRecord::RecordInvalid
@@ -58,7 +58,7 @@ class CharactersController < ApplicationController
   end
 
   def update
-    updater = Character::Saver.new(user: current_user, character: @character, params: params)
+    updater = Character::Saver.new(@character, user: current_user, params: params)
 
     begin
       updater.perform_update

@@ -64,7 +64,7 @@ class CharactersController < ApplicationController
       updater.perform_update
     rescue ApiError, ActiveRecord::RecordInvalid => e
       @page_title = "Edit Character: " + @character.name
-      if e.class == NoModNoteError
+      if e.class == NoModNote
         flash.now[:error] = e.message
       else
         flash.now[:error] = {

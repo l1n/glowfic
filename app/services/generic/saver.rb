@@ -21,8 +21,8 @@ class Generic::Saver < Object
 
   def save!
     ApplicationRecord.transaction do
-      @model.settings = @settings if @settings.present?
-      @model.gallery_groups = @gallery_groups if @gallery_groups.present?
+      @model.settings = @settings unless @settings.nil?
+      @model.gallery_groups = @gallery_groups unless @gallery_groups.nil?
       @model.save!
     end
   end

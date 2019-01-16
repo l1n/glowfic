@@ -6,7 +6,9 @@ class Character::Saver < Generic::Saver
   def initialize(character: nil, user:, params:)
     character ||= Character.new(user: user)
     @character = character
-    super(user: user, params: params)
+    super(user: user, params: params, model: character)
+    @settings = process_tags(Setting, :character, :setting_ids)
+    @gallery_groups = process_tags(GalleryGroup, :character, :gallery_group_ids)
   end
 
   def perform_update
@@ -17,26 +19,11 @@ class Character::Saver < Generic::Saver
     save!
   end
 
-  def perform
-    build
-    save!
-  end
-
-  alias_method :perform_create, :perform
-
   private
 
   def build
-    @character.assign_attributes(character_params)
+    @character.assign_attributes(permitted_params)
     build_template
-  end
-
-  def save!
-    Character.transaction do
-      @character.settings = process_tags(Setting, :character, :setting_ids)
-      @character.gallery_groups = process_tags(GalleryGroup, :character, :gallery_group_ids)
-      @character.save!
-    end
   end
 
   def build_template
@@ -46,7 +33,7 @@ class Character::Saver < Generic::Saver
     @character.template.user = @user
   end
 
-  def character_params
+  def permitted_params
     permitted = [
       :name,
       :template_name,

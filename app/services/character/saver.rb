@@ -1,4 +1,4 @@
-class Character::Saver < Object
+class Character::Saver < Generic::Saver
   include Taggable
 
   attr_reader :character
@@ -6,8 +6,7 @@ class Character::Saver < Object
   def initialize(character: nil, user:, params:)
     character ||= Character.new(user: user)
     @character = character
-    @user = user
-    @params = params
+    super(user: user, params: params)
   end
 
   def perform_update

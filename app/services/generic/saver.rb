@@ -10,8 +10,8 @@ class Generic::Saver < Object
     save!
   end
 
-  alias_method :perform_create, :perform
-  alias_method :perform_update, :perform
+  alias_method :create!, :perform
+  alias_method :update!, :perform
 
   private
 

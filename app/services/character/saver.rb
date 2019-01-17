@@ -10,7 +10,7 @@ class Character::Saver < Generic::Saver
     @gallery_groups = process_tags(GalleryGroup, :character, :gallery_group_ids)
   end
 
-  def perform_update
+  def update!
     build
     # TODO once assign_attributes doesn't save, use @character.audit_comment and uncomment clearing
     raise NoModNote if @user.id != @character.user_id && @params.fetch(:character, {})[:audit_comment].blank?

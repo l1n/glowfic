@@ -32,7 +32,7 @@ class CharactersController < ApplicationController
     @character = Character.new(user: current_user)
     creater = Character::Saver.new(@character, user: current_user, params: params)
     begin
-      creater.perform_create
+      creater.create!
     rescue ActiveRecord::RecordInvalid
       @page_title = "New Character"
       flash.now[:error] = {
@@ -61,7 +61,7 @@ class CharactersController < ApplicationController
     updater = Character::Saver.new(@character, user: current_user, params: params)
 
     begin
-      updater.perform_update
+      updater.update!
     rescue ApiError, ActiveRecord::RecordInvalid => e
       @page_title = "Edit Character: " + @character.name
       if e.class == NoModNote

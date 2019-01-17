@@ -80,7 +80,7 @@ RSpec.describe GalleriesController do
         expect(response.status).to eq(200)
         expect(response).to render_template(:new)
         expect(assigns(:page_title)).to eq('New Gallery')
-        expect(flash[:error][:message]).to eq('Your gallery could not be saved.')
+        expect(response.body).to include('Your gallery could not be saved.')
         expect(assigns(:gallery).gallery_groups.map(&:id)).to eq([group.id])
         expect(assigns(:gallery).icon_ids).to eq([icon.id])
       end

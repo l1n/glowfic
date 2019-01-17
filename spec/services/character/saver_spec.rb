@@ -166,27 +166,6 @@ RSpec.describe Character::Saver do
     let(:character) { create(:character, user: user) }
     let(:params) { ActionController::Parameters.new({ id: character.id }) }
 
-    it "requires notes from moderators" do
-      mod = create(:mod_user)
-      saver = Character::Saver.new(character, user: mod, params: params)
-      expect { saver.update! }.to raise_error(NoModNote)
-    end
-
-    it "stores note from moderators" do
-      Character.auditing_enabled = true
-      character = create(:character, name: 'a')
-      admin = create(:admin_user)
-      params[:character] = { name: 'b', audit_comment: 'note' }
-
-      saver = Character::Saver.new(character, user: admin, params: params)
-      expect { saver.update! }.not_to raise_error
-
-      expect(character.reload.name).to eq('b')
-      expect(character.audits).not_to be_empty
-      expect(character.audits.last.comment).to eq('note')
-      Character.auditing_enabled = false
-    end
-
     it "removes gallery only if not shared between groups" do
       group1 = create(:gallery_group) # gallery1
       group2 = create(:gallery_group) # -> gallery1

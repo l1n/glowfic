@@ -1,6 +1,6 @@
 require "spec_helper"
 
-RSpec.shared_examples "perform" do |method|
+RSpec.shared_examples "character" do |method|
   let(:user) { create(:user) }
   let(:character) {
     if method == 'update!'
@@ -156,11 +156,11 @@ end
 
 RSpec.describe Character::Saver do
   describe "create" do
-    it_behaves_like "perform", 'create!'
+    it_behaves_like "character", 'create!'
   end
 
   describe "update" do
-    it_behaves_like "perform", 'update!'
+    it_behaves_like "character", 'update!'
 
     let(:user) { create(:user) }
     let(:character) { create(:character, user: user) }

@@ -9,9 +9,10 @@ RSpec.shared_examples "perform" do |method|
       build(:character, user: user)
     end
   }
+  let(:params) { ActionController::Parameters.new({ id: character.id }) }
 
   it "fails with invalid params" do
-    params = ActionController::Parameters.new({id: character.id, character: {name: ''}})
+    params[:character] = {name: ''}
     saver = Character::Saver.new(character, user: user, params: params)
     expect { saver.send(method) }.to raise_error(ActiveRecord::RecordInvalid)
   end
@@ -19,14 +20,8 @@ RSpec.shared_examples "perform" do |method|
   it "fails with invalid template params" do
     new_name = character.name + 'aaa'
 
-    params = ActionController::Parameters.new({
-      id: character.id,
-      new_template: '1',
-      character: {
-        template_attributes: {name: ''},
-        name: new_name,
-      }
-    })
+    params[:new_template] = '1'
+    params[:character] = { template_attributes: {name: ''}, name: new_name }
 
     saver = Character::Saver.new(character, user: user, params: params)
     expect { saver.send(method) }.to raise_error(ActiveRecord::RecordInvalid)
@@ -44,19 +39,16 @@ RSpec.shared_examples "perform" do |method|
     gallery = create(:gallery, user: user)
     setting = create(:setting, name: 'Another World')
 
-    params = ActionController::Parameters.new({
-      character_id: character.id,
-      character: {
-        name: new_name,
-        template_name: 'TemplateName',
-        screenname: 'a-new-test',
-        setting_ids: [setting.id],
-        template_id: template.id,
-        pb: 'Actor',
-        description: 'Description',
-        ungrouped_gallery_ids: [gallery.id]
-      }
-    })
+    params[:character] = {
+      name: new_name,
+      template_name: 'TemplateName',
+      screenname: 'a-new-test',
+      setting_ids: [setting.id],
+      template_id: template.id,
+      pb: 'Actor',
+      description: 'Description',
+      ungrouped_gallery_ids: [gallery.id]
+    }
 
     saver = Character::Saver.new(character, user: user, params: params)
 
@@ -77,7 +69,7 @@ RSpec.shared_examples "perform" do |method|
     group = create(:gallery_group)
     gallery = create(:gallery, gallery_groups: [group], user: user)
 
-    params = ActionController::Parameters.new({ id: character.id, character: {gallery_group_ids: [group.id]} })
+    params[:character] = { gallery_group_ids: [group.id] }
 
     saver = Character::Saver.new(character, user: user, params: params)
 
@@ -93,11 +85,8 @@ RSpec.shared_examples "perform" do |method|
   it "creates new templates when specified" do
     expect(Template.count).to eq(0)
 
-    params = ActionController::Parameters.new({
-      id: character.id,
-      new_template: '1',
-      character: {template_attributes: {name: 'Test'}}
-    })
+    params[:new_template] = '1'
+    params[:character] = { template_attributes: {name: 'Test'} }
 
     saver = Character::Saver.new(character, user: user, params: params)
     expect { saver.send(method) }.not_to raise_error
@@ -111,10 +100,7 @@ RSpec.shared_examples "perform" do |method|
     group = create(:gallery_group)
     gallery = create(:gallery, gallery_groups: [group], user: user)
 
-    params = ActionController::Parameters.new({
-      id: character.id,
-      character: {gallery_group_ids: [group.id], ungrouped_gallery_ids: [gallery.id]}
-    })
+    params[:character] = { gallery_group_ids: [group.id], ungrouped_gallery_ids: [gallery.id] }
 
     saver = Character::Saver.new(character, user: user, params: params)
     expect { saver.send(method) }.not_to raise_error
@@ -130,7 +116,7 @@ RSpec.shared_examples "perform" do |method|
     group = create(:gallery_group)
     create(:gallery, gallery_groups: [group]) # gallery
 
-    params = ActionController::Parameters.new({ id: character.id, character: {gallery_group_ids: [group.id]} })
+    params[:character] = { gallery_group_ids: [group.id] }
 
     saver = Character::Saver.new(character, user: user, params: params)
     expect { saver.send(method) }.not_to raise_error
@@ -164,10 +150,7 @@ RSpec.shared_examples "perform" do |method|
     setting3 = create(:setting)
     setting2 = create(:setting)
 
-    params = ActionController::Parameters.new({
-      id: character.id,
-      character: {setting_ids: [setting1, setting2, setting3].map(&:id)}
-    })
+    params[:character] = { setting_ids: [setting1, setting2, setting3].map(&:id) }
 
     saver = Character::Saver.new(character, user: user, params: params)
     expect { saver.send(method) }.not_to raise_error
@@ -181,10 +164,7 @@ RSpec.shared_examples "perform" do |method|
     group3 = create(:gallery_group, user: user)
     group2 = create(:gallery_group, user: user)
 
-    params = ActionController::Parameters.new({
-      id: character.id,
-      character: {gallery_group_ids: [group1, group2, group3, group4].map(&:id)}
-    })
+    params[:character] = { gallery_group_ids: [group1, group2, group3, group4].map(&:id) }
 
     saver = Character::Saver.new(character, user: user, params: params)
     expect { saver.send(method) }.not_to raise_error

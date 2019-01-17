@@ -126,25 +126,6 @@ RSpec.shared_examples "perform" do |method|
     expect(character.galleries).to be_blank
   end
 
-  it "reorders galleries as necessary" do
-    g1 = create(:gallery, user: user)
-    g2 = create(:gallery, user: user)
-    character.galleries << g1
-    character.galleries << g2
-    g1_cg = CharactersGallery.find_by(gallery_id: g1.id)
-    g2_cg = CharactersGallery.find_by(gallery_id: g2.id)
-    expect(g1_cg.section_order).to eq(0)
-    expect(g2_cg.section_order).to eq(1)
-
-    params = ActionController::Parameters.new({ id: character.id, character: {ungrouped_gallery_ids: [g2.id.to_s]} })
-
-    saver = Character::Saver.new(character, user: user, params: params)
-    expect { saver.send(method) }.not_to raise_error
-
-    expect(character.reload.galleries.pluck(:id)).to eq([g2.id])
-    expect(g2_cg.reload.section_order).to eq(0)
-  end
-
   it "orders settings by default" do
     setting1 = create(:setting)
     setting3 = create(:setting)
@@ -181,11 +162,13 @@ RSpec.describe Character::Saver do
   describe "update" do
     it_behaves_like "perform", 'update!'
 
+    let(:user) { create(:user) }
+    let(:character) { create(:character, user: user) }
+    let(:params) { ActionController::Parameters.new({ id: character.id }) }
+
     it "requires notes from moderators" do
-      user = create(:mod_user)
-      character = create(:character)
-      params = ActionController::Parameters.new({ id: character.id })
-      saver = Character::Saver.new(character, user: user, params: params)
+      mod = create(:mod_user)
+      saver = Character::Saver.new(character, user: mod, params: params)
       expect { saver.update! }.to raise_error(NoModNote)
     end
 
@@ -193,29 +176,27 @@ RSpec.describe Character::Saver do
       Character.auditing_enabled = true
       character = create(:character, name: 'a')
       admin = create(:admin_user)
-      params = ActionController::Parameters.new({
-        id: character.id,
-        character: { name: 'b', audit_comment: 'note' }
-      })
-      saver = Character::Saver.new(character, user: admin, params: params)
+      params[:character] = { name: 'b', audit_comment: 'note' }
 
+      saver = Character::Saver.new(character, user: admin, params: params)
       expect { saver.update! }.not_to raise_error
+
       expect(character.reload.name).to eq('b')
+      expect(character.audits).not_to be_empty
       expect(character.audits.last.comment).to eq('note')
       Character.auditing_enabled = false
     end
 
     it "removes gallery only if not shared between groups" do
-      user = create(:user)
       group1 = create(:gallery_group) # gallery1
       group2 = create(:gallery_group) # -> gallery1
       group3 = create(:gallery_group) # gallery2 ->
       group4 = create(:gallery_group) # gallery2
       gallery1 = create(:gallery, gallery_groups: [group1, group2], user: user)
       gallery2 = create(:gallery, gallery_groups: [group3, group4], user: user)
-      character = create(:character, gallery_groups: [group1, group3, group4], user: user)
+      character.update!(gallery_groups: [group1, group3, group4])
 
-      params = ActionController::Parameters.new({ id: character.id, character: {gallery_group_ids: [group2.id, group4.id]} })
+      params[:character] = {gallery_group_ids: [group2.id, group4.id]}
 
       saver = Character::Saver.new(character, user: user, params: params)
       expect { saver.update! }.not_to raise_error
@@ -228,18 +209,12 @@ RSpec.describe Character::Saver do
     end
 
     it "does not remove gallery if tethered by group" do
-      user = create(:user)
       group = create(:gallery_group)
       gallery = create(:gallery, gallery_groups: [group], user: user)
-      character = create(:character, gallery_groups: [group], user: user)
-      character.ungrouped_gallery_ids = [gallery.id]
-      character.save!
+      character.update!(gallery_groups: [group], ungrouped_gallery_ids: [gallery.id])
       expect(character.characters_galleries.first).not_to be_added_by_group
 
-      params = ActionController::Parameters.new({
-        id: character.id,
-        character: {ungrouped_gallery_ids: [''], gallery_group_ids: [group.id]}
-      })
+      params[:character] = {ungrouped_gallery_ids: [''], gallery_group_ids: [group.id]}
 
       saver = Character::Saver.new(character, user: user, params: params)
       expect { saver.update! }.not_to raise_error
@@ -249,6 +224,25 @@ RSpec.describe Character::Saver do
       expect(character.galleries).to match_array([gallery])
       expect(character.ungrouped_gallery_ids).to be_blank
       expect(character.characters_galleries.first).to be_added_by_group
+    end
+
+    it "reorders galleries as necessary" do
+      g1 = create(:gallery, user: user)
+      g2 = create(:gallery, user: user)
+      character.galleries << g1
+      character.galleries << g2
+      g1_cg = CharactersGallery.find_by(gallery_id: g1.id)
+      g2_cg = CharactersGallery.find_by(gallery_id: g2.id)
+      expect(g1_cg.section_order).to eq(0)
+      expect(g2_cg.section_order).to eq(1)
+
+      params[:character] = {ungrouped_gallery_ids: [g2.id.to_s]}
+
+      saver = Character::Saver.new(character, user: user, params: params)
+      expect { saver.update! }.not_to raise_error
+
+      expect(character.reload.galleries.pluck(:id)).to eq([g2.id])
+      expect(g2_cg.reload.section_order).to eq(0)
     end
   end
 end

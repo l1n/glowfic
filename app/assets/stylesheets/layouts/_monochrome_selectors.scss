@@ -1,3 +1,5 @@
 @import 'variables';
 
 .tag-item, tr.gallery-tags .tag-item { color: $bg_color_tag_item; }
+
+@import 'colorize'

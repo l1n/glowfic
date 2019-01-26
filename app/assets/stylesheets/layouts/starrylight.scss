@@ -72,22 +72,11 @@ $bg_color_viewbutton_selected: $colors_scampi;
 // posts
 .post-screenname, .post-screenname a, .post-screenname a:visited { font-style: italic; }
 
-.pagination a:hover { background-color: $bg_color_paginate_link_hover; }
-
 // tag items
 tr.gallery-tags .tag-item {
   background-color: $bg_color_tag_item;
   color: $font_color_tag_item_gallery;
 }
 
-.tag-item { color: $font_color_tag_item; }
-
 // ???
 #character-selector { font-weight: normal; }
-
-#footer {
-  background-color: $bg_color_header_middle;
-  color: $font_color_header_link;
-  a { color: $font_color_header_link; }
-  a:hover { color: $font_color_header_link_hover; }
-}

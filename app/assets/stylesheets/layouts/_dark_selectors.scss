@@ -1,34 +1,8 @@
 @import 'variables';
 
-/* - main page */
-body {
-  background-color: $bg_color_page;
-  color: $font_color_page;
-}
-
 #content {
   background-color: $bg_color_page;
   color: $font_color_content;
-}
-
-/* - header */
-#header {
-  background-color: $bg_color_header_bottom;
-  a { color: $font_color_header_link; }
-}
-
-#logo { background-color: $bg_color_header_top; }
-
-span.badge {
-  background-color: $bg_color_badge;
-  color: $font_color_badge;
-}
-
-/* - links */
-a {
-  color: $font_color_link;
-  &:visited { color: $font_color_link_visited; }
-  &:hover { color: $font_color_link_hover; }
 }
 
 /* - flashes */
@@ -36,135 +10,38 @@ a {
 .flash {
   a, a:visited { color: $font_color_flash_link; }
   a:hover { color: $font_color_flash_hover; }
-
-  &.breadcrumbs {
-    background-color: $bg_color_flash_breadcrumbs;
-    color: $font_color_flash_breadcrumbs;
-  }
-
-  &.success {
-    background-color: $bg_color_flash_success;
-    color: $font_color_flash_success;
-  }
-
-  &.error { background-color: $bg_color_flash_error; }
-
-  &.inbox {
-    background-color: $bg_color_flash_inbox;
-    color: $font_color_flash_inbox;
-  }
-}
-
-.search-box {
-  background-color: $bg_color_search_box;
-  color: $font_color_search_box;
-}
-
-.spacer-alt { background-color: $bg_color_spacer_alt; }
-
-/* - misc */
-.single-description {
-  background-color: $bg_color_descriptions;
-  a { color: $font_color_descriptions_link; }
-  a:visited { color: $font_color_descriptions_link_visited; }
-}
-
-/* - content headers */
-th, .content-header {
-  background-color: $bg_color_head;
-  color: $font_color_head;
-}
-
-.sub {
-  background-color: $bg_color_sub;
-  color: $font_color_sub;
-}
-
-.subber, .form-table-ender {
-  background-color: $bg_color_subber;
-  color: $font_color_subber;
+  &.breadcrumbs { color: $font_color_flash_breadcrumbs; }
+  &.success { color: $font_color_flash_success; }
+  &.inbox { color: $font_color_flash_inbox; }
 }
 
 /* - content */
 .even, .post-post, .post-reply:nth-child(even), #post-editor {
   background-color: $bg_color_even;
-
-  blockquote {
-    background-color: calculate-transparent-color($bg_color_even, $bg_color_odd, 0.2);
-  }
+  blockquote { background-color: calculate-transparent-color($bg_color_even, $bg_color_odd, 0.2); }
 }
 
 .odd, .post-reply:nth-child(odd), .post-post + #post-editor, .post-post + a + #post-editor {
   background-color: $bg_color_odd;
-
-  blockquote {
-    background-color: calculate-transparent-color($bg_color_odd, $bg_color_even, 0.2);
-  }
+  blockquote { background-color: calculate-transparent-color($bg_color_odd, $bg_color_even, 0.2); }
 }
-
-.post-subheader {
-  background-color: $bg_color_post_description;
-  color: $font_color_post_description;
-}
-
-.post-navheader { background-color: $bg_color_navheader; }
 
 // TODO: darken post-menu-box to fit with the rest of this theme
 
-.selector-popup { background-color: $bg_color_selectionpopup; }
 .selector-popup-button { opacity: 0.7; } /* make the white less contrasty */
-.post-expander { background-color: $bg_color_expander; }
 
-.post-icon { background-color: $bg_color_post_icon; }
+#current-icon-dropdown { color: $font_color_icon_selector; }
 
-#current-icon-dropdown {
-  background-color: $bg_color_post_icon;
-  color: $font_color_icon_selector;
-}
-
-#reply-icon-selector { background-color: $bg_color_icon_selector; }
-
-.post-character {
-  background-color: $bg_color_post_character;
-  color: $font_color_post_info;
-}
-
-.post-screenname {
-  background-color: $bg_color_post_screenname;
-  color: $font_color_post_info;
-}
-
-.post-author {
-  background-color: $bg_color_post_author;
-  color: $font_color_post_info;
-}
-
-#post-menu-box { color: $font_color_post_menu; }
+.post-screenname { color: $font_color_post_info; }
 
 table { border-color: #555555; } // TODO: what does this style
 
 // TODO: Check pagination displays fine in this theme
 
-/* - icons */
-.replace-icon, .icons-box { background-color: $bg_color_icon; }
-.icon-credit { background-color: $bg_color_icon_credit; }
-
 /* - tag items */
 .tag-item, tr.gallery-tags .tag-item {
   background-color: $bg_color_tag_item;
   color: $font_color_tag_item;
-}
-
-/* - link-boxes */
-.link-box {
-  color: $font_color_linkbox;
-}
-
-/* - other buttons */
-.view-button {
-  background-color: $bg_color_viewbutton;
-  color: $font_color_viewbutton;
-  &.selected { background-color: $bg_color_viewbutton_selected; }
 }
 
 #post_content, #reply_content {

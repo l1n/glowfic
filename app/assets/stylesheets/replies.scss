@@ -7,7 +7,6 @@
   top: 0;
   left: 15px;
   opacity: 0.4;
-  background-color: $bg_color_icon_overlay;
   cursor: pointer;
   width: 100px;
   height: 100px;
@@ -15,13 +14,9 @@
 
 #current-icon-holder { position: relative; }
 
-#current-icon-dropdown {
-  color: $font_color_icon_selector;
-
-  select {
-    margin-bottom: 10px;
-    width: 100px;
-  }
+#current-icon-dropdown select {
+  margin-bottom: 10px;
+  width: 100px;
 }
 
 /* Character selector */
@@ -39,7 +34,6 @@
   top: 0;
   left: 150px;
   z-index: 2;
-  background-color: $bg_color_selectionpopup;
   padding: 5px 20px 10px 20px;
   min-width: 200px;
   text-align: left;
@@ -106,23 +100,17 @@
 div.post-subheader { width: 100%; }
 
 .post-subheader {
-  background-color: $bg_color_post_description;
   padding: 10px;
-  color: $font_color_post_description;
   box-sizing: border-box;
 }
 
 .post-navheader {
-  background-color: $bg_color_navheader;
   padding: 10px;
   overflow: hidden;
   box-sizing: border-box;
-
-  .view-button { background-color: $bg_color_navbutton; }
 }
 
 .post-expander {
-  background-color: $bg_color_expander;
   padding: 0;
   min-height: 5px;
 
@@ -135,11 +123,9 @@ div.post-subheader { width: 100%; }
 }
 
 .post-ender {
-  background-color: $bg_color_ender_post;
   padding: 5px;
   min-height: 5px;
   text-align: center;
-  color: $font_color_ender_post;
   font-size: $font_size_main;
   font-weight: bold;
 }
@@ -147,14 +133,6 @@ div.post-subheader { width: 100%; }
 /* Written content */
 /* - Blockquotes */
 /* -- Color on even/odd background */
-.even, .post-post, .post-reply:nth-child(even) {
-  blockquote { background-color: $bg_color_even_blockquote; }
-}
-
-.odd, .post-reply:nth-child(odd) {
-  blockquote { background-color: $bg_color_odd_blockquote; }
-}
-
 .post-content, .written-content, .message-content {
   blockquote {
     margin: 0.5em 1.5em;
@@ -198,8 +176,6 @@ div.post-subheader { width: 100%; }
   overflow-wrap: break-word;
 }
 
-.post-icon, #current-icon-dropdown { background-color: $bg_color_post_icon; }
-
 .post-icon {
   padding: 0;
   height: 120px;
@@ -218,24 +194,18 @@ div.post-subheader { width: 100%; }
 
 .post-character {
   position: relative;
-  background-color: $bg_color_post_character;
   padding: 4px;
-  color: $font_color_post_info;
 }
 
 .post-screenname {
-  background-color: $bg_color_post_screenname;
   padding: 4px;
-  color: $font_color_post_screenname;
   overflow-wrap: break-word;
   word-wrap: break-word;
 }
 
 .post-author {
   position: relative;
-  background-color: $bg_color_post_author;
   padding: 5px;
-  color: $font_color_post_info;
 }
 
 .post-footer {
@@ -326,14 +296,12 @@ div.post-subheader { width: 100%; }
 
   /* - Tables in post-content */
   th {
-    background-color: unset;
     padding: 5px;
-    color: unset;
     font-size: unset;
     font-weight: bold;
   }
   td { padding: 5px; }
-  th, td { border: 1px solid $border_color_reply_table; }
+  th, td { border: 1px solid; }
 }
 
 /* - Character quick switcher - small icons for selecting characters in post-editor */
@@ -342,13 +310,6 @@ div.post-subheader { width: 100%; }
   width: 30px;
   height: 30px;
   box-sizing: border-box;
-}
-
-.char-access-fake {
-  background-color: $font_color_char_switcher;
-  background-color: $font_color_char_switcher_alpha;
-  padding: 5px 0;
-  font-size: 80%;
 }
 
 /* - Narrow window display */
@@ -372,8 +333,6 @@ div.post-subheader { width: 100%; }
   }
   #post-form-wrapper { margin-left: 0; }
   #character-selector { left: 0; }
-  .post-character { background-color: $bg_color_post_character_narrow; }
-  .post-author { background-color: $bg_color_post_author_narrow; }
 
   .post-content blockquote {
     margin-right: 1.5em;
@@ -388,7 +347,6 @@ div.post-subheader { width: 100%; }
   font-size: $font_size_small;
 
   .current {
-    background-color: $bg_color_paginate_current_page;
     font-weight: bold;
     font-style: normal;
   }
@@ -398,16 +356,7 @@ div.post-subheader { width: 100%; }
     padding: 5px 10px;
   }
 
-  .disabled {
-    text-align: left;
-    color: $font_color_paginate_link_disabled;
-  }
-
-  a {
-    color: $font_color_paginate_link;
-    &:hover { background-color: $bg_color_paginate_link_hover; }
-    &:visited { color: $font_color_paginate_link_visited; }
-  }
+  .disabled { text-align: left; }
 
   .summary {
     padding-right: 10px;
@@ -416,8 +365,6 @@ div.post-subheader { width: 100%; }
 }
 
 .paginator {
-  color: $font_color_paginate;
-
   .left-align {
     float: left;
     padding: 10px;
@@ -427,8 +374,6 @@ div.post-subheader { width: 100%; }
     float: right;
     padding: 2px;
     padding-right: 10px;
-
-    a { color: $font_color_paginate; }
   }
 
   .normal-pagination { display: block; }
@@ -470,18 +415,13 @@ div.post-subheader { width: 100%; }
   top: 0;
   right: 0;
   z-index: 99;
-  border-top: 1px solid $border_color_post_menu;
-  background-color: $bg_color_post_menu;
+  border-top: 1px solid;
   text-align: left;
-  color: $font_color_post_menu;
 
   div {
-    border-bottom: 1px solid $border_color_post_menu;
+    border-bottom: 1px solid;
     padding: 10px 20px;
   }
-
-  a { color: $font_color_menu_link; }
-  a:hover div { background-color: $bg_color_menu_link_hover; }
 
   img {
     margin-right: 3px;
@@ -521,7 +461,7 @@ div.post-subheader { width: 100%; }
   font-size: 70%;
 }
 
-.reply-highlighted { border: 1px $border_color_unread_reply solid; }
+.reply-highlighted { border: 1px solid; }
 
 .history-header { width: 170px; }
 @media (max-width: 600px) {

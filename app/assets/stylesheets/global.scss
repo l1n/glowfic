@@ -4,8 +4,6 @@ body, html { height: 100%; }
 
 body {
   margin: 0;
-  background-color: $bg_color_page;
-  color: $font_color_page;
   font-family: Helvetica, Verdana, sans-serif;
 }
 
@@ -21,24 +19,17 @@ html {
 /* Links */
 a {
   text-decoration: none;
-  color: $font_color_link;
-  &:visited { color: $font_color_link_visited; }
 
-  &:hover {
-    text-decoration: none;
-    color: $font_color_link_hover;
-  }
+  &:hover { text-decoration: none; }
 }
 
 /* Inputs */
 input, textarea, button {
   margin: 5px 0;
-  border: 1px solid $border_color_input;
+  border: 1px solid;
   border-radius: 5px;
-  background-color: $bg_color_input;
   padding: 0 8px;
   height: 25px;
-  color: $font_color_input;
   font-size: $font_size_smallerish;
 }
 
@@ -48,13 +39,6 @@ textarea { padding: 5px; }
 .form-table td input[type='radio'] { width: unset; }
 
 button, .button {
-  border-color: $border_color_button;
-  background: $bg_color_button;
-  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(20%, $bg_color_button_20), color-stop(50%, $bg_color_button_50), color-stop(52%, $bg_color_button_52), color-stop(100%, $bg_color_button_100));
-  background: -webkit-linear-gradient(to bottom, $bg_color_button_20 20%, $bg_color_button_50 50%, $bg_color_button_52 52%, $bg_color_button_100 100%);
-  background: -moz-linear-gradient(to bottom, $bg_color_button_20 20%, $bg_color_button_50 50%, $bg_color_button_52 52%, $bg_color_button_100 100%);
-  background: -o-linear-gradient(to bottom, $bg_color_button_20 20%, $bg_color_button_50 50%, $bg_color_button_52 52%, $bg_color_button_100 100%);
-  background: linear-gradient(to bottom, $bg_color_button_20 20%, $bg_color_button_50 50%, $bg_color_button_52 52%, $bg_color_button_100 100%);
   background-clip: padding-box;
   height: 25px;
   line-height: normal;
@@ -80,18 +64,13 @@ button, .button {
   }
 }
 
-.spacer {
+.spacer, .spacer-alt {
   padding: 0 !important;
   height: 2px;
 
   .gallery-icon-editor & {
     height: 12px;
   }
-}
-
-.spacer-alt {
-  @extend .spacer;
-  background-color: $bg_color_spacer_alt;
 }
 
 .centered { text-align: center !important; }
@@ -122,14 +101,6 @@ button, .button {
   padding: 5px;
 }
 
-.even, .post-post, .post-reply:nth-child(even), #post-editor {
-  background-color: $bg_color_even;
-}
-
-.odd, .post-reply:nth-child(odd), .post-post + #post-editor, .post-post + a + #post-editor {
-  background-color: $bg_color_odd;
-}
-
 /* UI Links */
 .link-box {
   display: inline-block;
@@ -142,17 +113,10 @@ button, .button {
   height: 28px;
   vertical-align: middle;
   line-height: 1.25rem;
-  color: $font_color_linkbox;
   font-size: $font_size_large;
   font-weight: normal;
 
   img { vertical-align: baseline; }
-
-  &.action-new { background-color: $bg_color_linkbox_new; }
-  &.action-delete { background-color: $bg_color_linkbox_delete; }
-  &.action-edit { background-color: $bg_color_linkbox_edit;}
-  &.action-favorite { background-color: $bg_color_linkbox_favorite; }
-  &.action-dismiss { background-color: $bg_color_linkbox_dismiss; }
 }
 
 /* Inline lists */
@@ -174,8 +138,5 @@ span.badge {
   position: relative;
   bottom: 1px;
   margin: 2px;
-  border: 0.5px solid $border_color_badge;
-  background-color: $bg_color_badge;
-  text-shadow: 0 0 2px $shadow_color_badge, 0 0 2px $shadow_color_badge;
-  color: $font_color_badge;
+  border: 0.5px solid;
 }

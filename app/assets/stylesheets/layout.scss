@@ -2,10 +2,8 @@
 
 /* Header Menus */
 #header {
-  background-color: $bg_color_header_bottom;
   overflow: hidden;
   vertical-align: middle;
-  color: $font_color_header_link;
   font-size: $font_size_header;
 
   ul {
@@ -20,15 +18,9 @@
     padding: 0;
     white-space: nowrap;
   }
-
-  a {
-    color: $font_color_header_link;
-    &:hover { color: $font_color_header_link_hover; }
-  }
 }
 
 #logo {
-  background-color: $bg_color_header_top;
   padding: 0.5em;
   overflow: hidden; /* so it contains the floating image */
 
@@ -40,7 +32,6 @@
 
 #user-info {
   float: left;
-  background-color: $bg_color_header_middle;
   padding: 0.5em;
   text-align: center;
   line-height: normal;
@@ -56,13 +47,11 @@
 }
 
 #nav-top {
-  background-color: $bg_color_header_middle;
   padding: 0.5em 1em 0.5em 0.5em;
   font-weight: bold;
 
   button, .button {
     margin-right: 10px;
-    color: $font_color_button;
     font-size: $font_size_smallerish;
     font-weight: bold; /* not redundant: used for login form */
   }
@@ -152,11 +141,6 @@
     margin: 0;
     margin-top: 5px;
   }
-
-  &.error { background-color: $bg_color_flash_error; }
-  &.success { background-color: $bg_color_flash_success; }
-  &.inbox { background-color: $bg_color_flash_inbox; }
-  &.breadcrumbs { background-color: $bg_color_flash_breadcrumbs; }
 }
 
 
@@ -186,9 +170,7 @@ table { width: 100%; }
 }
 
 th, .content-header {
-  background-color: $bg_color_head;
   padding: 15px;
-  color: $font_color_head;
   font-size: $font_size_large;
   font-weight: normal;
 }
@@ -200,11 +182,6 @@ th, .content-header {
 
   span {
     line-height: 28px;
-
-    a {
-      color: $font_color_head_link;
-      &:hover { color: $font_color_head_link_hover; }
-    }
   }
 
   & > div { overflow: hidden; }
@@ -214,18 +191,14 @@ td, .table-list li { font-size: $font_size_small; }
 
 /* Subs and subbers */
 .sub {
-  background-color: $bg_color_sub;
   padding: 10px;
-  color: $font_color_sub;
   font-size: $font_size_main;
 
   &.width-150 { width: 170px; }
 }
 
 .subber {
-  background-color: $bg_color_subber;
   padding: 10px 25px;
-  color: $font_color_subber;
   font-size: $font_size_smallish;
   font-weight: bold;
   input { margin: 0; }
@@ -269,10 +242,8 @@ td, .table-list li { font-size: $font_size_small; }
 }
 
 .form-table-ender {
-  background-color: $bg_color_subber;
   padding: 10px 25px;
   text-align: center;
-  color: $font_color_subber;
   font-size: $font_size_smallish;
   font-weight: bold;
 
@@ -307,18 +278,12 @@ td, .table-list li { font-size: $font_size_small; }
   margin-left: 5px;
   border: 0;
   border-radius: 5px;
-  background-color: $bg_color_viewbutton;
   background-image: none;
   cursor: pointer;
   padding: 4px 12px;
   height: 29px;
   line-height: 1.3em;
-  color: $font_color_viewbutton;
   font-size: $font_size_large;
-
-  &.selected { background-color: $bg_color_viewbutton_selected; }
-
-  a { color: $font_color_viewbutton; }
 }
 
 .list-view, .icon-view {
@@ -345,25 +310,14 @@ td, .table-list li { font-size: $font_size_small; }
   margin-left: 5px;
 }
 
-.tag-item-link:hover {
-  color: unset;
-}
-
 .tag-item {
   display: inline-block;
   margin: 2px 0;
   border-radius: 5px;
-  background-color: $bg_color_tag_item;
   padding: 2px 8px;
-  color: $font_color_tag_item;
   font-size: 90%;
   font-weight: normal;
 }
-
-.even .tag-item { background-color: $bg_color_tag_item_even; }
-.odd .tag-item { background-color: $bg_color_tag_item_odd; }
-// tr.gallery-tags .tag-item { color: $font_color_tag_item_gallery; }
-// This is presently inherited from .tag-item in non-starry themes, and thus adding this to the base file overrides font color styling there.
 
 /* The new object layout with the floating left info box and the right content area */
 .left-info-box {
@@ -407,11 +361,7 @@ td, .table-list li { font-size: $font_size_small; }
   height: 20px;
 }
 
-.section-warning {
-  background-color: $bg_color_section_warning;
-  background-color: $bg_color_section_warning_alpha;
-  padding: 5px;
-}
+.section-warning { padding: 5px; }
 
 .section-ordered-handle {
   display: inline-block;
@@ -432,11 +382,9 @@ td, .table-list li { font-size: $font_size_small; }
 
 /* Search Input */
 .search-box {
-  background-color: $bg_color_search_box;
   padding: 10px;
   width: 320px;
   vertical-align: top;
-  color: $font_color_search_box;
 }
 
 .search-icon-preview { vertical-align: middle; }
@@ -463,13 +411,8 @@ td, .table-list li { font-size: $font_size_small; }
   position: absolute;
   bottom: 0;
   left: 0;
-  background-color: $bg_color_header_middle;
   width: 100%;
-  color: $font_color_header_link;
   font-size: $font_size_small;
-
-  a { color: $font_color_header_link; }
-  a:hover { color: $font_color_header_link_hover; }
 
   div {
     padding: 5px;

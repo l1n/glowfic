@@ -21,8 +21,8 @@
 
 /* - tag items */
 .tag-item, tr.gallery-tags .tag-item {
-  background-color: $font_color_tag_item;
-  color: $bg_color_tag_item;
+  background-color: $bg_color_tag_item;
+  color: $font_color_tag_item;
 }
 
 @import 'colorize'

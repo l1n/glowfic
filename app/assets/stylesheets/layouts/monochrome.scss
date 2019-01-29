@@ -55,4 +55,6 @@ $bg_color_linkbox_dismiss: #503636;
 $bg_color_badge: #E5D8AF;
 $border_color_badge: #6F6A61;
 
-@import 'monochrome_selectors'
+.tag-item, tr.gallery-tags .tag-item { color: $font_color_tag_item; }
+
+@import 'colorize'

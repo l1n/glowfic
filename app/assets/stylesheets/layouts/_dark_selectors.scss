@@ -39,7 +39,7 @@ table { border-color: #555555; } // TODO: what does this style
 // TODO: Check pagination displays fine in this theme
 
 /* - tag items */
-.tag-item, tr.gallery-tags .tag-item {
+tr.gallery-tags .tag-item {
   background-color: $bg_color_tag_item;
   color: $font_color_tag_item;
 }

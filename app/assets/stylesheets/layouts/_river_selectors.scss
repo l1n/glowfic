@@ -20,7 +20,7 @@
 .post-character a, .post-character a:visited { color: $font_color_post_info; }
 
 /* - tag items */
-.tag-item, tr.gallery-tags .tag-item {
+tr.gallery-tags .tag-item {
   background-color: $bg_color_tag_item;
   color: $font_color_tag_item;
 }

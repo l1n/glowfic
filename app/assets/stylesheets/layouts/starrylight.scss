@@ -72,11 +72,5 @@ $bg_color_viewbutton_selected: $colors_scampi;
 // posts
 .post-screenname, .post-screenname a, .post-screenname a:visited { font-style: italic; }
 
-// tag items
-tr.gallery-tags .tag-item {
-  background-color: $bg_color_tag_item;
-  color: $font_color_tag_item_gallery;
-}
-
 // ???
 #character-selector { font-weight: normal; }

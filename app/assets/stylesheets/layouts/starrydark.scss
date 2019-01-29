@@ -75,11 +75,6 @@ body, .even, .odd, .post-post, .post-reply, #post-editor { color: $font_color_pa
   color: $font_color_tag_item;
 }
 
-tr.gallery-tags .tag-item {
-  background-color: $bg_color_tag_item;
-  color: $font_color_tag_item_gallery;
-}
-
 // Hovering help box on post editor
 $bg_color_popup_header: #0D0B1E;
 $font_color_popup_header: #EEEEEE;

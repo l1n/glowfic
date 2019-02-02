@@ -1,4 +1,4 @@
-class PostSearcher < Searcher
+class Post::Searcher < Generic::Searcher
   def initialize(search: Post.ordered)
     super
   end

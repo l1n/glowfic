@@ -1,4 +1,4 @@
-class CharacterSearcher < Searcher
+class Character::Searcher < Generic::Searcher
   def initialize(search: Character.unscoped, templates:, users: [])
     super
   end

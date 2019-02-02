@@ -1,4 +1,4 @@
-class Searcher < Object
+class Generic::Searcher < Object
   extend ActiveModel::Translation
   extend ActiveModel::Validations
 

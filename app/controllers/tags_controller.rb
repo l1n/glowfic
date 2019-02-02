@@ -7,7 +7,7 @@ class TagsController < ApplicationController
   before_action :permission_required, except: [:index, :show, :destroy]
 
   def index
-    @tags = TagSearcher.new.search(tag_name: params[:name], tag_type: params[:view], page: page)
+    @tags = Tag::Searcher.new.search(tag_name: params[:name], tag_type: params[:view], page: page)
     @view = params[:view]
     @page_title = @view.present? ? @view.titlecase.pluralize : 'Tags'
     @tag_options = (Tag::TYPES - ['GalleryGroup']).sort.reverse.map{|t| [t.titlecase, t]}.to_h

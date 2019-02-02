@@ -1,4 +1,4 @@
-class ReplySearcher < Searcher
+class Reply::Searcher < Generic::Searcher
   def initialize(search: Reply.unscoped, templates:, users:)
     super
   end

@@ -11,7 +11,7 @@ class PostsController < WritableController
   before_action :editor_setup, only: [:new, :edit]
 
   def index
-    @posts = posts_from_relation(Post.ordered)
+    @posts = posts_from_relation(Post.ordered, show_blocked: !!params[:show_blocked])
     @page_title = 'Recent Threads'
   end
 
@@ -47,7 +47,7 @@ class PostsController < WritableController
     @posts = @posts.joins("LEFT JOIN board_views on board_views.board_id = posts.board_id AND board_views.user_id = #{current_user.id}")
     @posts = @posts.where("post_views.user_id IS NULL OR ((post_views.read_at IS NULL OR (date_trunc('second', post_views.read_at) < date_trunc('second', posts.tagged_at))) AND post_views.ignored = '0')")
     @posts = @posts.where("board_views.user_id IS NULL OR ((board_views.read_at IS NULL OR (date_trunc('second', board_views.read_at) < date_trunc('second', posts.tagged_at))) AND board_views.ignored = '0')")
-    @posts = posts_from_relation(@posts.ordered, with_pagination: false)
+    @posts = posts_from_relation(@posts.ordered, with_pagination: false, show_blocked: !!params[:show_blocked])
     @posts = @posts.select { |p| @opened_ids.include?(p.id) } if @started
     @posts = @posts.paginate(per_page: 25, page: page)
     @hide_quicklinks = true
@@ -247,7 +247,7 @@ class PostsController < WritableController
       where = arel[:character_id].eq(params[:character_id]).or(arel[:id].in(post_ids))
       @search_results = @search_results.where(where)
     end
-    @search_results = posts_from_relation(@search_results).paginate(page: page, per_page: 25)
+    @search_results = posts_from_relation(@search_results, show_blocked: !!params[:show_blocked]).paginate(page: page, per_page: 25)
   end
 
   def warnings

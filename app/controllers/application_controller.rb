@@ -136,7 +136,7 @@ class ApplicationController < ActionController::Base
   end
   helper_method :post_or_reply_link
 
-  def posts_from_relation(relation, no_tests: true, with_pagination: true, select: '', max: false)
+  def posts_from_relation(relation, no_tests: true, with_pagination: true, select: '', max: false, show_blocked: false)
     if max
       posts = relation.select('posts.*, max(boards.name) as board_name, max(users.username) as last_user_name'+ select)
     else
@@ -150,6 +150,8 @@ class ApplicationController < ActionController::Base
       .includes(:authors)
       .with_has_content_warnings
       .with_reply_count
+
+    posts = posts.where_not_hidden(current_user) unless show_blocked
 
     posts = posts.paginate(page: page, per_page: 25) if with_pagination
     posts = posts.no_tests if no_tests

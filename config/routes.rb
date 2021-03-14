@@ -112,6 +112,7 @@ Rails.application.routes.draw do
   # OAuth2
   namespace :oauth do
     get :test_request
+    post :revoke
     post :token
     get :access_token
     get :request_token

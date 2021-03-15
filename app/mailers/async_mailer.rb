@@ -1,4 +1,4 @@
-class AsyncMailer < ActionMailer::Base
+class AsyncMailer < ApplicationMailer
   include Resque::Mailer
 
   default from: "Glowfic Constellation <#{ENV['GMAIL_USERNAME']}>"

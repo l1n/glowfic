@@ -70,20 +70,21 @@ class PostsController < WritableController
     posts = Post.where(id: params[:marked_ids])
     posts = posts.visible_to(current_user)
 
-    if params[:commit] == "Mark Read"
-      posts.each { |post| post.mark_read(current_user) }
-      flash[:success] = "#{posts.size} #{'post'.pluralize(posts.size)} marked as read."
-    elsif params[:commit] == "Remove from Replies Owed"
-      posts.each { |post| post.opt_out_of_owed(current_user) }
-      flash[:success] = "#{posts.size} #{'post'.pluralize(posts.size)} removed from replies owed."
-      redirect_to owed_posts_path and return
-    elsif params[:commit] == "Show in Replies Owed"
-      posts.each { |post| post.opt_in_to_owed(current_user) }
-      flash[:success] = "#{posts.size} #{'post'.pluralize(posts.size)} added to replies owed."
-      redirect_to owed_posts_path and return
-    else
-      posts.each { |post| post.ignore(current_user) }
-      flash[:success] = "#{posts.size} #{'post'.pluralize(posts.size)} hidden from this page."
+    case params[:commit]
+      when "Mark Read"
+        posts.each { |post| post.mark_read(current_user) }
+        flash[:success] = "#{posts.size} #{'post'.pluralize(posts.size)} marked as read."
+      when "Remove from Replies Owed"
+        posts.each { |post| post.opt_out_of_owed(current_user) }
+        flash[:success] = "#{posts.size} #{'post'.pluralize(posts.size)} removed from replies owed."
+        redirect_to owed_posts_path and return
+      when "Show in Replies Owed"
+        posts.each { |post| post.opt_in_to_owed(current_user) }
+        flash[:success] = "#{posts.size} #{'post'.pluralize(posts.size)} added to replies owed."
+        redirect_to owed_posts_path and return
+      else
+        posts.each { |post| post.ignore(current_user) }
+        flash[:success] = "#{posts.size} #{'post'.pluralize(posts.size)} hidden from this page."
     end
     redirect_to unread_posts_path
   end
@@ -318,7 +319,7 @@ class PostsController < WritableController
     @audits = { post: @post.audits.count } if @post.id.present?
 
     editor_setup
-    @page_title = 'Previewing: ' + @post.subject.to_s
+    @page_title = "Previewing: #{@post.subject}"
     render :preview
   end
 

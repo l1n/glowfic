@@ -15,7 +15,7 @@ class BoardsController < ApplicationController
       @page_title = if @user.id == current_user.try(:id)
         "Your Continuities"
       else
-        "#{@user.username}'s Continuities"
+        @user.username + "'s Continuities"
       end
 
       board_ids = BoardAuthor.where(user_id: @user.id, cameo: false).select(:board_id).distinct.pluck(:board_id)
@@ -68,7 +68,7 @@ class BoardsController < ApplicationController
   end
 
   def edit
-    @page_title = "Edit Continuity: #{@board.name}"
+    @page_title = 'Edit Continuity: ' + @board.name
     use_javascript('boards/edit')
     @board_sections = @board.board_sections.ordered
     @unsectioned_posts = @board.posts.where(section_id: nil).ordered_in_section if @board.ordered?
@@ -82,7 +82,7 @@ class BoardsController < ApplicationController
         message: "Continuity could not be created.",
         array: @board.errors.full_messages
       }
-      @page_title = "Edit Continuity: #{@board.name_was}"
+      @page_title = 'Edit Continuity: ' + @board.name_was
       editor_setup
       use_javascript('board_sections')
       @board_sections = @board.board_sections.ordered
@@ -114,20 +114,19 @@ class BoardsController < ApplicationController
       redirect_to unread_posts_path and return
     end
 
-    case params[:commit]
-      when "Mark Read"
-        Board.transaction do
-          board.mark_read(current_user)
-          read_time = board.last_read(current_user)
-          post_views = Post::View.joins(post: :board).where(user: current_user, boards: {id: board.id})
-          post_views.update_all(read_at: read_time, updated_at: read_time) # rubocop:disable Rails/SkipsModelValidations
-        end
-        flash[:success] = "#{board.name} marked as read."
-      when "Hide from Unread"
-        board.ignore(current_user)
-        flash[:success] = "#{board.name} hidden from this page."
-      else
-        flash[:error] = "Please choose a valid action."
+    if params[:commit] == "Mark Read"
+      Board.transaction do
+        board.mark_read(current_user)
+        read_time = board.last_read(current_user)
+        post_views = Post::View.joins(post: :board).where(user: current_user, boards: {id: board.id})
+        post_views.update_all(read_at: read_time, updated_at: read_time) # rubocop:disable Rails/SkipsModelValidations
+      end
+      flash[:success] = "#{board.name} marked as read."
+    elsif params[:commit] == "Hide from Unread"
+      board.ignore(current_user)
+      flash[:success] = "#{board.name} hidden from this page."
+    else
+      flash[:error] = "Please choose a valid action."
     end
     redirect_to unread_posts_path
   end

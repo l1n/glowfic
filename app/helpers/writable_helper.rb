@@ -2,9 +2,9 @@ module WritableHelper
   def unread_warning
     return unless @replies.present?
     return if @replies.total_pages == page
-    "You are not on the latest page of the thread #{tag.a('(View unread)', href: unread_path(@post),
-                                                                           class: 'unread-warning')} #{tag.a('(New tab)',
-                                                                             href: unread_path(@post), class: 'unread-warning', target: '_blank')}"
+    'You are not on the latest page of the thread ' + \
+    content_tag(:a, '(View unread)', href: unread_path(@post), class: 'unread-warning') + ' ' + \
+    content_tag(:a, '(New tab)', href: unread_path(@post), class: 'unread-warning', target: '_blank')
   end
 
   def unread_path(post, **kwargs)
@@ -47,7 +47,7 @@ module WritableHelper
 
   def privacy_state(privacy)
     privacy = privacy.to_sym
-    "#{privacy_icon(privacy, false)} #{PRIVACY_MAP[privacy][0]}"
+    privacy_icon(privacy, false) + ' ' + PRIVACY_MAP[privacy][0]
   end
 
   def privacy_icon(privacy, alt=true)
@@ -65,9 +65,9 @@ module WritableHelper
   def shortened_desc(desc, id)
     return sanitize_simple_link_text(desc) if desc.length <= 255
     sanitize_simple_link_text(desc[0...255]) +
-      tag.span('... ', id: "dots-#{id}") +
-      tag.span(sanitize_simple_link_text(desc[255..]), class: 'hidden', id: "desc-#{id}") +
-      tag.a('more &raquo;'.html_safe, href: '#', id: "expanddesc-#{id}", class: 'expanddesc')
+      content_tag(:span, '... ', id: "dots-#{id}") +
+      content_tag(:span, sanitize_simple_link_text(desc[255..-1]), class: 'hidden', id: "desc-#{id}") +
+      content_tag(:a, 'more &raquo;'.html_safe, href: '#', id: "expanddesc-#{id}", class: 'expanddesc')
   end
 
   def post_or_reply_link(reply)

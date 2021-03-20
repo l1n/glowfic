@@ -82,7 +82,7 @@ module ApplicationHelper
   end
 
   def path_for(obj, path)
-    send "#{path}_path" % obj.class.to_s.downcase, obj
+    send format("#{path}_path", obj.class.to_s.downcase), obj
   end
 
   def per_page_options(default=nil)

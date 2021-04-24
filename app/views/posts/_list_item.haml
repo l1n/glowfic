@@ -11,7 +11,7 @@
       = image_tag "icons/book_grey.png", class: 'vmid', title: "Thread Abandoned", alt: 'Abandoned'
     - unless post.privacy_public?
       = privacy_icon(post.privacy.to_sym, dark_layout: current_user&.layout_darkmode?)
-    - if !current_user.try(:hide_warnings) && post.has_content_warnings?
+    - if post.show_warnings_for?(current_user) && post.has_content_warnings?
       = image_tag "icons/exclamation.png", class: 'vmid', title: "Content Warning: " + post.content_warnings.pluck(:name).join(', '), alt: 'Has Warnings'
   %td.post-subject.vtop{class: klass}
     - if logged_in?

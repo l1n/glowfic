@@ -199,6 +199,9 @@ $font_color_badge: $colors_cinnamon;
     height: 1em;
   }
 
+  // Override dark-selectors icon filter with blue tint for river
+  img[src*="/icons/"] { filter: sepia(0.4) hue-rotate(180deg) saturate(0.8) brightness(0.8); }
+
   .post-footer { color: $font_color_reply_footer; }
 
   .auto-light-only { display: none; }

@@ -175,6 +175,9 @@ $font_color_badge: $colors_cinnamon;
   @include dark-selectors;
   @include dark-themes-selectors;
 
+  // Override dark-selectors icon filter with grayscale for monochrome
+  img[src*="/icons/"] { filter: grayscale(1) brightness(0.8); }
+
   .auto-light-only { display: none; }
   .auto-dark-only { display: inline; }
 }

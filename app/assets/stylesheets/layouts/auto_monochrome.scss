@@ -52,7 +52,8 @@ $bg_color_linkbox_favorite: $colors_comet;
 $bg_color_linkbox_delete: $colors_rock;
 $bg_color_linkbox_dismiss: $colors_rock;
 
-$bg_color_badge: #E5D8AF;
+$bg_color_badge: #D0D0D0;
+$font_color_badge: #444444;
 
 @media (prefers-color-scheme: light) {
   @include monochrome-selectors;
@@ -168,8 +169,8 @@ $bg_color_select2_highlight: #555555;
 $bg_color_select2_selected: #404040;
 $bg_color_select2_search: $bg_color_select2_highlight;
 
-$bg_color_badge: #E5D8AF;
-$font_color_badge: $colors_cinnamon;
+$bg_color_badge: #808080;
+$font_color_badge: #DDDDDD;
 
 @media (prefers-color-scheme: dark) {
   @include dark-selectors;

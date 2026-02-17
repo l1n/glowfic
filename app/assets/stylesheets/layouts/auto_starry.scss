@@ -146,6 +146,9 @@ $bg_color_select2_search: $bg_color_select2_highlight;
   .odd .tag-item { background-color: $bg_color_tag_item_odd; }
   .tag-item { color: $font_color_tag_item; }
 
+  // Purple tint with reduced brightness for dark mode
+  img[src*="/icons/"] { filter: sepia(0.3) hue-rotate(220deg) saturate(0.8) brightness(0.8); }
+
   .auto-light-only { display: none; }
   .auto-dark-only { display: inline; }
 }

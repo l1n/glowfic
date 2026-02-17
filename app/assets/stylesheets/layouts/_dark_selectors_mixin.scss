@@ -190,4 +190,7 @@
   }
 
   .ui-widget-content a { color: $font_color_popup_link; }
+
+  /* - themed action icons */
+  img[src*="/icons/"] { filter: brightness(0.8) saturate(0.6); }
 }

@@ -201,7 +201,7 @@ RSpec.describe OauthController do
       token = Oauth2Token.create!(client_application: app, user: user)
       post :revoke, params: { token: token.token }
       expect(response).to redirect_to(oauth_clients_url)
-      expect(flash[:notice]).to include("You've revoked the token")
+      expect(flash[:success]).to include("You've revoked the token")
       expect(token.reload).to be_invalidated
     end
 
@@ -210,7 +210,7 @@ RSpec.describe OauthController do
       login_as(user)
       post :revoke, params: { token: "nonexistent" }
       expect(response).to redirect_to(oauth_clients_url)
-      expect(flash[:notice]).to be_nil
+      expect(flash[:success]).to be_nil
     end
 
     it "does not revoke another user's token" do
@@ -226,3 +226,4 @@ RSpec.describe OauthController do
   end
 
 end
+

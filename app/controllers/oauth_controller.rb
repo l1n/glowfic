@@ -36,7 +36,7 @@ class OauthController < ApplicationController
     @token = current_user.tokens.find_by token: params[:token]
     if @token
       @token.invalidate!
-      flash[:notice] = "You've revoked the token for #{@token.client_application.name}"
+      flash[:success] = "You've revoked the token for #{@token.client_application.name}"
     end
     redirect_to oauth_clients_url
   end
@@ -108,3 +108,4 @@ class OauthController < ApplicationController
     request.headers['Authorization'].present? || params[:client_id].present?
   end
 end
+

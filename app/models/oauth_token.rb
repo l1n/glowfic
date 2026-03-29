@@ -6,7 +6,6 @@ class OauthToken < ApplicationRecord
   before_validation :generate_keys, on: :create
 
   scope :authorized, -> { where.not(authorized_at: nil).where(invalidated_at: nil) }
-  attr_accessor :expires_at
 
   def invalidated?
     invalidated_at != nil

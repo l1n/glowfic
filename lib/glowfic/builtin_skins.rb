@@ -15,6 +15,8 @@ module Glowfic::BuiltinSkins
     'starrylight'    => 'Starry Light',
     'monochrome'     => 'Monochrome',
     'river'          => 'Milky River',
+    'pesterchum'     => 'Pesterchum',
+    'pesterchummemo' => 'Pesterchum Memo',
   }.freeze
 
   SUFFIX = ' (built-in)'

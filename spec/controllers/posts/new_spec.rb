@@ -46,6 +46,19 @@ RSpec.describe PostsController, 'GET new' do
     expect(templateless.plucked_characters).to eq([[char1.id, char1.name], [char2.id, char2.name]])
   end
 
+  context "with render_views" do
+    render_views
+
+    it "renders the post form including the recommended-skin selector" do
+      create(:skin, user: user, name: 'My Skin')
+      login_as(user)
+      get :new
+      expect(response).to have_http_status(200)
+      expect(response.body).to include('Recommended skin:')
+      expect(response.body).to include('My Skin')
+    end
+  end
+
   context "import" do
     before(:each) { login_as(user) }
 
@@ -82,6 +95,14 @@ RSpec.describe PostsController, 'GET new' do
       get :new, params: { board_id: board.id }
       expect(assigns(:post).board).to eq(board)
       expect(assigns(:author_ids)).to match_array([coauthor.id])
+    end
+
+    it "defaults authors to be current user in closed megacontinuities" do
+      login_as(user)
+      board = create(:board, authors_locked: true, mega: true)
+      get :new, params: { board_id: board.id }
+      expect(assigns(:post).board).to eq(board)
+      expect(assigns(:author_ids)).to eq([])
     end
   end
 end

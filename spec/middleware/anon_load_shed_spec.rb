@@ -3,7 +3,7 @@ RSpec.describe AnonLoadShed do
   # isn't bundled (dev/test CI) so these specs still exercise the middleware.
   # Where the gem IS present, the real constant is used, guarding against the
   # key drifting from the gem's.
-  before do
+  before(:each) do
     stub_const('Rack::Timeout::ENV_INFO_KEY', 'rack-timeout.info') unless defined?(Rack::Timeout::ENV_INFO_KEY)
   end
 
@@ -13,8 +13,8 @@ RSpec.describe AnonLoadShed do
   def env(wait: nil, user_id: nil, path: '/posts')
     {
       Rack::Timeout::ENV_INFO_KEY => wait && Struct.new(:wait).new(wait),
-      'rack.session'      => { user_id: user_id },
-      'PATH_INFO'         => path,
+      'rack.session'              => { user_id: user_id },
+      'PATH_INFO'                 => path,
     }
   end
 

@@ -176,4 +176,13 @@ export default [
       ],
     },
   },
+  {
+    // The icon suggester lazily loads an in-browser vision model via dynamic
+    // import(). It only ever runs in WebGPU-capable browsers, so it can also use
+    // async/await and other syntax newer than the shared baseline.
+    files: ["app/assets/javascripts/galleries/icon_suggester.js"],
+    languageOptions: {
+      ecmaVersion: 2020,
+    },
+  },
 ];

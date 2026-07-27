@@ -1,3 +1,4 @@
+//= require galleries/icon_suggester
 /* global addUploadedIcon, setLoadingIcon, addCallback, failCallback */
 /* export deleteUnusedIcons */
 

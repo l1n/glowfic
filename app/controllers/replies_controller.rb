@@ -419,5 +419,15 @@ class RepliesController < WritableController
       # Update the new reply added with the actual params that should be there
       new_reply.update!(reply_params)
     end
+
+    # The inserted replies set skip_post_update, so the post's cached last_reply
+    # was left untouched. When the insert lands at the end of the thread that
+    # cache is now stale (it still points at the reply being edited), which
+    # breaks things keyed off the last reply such as the "Here Ends This Thread"
+    # marker. Advance the cache to the true last reply when it has moved.
+    post = @reply.post
+    last_reply = post.replies.ordered.last
+    return if last_reply.nil? || post.last_reply_id == last_reply.id
+    post.update!(last_reply: last_reply, last_user_id: last_reply.user_id, tagged_at: last_reply.updated_at)
   end
 end

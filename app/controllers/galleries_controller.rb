@@ -76,6 +76,7 @@ class GalleriesController < UploadingController
     @page_title = 'Edit Gallery: ' + @gallery.name
     use_javascript('galleries/uploader')
     use_javascript('galleries/edit')
+    use_javascript('galleries/icon_suggester')
   end
 
   def update
@@ -92,6 +93,7 @@ class GalleriesController < UploadingController
       @page_title = 'Edit Gallery: ' + @gallery.name_was
       use_javascript('galleries/uploader')
       use_javascript('galleries/edit')
+      use_javascript('galleries/icon_suggester')
       editor_setup
       set_s3_url
       render :edit
@@ -225,6 +227,7 @@ class GalleriesController < UploadingController
     else
       use_javascript('galleries/add_new')
       use_javascript('galleries/uploader')
+      use_javascript('galleries/icon_suggester')
     end
     @icons = []
     @unassigned = current_user.galleryless_icons

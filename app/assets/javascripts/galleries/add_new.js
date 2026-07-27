@@ -1,4 +1,4 @@
-/* global deleteUnusedIcons */
+/* global deleteUnusedIcons, IconSuggester */
 /* exported addUploadedIcon, addCallback, failCallback */
 
 let done = 0;
@@ -156,7 +156,11 @@ function addUploadedIcon(url, key, data, _fileInput) {
   const fileExt = keyword.split('.').slice(-1)[0];
   if (fileExt !== keyword)
     keyword = keyword.replace('.'+fileExt, '');
-  row.find("input[id$='_keyword']").val(keyword);
+  const keywordInput = row.find("input[id$='_keyword']");
+  keywordInput.val(keyword);
+
+  // Offer an AI-suggested keyword if this filename-derived one looks uninformative.
+  if (typeof IconSuggester !== 'undefined') IconSuggester.suggestFor(keywordInput, data.files[0]);
 
   // Display a preview of the uploaded icon for the user
   row.find(".preview-icon").attr('src', url).attr('title', keyword).attr('alt', keyword);

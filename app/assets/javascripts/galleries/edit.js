@@ -1,3 +1,4 @@
+/* global IconSuggester */
 /* exported addUploadedIcon, setLoadingIcon */
 
 $(document).ready(function() {
@@ -14,6 +15,12 @@ function addUploadedIcon(url, s3Key, data, fileInput) {
   $(iconRow).find('input[id$=_s3_key]').first().hide().val(s3Key);
   $("#loading-"+iconId).hide();
   $("#icon-"+iconId).attr('src', url).show().removeClass('uploading-icon');
+
+  // Offer an AI-suggested keyword if the current keyword looks uninformative.
+  if (typeof IconSuggester !== 'undefined') {
+    const keywordInput = fileInput.closest('.form-table').find('.gallery-icon-keyword input');
+    IconSuggester.suggestFor(keywordInput, data.files[0]);
+  }
 }
 
 function setLoadingIcon(fileInput) {

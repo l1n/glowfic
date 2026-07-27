@@ -244,3 +244,25 @@
     }
   }
 }
+
+/* AI-suggested keyword hint shown under an uploaded icon's keyword field */
+.icon-suggestion {
+  margin-top: 3px;
+  font-size: $font_size_smaller;
+  color: $colors_santasgrey_bluer;
+  line-height: 1.3;
+
+  &.pending { font-style: italic; }
+
+  .icon-suggestion-use {
+    color: $font_color_link;
+    cursor: pointer;
+  }
+
+  .icon-suggestion-dismiss {
+    color: $colors_santasgrey_bluer;
+    text-decoration: none;
+    padding: 0 3px;
+    cursor: pointer;
+  }
+}

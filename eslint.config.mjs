@@ -176,4 +176,12 @@ export default [
       ],
     },
   },
+  {
+    // The icon suggester lazily loads an in-browser vision model via dynamic
+    // import(), which needs a newer ECMAScript version than the shared baseline.
+    files: ["app/assets/javascripts/galleries/icon_suggester.js"],
+    languageOptions: {
+      ecmaVersion: 2020,
+    },
+  },
 ];

@@ -129,10 +129,41 @@ RSpec.describe TagWranglingsController do
       expect(Tag.find_by(id: setting.id)).to be_nil
     end
 
+    it "refuses a merge of a tag into itself" do
+      login_as(create(:admin_user))
+      patch :update, params: { id: setting.id, commit_action: 'merge', merger_id: setting.id, destroy_loser: '1' }
+
+      expect(Tag.find_by(id: setting.id)).to be_present
+      expect(flash[:error]).to eq("Merge target must be a different existing tag of the same type.")
+    end
+
+    it "refuses to mark a synonym canonical" do
+      canonical = create(:setting, canonical: true)
+      setting.update!(merger: canonical)
+      login_as(create(:admin_user))
+
+      patch :update, params: { id: setting.id, commit_action: 'canonical' }
+
+      expect(setting.reload).not_to be_canonical
+      expect(flash[:error]).to include("synonym cannot be marked canonical")
+    end
+
+    it "refuses to merge into a tag that is itself a synonym" do
+      canonical = create(:setting, canonical: true)
+      synonym = create(:setting)
+      synonym.update!(merger: canonical)
+      login_as(create(:admin_user))
+
+      patch :update, params: { id: setting.id, commit_action: 'merge', merger_id: synonym.id }
+
+      expect(setting.reload.merger).to be_nil
+      expect(flash[:error]).to include("itself a synonym")
+    end
+
     it "refuses a merge across types" do
       login_as(create(:admin_user))
       patch :update, params: { id: setting.id, commit_action: 'merge', merger_id: create(:label).id }
-      expect(flash[:error]).to eq("Merge target must be an existing tag of the same type.")
+      expect(flash[:error]).to eq("Merge target must be a different existing tag of the same type.")
     end
 
     it "refuses a tag outside the wrangler's scope" do

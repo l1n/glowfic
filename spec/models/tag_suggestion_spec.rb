@@ -105,6 +105,19 @@ RSpec.describe TagSuggestion do
       expect(record.reload).to be_accepted
     end
 
+    it "accepting carries the suggested spoiler settings onto the tagging" do
+      create_list(:reply, 3, post: post, user: author)
+      record = TagSuggestion.create!(
+        post: post, user: reader, tag: tag,
+        spoiler: true, reveal_after_reply_order: 2,
+      )
+      record.accept!(resolver: author)
+
+      tagging = PostTag.find_by(post: post, tag: tag)
+      expect(tagging).to be_spoiler
+      expect(tagging.reveal_after_reply_order).to eq(2)
+    end
+
     it "accepting a proposed name creates the tag attributed to the suggester" do
       record = TagSuggestion.create!(post: post, user: reader, tag_type: 'Label', tag_name: 'Fresh')
       record.accept!(resolver: author)

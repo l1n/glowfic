@@ -28,7 +28,7 @@ class TagsController < ApplicationController
     response.headers['X-Robots-Tag'] = 'noindex' if @view
 
     if @view == 'posts'
-      posts = @tag.posts.ordered
+      posts = @tag.unspoilered_posts.ordered
       posts = posts.not_ignored_by(current_user) if current_user&.hide_from_all
       @posts = posts_from_relation(posts)
     elsif @view == 'characters'

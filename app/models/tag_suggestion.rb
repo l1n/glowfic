@@ -106,7 +106,10 @@ class TagSuggestion < ApplicationRecord
   def accept!(resolver:)
     transaction do
       tag_record = tag || Tag.create!(type: tag_type, name: tag_name, user: user)
-      PostTag.find_or_create_by!(post: post, tag: tag_record)
+      tagging = PostTag.find_or_initialize_by(post: post, tag: tag_record)
+      tagging.spoiler = spoiler
+      tagging.reveal_after_reply_order = reveal_after_reply_order
+      tagging.save!
       update!(
         status: :accepted, resolved_by: resolver, resolved_at: Time.zone.now,
         tag: tag_record, tag_type: nil, tag_name: nil,

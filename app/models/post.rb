@@ -317,7 +317,13 @@ class Post < ApplicationRecord
 
   def has_content_warnings?
     return read_attribute(:has_content_warnings) if has_attribute?(:has_content_warnings)
-    content_warnings.exists?
+    unspoilered_content_warnings.exists?
+  end
+
+  # Listings and tooltips are seen by readers at any point in the post, so they
+  # must not include spoilered taggings.
+  def unspoilered_content_warnings
+    content_warnings.where(post_tags: { spoiler: false })
   end
 
   def reply_count

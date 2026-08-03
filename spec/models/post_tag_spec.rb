@@ -107,5 +107,24 @@ RSpec.describe PostTag do
 
       expect(PostTag.for_reverse_lookup.where(tag_id: tag.id)).to eq([visible])
     end
+
+    it "omits a spoilered post from the tag's post listing" do
+      listed = create(:post)
+      PostTag.create!(post: listed, tag: tag)
+      hidden = create(:post)
+      PostTag.create!(post: hidden, tag: tag, spoiler: true)
+
+      expect(tag.posts).to include(hidden)
+      expect(tag.unspoilered_posts).to eq([listed])
+    end
+
+    it "omits spoilered content warnings from post listings" do
+      warning = create(:content_warning)
+      PostTag.create!(post: post, tag: warning, spoiler: true)
+
+      expect(post.content_warnings).to eq([warning])
+      expect(post.unspoilered_content_warnings).to be_empty
+      expect(post.has_content_warnings?).to eq(false)
+    end
   end
 end

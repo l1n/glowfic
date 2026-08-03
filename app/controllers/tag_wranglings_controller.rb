@@ -56,8 +56,12 @@ class TagWranglingsController < ApplicationController
   end
 
   def mark_canonical
-    @tag.update!(canonical: true)
-    flash[:success] = "Tag #{@tag.name} marked canonical."
+    if @tag.synonym?
+      flash[:error] = "A synonym cannot be marked canonical. Remove the synonym relationship first."
+    else
+      @tag.update!(canonical: true)
+      flash[:success] = "Tag #{@tag.name} marked canonical."
+    end
     redirect_to tag_wranglings_path(type: params[:type])
   end
 
@@ -69,11 +73,13 @@ class TagWranglingsController < ApplicationController
 
   def merge_into_target
     target = Tag.find_by(id: params[:merger_id])
-    if target.nil? || target.type != @tag.type
-      flash[:error] = "Merge target must be an existing tag of the same type."
+    return invalid_merge_target if target.nil? || target.type != @tag.type || target.id == @tag.id
+    return not_permitted unless target.wrangleable_by?(current_user)
+
+    if target.synonym?
+      flash[:error] = "Merge target #{target.name} is itself a synonym. Merge into its canonical tag instead."
       redirect_to tag_wranglings_path(type: params[:type]) and return
     end
-    return not_permitted unless target.wrangleable_by?(current_user)
 
     if params[:destroy_loser].present? && current_user.has_permission?(:delete_tags)
       target.merge_with(@tag)
@@ -82,6 +88,11 @@ class TagWranglingsController < ApplicationController
       target.merge_as_synonym(@tag)
       flash[:success] = "Tag #{@tag.name} is now a synonym of #{target.name}."
     end
+    redirect_to tag_wranglings_path(type: params[:type])
+  end
+
+  def invalid_merge_target
+    flash[:error] = "Merge target must be a different existing tag of the same type."
     redirect_to tag_wranglings_path(type: params[:type])
   end
 

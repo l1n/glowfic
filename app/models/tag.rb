@@ -124,6 +124,12 @@ class Tag < ApplicationRecord
     characters.count
   end
 
+  # Reverse lookup excludes spoilered taggings, so a post spoilered under this
+  # tag does not appear in its listings.
+  def unspoilered_posts
+    posts.where(post_tags: { spoiler: false })
+  end
+
   def synonym?
     merger_id.present?
   end
@@ -156,6 +162,9 @@ class Tag < ApplicationRecord
 
   # Destroys the loser rather than keeping it as a synonym; admin-only.
   def merge_with(other_tag)
+    raise ArgumentError, "Cannot merge a tag into itself" if other_tag == self
+    raise ArgumentError, "Cannot merge across tag types" if other_tag.type != type
+
     transaction do
       absorb_taggings_from(other_tag)
       WranglingAssignment.reassign_for_merge(source: other_tag, target: self) if is_a?(Setting)

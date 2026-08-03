@@ -30,6 +30,13 @@ class TagSuggestion < ApplicationRecord
   #
   # Returns [record_or_nil, outcome].
   def self.submit(post:, user:, tag: nil, tag_type: nil, tag_name: nil, note: nil, spoiler: false, reveal_after_reply_order: nil)
+    # A proposed name that already exists is a suggestion of that tag. Without
+    # this, re-proposing a rejected tag as a "new" name walks past the block.
+    if tag.nil? && tag_type.present? && tag_name.present?
+      tag = Tag.where(type: tag_type).find_by(name: tag_name)
+      tag_type = tag_name = nil if tag
+    end
+
     existing_tagging = matching_tagging(post: post, tag: tag, tag_type: tag_type, tag_name: tag_name)
 
     if existing_tagging
@@ -100,7 +107,10 @@ class TagSuggestion < ApplicationRecord
     transaction do
       tag_record = tag || Tag.create!(type: tag_type, name: tag_name, user: user)
       PostTag.find_or_create_by!(post: post, tag: tag_record)
-      update!(status: :accepted, resolved_by: resolver, resolved_at: Time.zone.now, tag: tag_record)
+      update!(
+        status: :accepted, resolved_by: resolver, resolved_at: Time.zone.now,
+        tag: tag_record, tag_type: nil, tag_name: nil,
+      )
     end
   end
 

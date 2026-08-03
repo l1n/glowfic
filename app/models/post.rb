@@ -27,6 +27,7 @@ class Post < ApplicationRecord
   has_many :bookmarked_replies, -> { ordered }, through: :bookmarks, source: :reply, dependent: :destroy
 
   has_many :post_tags, inverse_of: :post, dependent: :destroy
+  has_many :tag_suggestions, inverse_of: :post, dependent: :destroy
   has_many :labels, -> { ordered_by_post_tag }, through: :post_tags, source: :label, dependent: :destroy
   has_many :settings, -> { ordered_by_post_tag }, through: :post_tags, source: :setting, dependent: :destroy
   has_many :content_warnings, -> { ordered_by_post_tag }, through: :post_tags, source: :content_warning,
@@ -239,6 +240,10 @@ class Post < ApplicationRecord
   def visible_post_tags_for(user)
     read_order = read_reply_order_for(user)
     post_tags.includes(:tag).select { |post_tag| post_tag.revealed_to?(user, read_reply_order: read_order) }
+  end
+
+  def visible_tags_for(user, klass)
+    visible_post_tags_for(user).map(&:tag).grep(klass)
   end
 
   def hidden_spoiler_tag_count_for(user)

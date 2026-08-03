@@ -135,9 +135,7 @@ class TagsController < ApplicationController
   def permitted_params
     permitted = [:type, :description, :owned]
     permitted.insert(0, :user_id) if current_user.admin? || @tag.user == current_user
-    if current_user.admin? || @tag.user == current_user || @tag.wrangleable_by?(current_user)
-      permitted.insert(0, :name)
-    end
+    permitted.insert(0, :name) if current_user.admin? || @tag.user == current_user || @tag.wrangleable_by?(current_user)
     params.fetch(:tag, {}).permit(permitted)
   end
 end

@@ -57,21 +57,34 @@
               = surround '(', ')' do
                 = link_to "#{count} #{'time'.pluralize(count)}", search_replies_path(post_id: @post.id, character_id: character.id, commit: true, sort: :created_new)
 
-    - if @post.settings.present?
+    - visible_settings = @post.visible_tags_for(current_user, Setting)
+    - if visible_settings.present?
       %tr
         %th.sub.width-150 Setting
-        - setting_links = @post.settings.ordered_by_post_tag.map { |tag| link_to tag.name, tag_path(tag) }
+        - setting_links = visible_settings.map { |tag| link_to tag.name, tag_path(tag) }
         %td{class: cycle('odd', 'even')}= safe_join(setting_links, ', ')
-    - if @post.content_warnings.present?
+    - visible_warnings = @post.visible_tags_for(current_user, ContentWarning)
+    - if visible_warnings.present?
       %tr
         %th.sub.width-150 Content Warnings
-        - warning_links = @post.content_warnings.ordered_by_post_tag.map { |tag| link_to tag.name, tag_path(tag) }
+        - warning_links = visible_warnings.map { |tag| link_to tag.name, tag_path(tag) }
         %td{class: cycle('odd', 'even')}= safe_join(warning_links, ', ')
-    - if @post.labels.present?
+    - visible_labels = @post.visible_tags_for(current_user, Label)
+    - if visible_labels.present?
       %tr
         %th.sub.width-150 Labels
-        - label_links = @post.labels.ordered_by_post_tag.map { |tag| link_to tag.name, tag_path(tag) }
+        - label_links = visible_labels.map { |tag| link_to tag.name, tag_path(tag) }
         %td{class: cycle('odd', 'even')}= safe_join(label_links, ', ')
+    - hidden_count = @post.hidden_spoiler_tag_count_for(current_user)
+    - if hidden_count > 0
+      %tr
+        %th.sub.width-150 Spoiler Tags
+        %td{class: cycle('odd', 'even')}
+          #{hidden_count} #{"tag".pluralize(hidden_count)} hidden until you have read further.
+    - if current_user && @post.allow_tag_suggestions? && @post.user_id != current_user.id && !current_user.read_only?
+      %tr
+        %th.sub.width-150 Tags
+        %td{class: cycle('odd', 'even')}= link_to "Suggest a tag", new_post_tag_suggestion_path(@post)
     %tr
       %th.sub.width-150.vtop Word Count
       %td{class: cycle('odd', 'even')}

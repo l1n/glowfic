@@ -72,6 +72,7 @@ require 'support/spec_request_helper'
 require 'support/spec_test_helper'
 require 'support/api_test_helper'
 require 'support/posts_controller_shared'
+require 'support/query_counter'
 require 'capybara/rspec'
 
 RSpec.configure do |config|

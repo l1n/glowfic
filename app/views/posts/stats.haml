@@ -75,7 +75,7 @@
         %th.sub.width-150 Labels
         - label_links = visible_labels.map { |tag| link_to tag.name, tag_path(tag) }
         %td{class: cycle('odd', 'even')}= safe_join(label_links, ', ')
-    - hidden_count = @post.hidden_spoiler_tag_count_for(current_user)
+    - hidden_count = current_user ? @post.hidden_spoiler_tag_count_for(current_user) : 0
     - if hidden_count > 0
       %tr
         %th.sub.width-150 Spoiler Tags

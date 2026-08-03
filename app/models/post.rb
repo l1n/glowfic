@@ -28,6 +28,8 @@ class Post < ApplicationRecord
 
   has_many :post_tags, inverse_of: :post, dependent: :destroy
   has_many :tag_suggestions, inverse_of: :post, dependent: :destroy
+
+  before_validation :default_tag_suggestions_from_user, on: :create
   has_many :labels, -> { ordered_by_post_tag }, through: :post_tags, source: :label, dependent: :destroy
   has_many :settings, -> { ordered_by_post_tag }, through: :post_tags, source: :setting, dependent: :destroy
   has_many :content_warnings, -> { ordered_by_post_tag }, through: :post_tags, source: :content_warning,
@@ -239,7 +241,7 @@ class Post < ApplicationRecord
   # instead of PostTag#revealed_to? in a loop.
   def visible_post_tags_for(user)
     read_order = read_reply_order_for(user)
-    post_tags.includes(:tag).select { |post_tag| post_tag.revealed_to?(user, read_reply_order: read_order) }
+    post_tags.includes(:tag).order(:id).select { |post_tag| post_tag.revealed_to?(user, read_reply_order: read_order) }
   end
 
   def visible_tags_for(user, klass)
@@ -324,6 +326,12 @@ class Post < ApplicationRecord
   # must not include spoilered taggings.
   def unspoilered_content_warnings
     content_warnings.where(post_tags: { spoiler: false })
+  end
+
+  def default_tag_suggestions_from_user
+    return if allow_tag_suggestions_changed?
+    return if user.nil?
+    self.allow_tag_suggestions = user.allow_tag_suggestions
   end
 
   def reply_count

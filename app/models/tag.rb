@@ -20,6 +20,8 @@ class Tag < ApplicationRecord
 
   TYPES = %w(Setting Label ContentWarning GalleryGroup)
   HIERARCHICAL_TYPES = %w(Setting Label)
+  # GalleryGroup tags attach to galleries, not posts.
+  POST_TYPES = %w(Setting Label ContentWarning)
 
   validates :name, :type, presence: true
   validates :name, uniqueness: { scope: :type }
@@ -71,7 +73,7 @@ class Tag < ApplicationRecord
     return true if user.has_permission?(:wrangle_tags_global)
     return false unless user.has_permission?(:wrangle_tags)
 
-    wrangling_setting_ids = WranglingAssignment.scope_ids_for(user)
+    wrangling_setting_ids = user.wrangling_scope_ids
     return false if wrangling_setting_ids.empty?
     return wrangling_setting_ids.include?(id) if is_a?(Setting)
 

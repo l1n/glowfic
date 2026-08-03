@@ -13,8 +13,9 @@ class TagSuggestion < ApplicationRecord
 
   enum :status, { pending: 0, accepted: 1, rejected: 2, endorsed: 3 }
 
-  validates :tag_type, inclusion: { in: Tag::TYPES, allow_nil: true }
+  validates :tag_type, inclusion: { in: Tag::POST_TYPES, allow_nil: true }
   validate :names_exactly_one_tag
+  validate :tag_is_a_post_tag
   validate :suggester_is_not_the_author, on: :create
   validate :post_accepts_suggestions, on: :create
   validate :within_rate_limits, on: :create
@@ -30,6 +31,9 @@ class TagSuggestion < ApplicationRecord
   #
   # Returns [record_or_nil, outcome].
   def self.submit(post:, user:, tag: nil, tag_type: nil, tag_name: nil, note: nil, spoiler: false, reveal_after_reply_order: nil)
+    # Checked before the endorsement path, which creates unconditionally.
+    return [nil, :not_accepted] unless post.allow_tag_suggestions?
+
     # A proposed name that already exists is a suggestion of that tag. Without
     # this, re-proposing a rejected tag as a "new" name walks past the block.
     if tag.nil? && tag_type.present? && tag_name.present?
@@ -126,6 +130,12 @@ class TagSuggestion < ApplicationRecord
   end
 
   private
+
+  def tag_is_a_post_tag
+    return if tag.nil?
+    return if Tag::POST_TYPES.include?(tag.type)
+    errors.add(:base, "#{tag.type} tags cannot be applied to posts.")
+  end
 
   def names_exactly_one_tag
     has_existing = tag_id.present?

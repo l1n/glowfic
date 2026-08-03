@@ -34,6 +34,14 @@ RSpec.describe Tag::MetaTag do
       expect(closing).not_to be_valid
     end
 
+    it "rejects an edge that would close a cycle through a suggested edge" do
+      a = create(:setting)
+      b = create(:setting)
+      Tag::MetaTag.create!(parent_tag: a, child_tag: b, suggested: true)
+
+      expect(Tag::MetaTag.new(parent_tag: b, child_tag: a)).not_to be_valid
+    end
+
     it "allows a diamond, which is not a cycle" do
       top = create(:setting)
       left = create(:setting)

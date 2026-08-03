@@ -10,6 +10,10 @@ class PostTag < ApplicationRecord
   validates :reveal_after_reply_order, numericality: { greater_than_or_equal_to: 0, allow_nil: true }
   validate :reveal_threshold_requires_spoiler
 
+  # Without a fixed threshold, "the end of the post" moves every time a reply
+  # is added, so a tag would disappear again for a reader who had caught up.
+  before_validation :fix_reveal_threshold, on: :create
+
   scope :spoilered, -> { where(spoiler: true) }
   scope :unspoilered, -> { where(spoiler: false) }
 
@@ -38,5 +42,11 @@ class PostTag < ApplicationRecord
   def reveal_threshold_requires_spoiler
     return if reveal_after_reply_order.nil? || spoiler?
     errors.add(:reveal_after_reply_order, "requires the tagging to be marked as a spoiler")
+  end
+
+  def fix_reveal_threshold
+    return unless spoiler?
+    return if reveal_after_reply_order.present?
+    self.reveal_after_reply_order = post&.last_reply_order
   end
 end

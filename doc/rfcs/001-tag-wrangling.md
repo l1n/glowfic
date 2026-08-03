@@ -242,9 +242,13 @@ The following columns are added to `post_tags`:
 | `spoiler` | boolean, not null, default false | Tagging is withheld |
 | `reveal_after_reply_order` | integer, nullable | Reveal threshold |
 
-A null `reveal_after_reply_order` on a spoiler tagging means the tagging is
-revealed only once the reader has reached the end of the post as it currently
-stands.
+A spoiler tagging created without an explicit `reveal_after_reply_order` MUST
+have the threshold fixed to the post's last `reply_order` at the time the
+tagging is created. Resolving "the end of the post" dynamically would move the
+threshold every time a reply is added, so a tagging would become visible to a
+reader who had caught up and then hidden again on the next reply. The fixed
+threshold also matches author intent, which is to withhold the tag until the
+point the tagged material has been reached.
 
 A tagging is revealed to a user when any of the following holds:
 
@@ -347,6 +351,11 @@ of section 6.3 to the suggestion list.
 **Abuse controls.** Readonly and suspended users MUST NOT suggest. Per-user and
 per-post caps on pending suggestions apply. Existing ignore lists suppress
 suggestions from ignored users.
+
+**Suggestible types.** Only `Setting`, `Label`, and `ContentWarning` may be
+suggested. `GalleryGroup` tags attach to galleries, not posts, and a tagging
+referencing one would be surfaced by none of `Post#settings`, `#labels`, or
+`#content_warnings`.
 
 **Content warnings.** Mods MUST NOT apply a `ContentWarning` over an author's
 rejection. Authors retain control of their own posts, including of tags they

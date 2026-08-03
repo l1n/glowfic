@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_03_120400) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_03_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -452,7 +452,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_03_120400) do
   create_table "tag_tags", id: :serial, force: :cascade do |t|
     t.integer "tagged_id", null: false
     t.integer "tag_id", null: false
-    t.boolean "suggested", default: false
+    t.boolean "suggested", default: false, null: false
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.index ["tag_id"], name: "index_tag_tags_on_tag_id"

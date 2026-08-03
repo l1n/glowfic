@@ -3,6 +3,7 @@ class TagSuggestionsController < ApplicationController
   before_action :login_required
   before_action :readonly_forbidden
   before_action :find_post, only: [:new, :create]
+  before_action :require_open_post, only: [:new]
   before_action :find_suggestion, only: [:accept, :reject, :allow_again]
   before_action :require_author, only: [:accept, :reject, :allow_again]
 
@@ -35,6 +36,9 @@ class TagSuggestionsController < ApplicationController
     case outcome
       when :already_visible
         flash[:error] = "Tag is already applied to this post."
+        redirect_to post_path(@post)
+      when :not_accepted
+        flash[:error] = "This post does not accept tag suggestions."
         redirect_to post_path(@post)
       when :invalid
         @suggestion = record
@@ -75,6 +79,12 @@ class TagSuggestionsController < ApplicationController
     return if @post&.visible_to?(current_user)
     flash[:error] = "Post could not be found."
     redirect_to posts_path
+  end
+
+  def require_open_post
+    return if @post.allow_tag_suggestions?
+    flash[:error] = "This post does not accept tag suggestions."
+    redirect_to post_path(@post)
   end
 
   def find_suggestion

@@ -61,6 +61,27 @@ RSpec.describe PostTag do
     end
   end
 
+  describe "reveal threshold" do
+    it "fixes a nil threshold at the post's current end so visibility does not flip-flop" do
+      replies = create_list(:reply, 3, post: post, user: author)
+      tagging = PostTag.create!(post: post, tag: tag, spoiler: true)
+      expect(tagging.reveal_after_reply_order).to eq(replies.last.reply_order)
+
+      reader = create(:user)
+      read_to(reader, replies.last)
+      expect(tagging.revealed_to?(reader)).to eq(true)
+
+      create(:reply, post: post, user: author)
+      expect(tagging.reload.revealed_to?(reader)).to eq(true)
+    end
+
+    it "leaves an explicit threshold alone" do
+      create_list(:reply, 3, post: post, user: author)
+      tagging = PostTag.create!(post: post, tag: tag, spoiler: true, reveal_after_reply_order: 1)
+      expect(tagging.reveal_after_reply_order).to eq(1)
+    end
+  end
+
   describe "validations" do
     it "rejects a reveal threshold without the spoiler flag" do
       tagging = PostTag.new(post: post, tag: tag, spoiler: false, reveal_after_reply_order: 3)

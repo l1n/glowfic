@@ -10,13 +10,11 @@
         %th.table-title{colspan: 2} Suggest a Tag
     %tbody
       %tr
-        %td.sub Existing tag
-        %td= f.select :tag_id, options_from_collection_for_select(Tag.wrangleable.ordered_by_name.limit(200), :id, :name), include_blank: '— none —'
-      %tr
-        %td.sub New tag
+        %td.sub Tag
         %td
-          = f.select :tag_type, options_for_select(Tag::TYPES), include_blank: '— type —'
+          = f.select :tag_type, options_for_select(Tag::POST_TYPES), include_blank: '— type —'
           = f.text_field :tag_name, placeholder: 'Tag name'
+          .subber An existing tag with this name and type is suggested as that tag.
       %tr
         %td.sub Note
         %td= f.text_area :note, rows: 3, placeholder: 'Optional. Shown to the post author.'

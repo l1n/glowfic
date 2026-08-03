@@ -59,10 +59,26 @@ RSpec.describe TagSuggestionsController do
     end
 
     it "re-renders on invalid input" do
+      login_as(reader)
+      post :create, params: { post_id: post_record.id, tag_suggestion: { tag_name: '' } }
+      expect(response).to render_template(:new)
+    end
+
+    it "redirects when the post does not accept suggestions" do
       post_record.update!(allow_tag_suggestions: false)
       login_as(reader)
-      post :create, params: { post_id: post_record.id, tag_suggestion: { tag_id: tag.id } }
-      expect(response).to render_template(:new)
+
+      expect {
+        post :create, params: { post_id: post_record.id, tag_suggestion: { tag_id: tag.id } }
+      }.not_to change { TagSuggestion.count }
+      expect(flash[:error]).to eq("This post does not accept tag suggestions.")
+    end
+
+    it "does not offer the form when the post does not accept suggestions" do
+      post_record.update!(allow_tag_suggestions: false)
+      login_as(reader)
+      get :new, params: { post_id: post_record.id }
+      expect(flash[:error]).to eq("This post does not accept tag suggestions.")
     end
   end
 

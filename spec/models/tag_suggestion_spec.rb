@@ -88,6 +88,23 @@ RSpec.describe TagSuggestion do
       expect(TagSuggestion.new(post: post, user: reader, tag: tag)).not_to be_valid
     end
 
+    it "refuses a gallery group, which cannot be applied to a post" do
+      group = create(:gallery_group)
+      expect(TagSuggestion.new(post: post, user: reader, tag: group)).not_to be_valid
+    end
+
+    it "does not raise when endorsing on a post that stopped accepting suggestions" do
+      create_list(:reply, 2, post: post, user: author)
+      PostTag.create!(post: post, tag: tag, spoiler: true)
+      post.update!(allow_tag_suggestions: false)
+
+      expect {
+        record, outcome = TagSuggestion.submit(post: post, user: reader, tag: tag)
+        expect(outcome).to eq(:not_accepted)
+        expect(record).to be_nil
+      }.not_to raise_error
+    end
+
     it "enforces a per-post pending cap" do
       described_class::MAX_PENDING_PER_POST.times do
         TagSuggestion.create!(post: post, user: create(:user), tag: create(:label))

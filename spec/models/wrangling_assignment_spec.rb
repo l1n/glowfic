@@ -18,6 +18,24 @@ RSpec.describe WranglingAssignment do
       expect(WranglingAssignment.scope_ids_for(wrangler)).to match_array([parent.id, child.id, grandchild.id])
     end
 
+    it "excludes descendants reachable only through a suggested edge" do
+      parent = create(:setting)
+      child = create(:setting)
+      Tag::MetaTag.create!(parent_tag: parent, child_tag: child, suggested: true)
+      WranglingAssignment.create!(user: wrangler, setting: parent)
+
+      expect(WranglingAssignment.scope_ids_for(wrangler)).to eq([parent.id])
+      expect(parent.child_settings).to be_empty
+    end
+
+    it "memoizes the resolved scope on the user" do
+      setting = create(:setting)
+      WranglingAssignment.create!(user: wrangler, setting: setting)
+      wrangler.wrangling_scope_ids
+
+      expect(count_queries { 5.times { wrangler.wrangling_scope_ids } }).to be_empty
+    end
+
     it "does not include ancestors of an assigned setting" do
       parent = create(:setting)
       child = create(:setting)

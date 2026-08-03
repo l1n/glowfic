@@ -40,8 +40,26 @@ class Tag::MetaTag < ApplicationRecord
     SELECT DISTINCT id FROM walk WHERE id != ?
   SQL
 
+  # Includes suggested edges, so an edge that would close a cycle once
+  # confirmed is rejected at the point it is proposed.
+  ANCESTOR_ANY_SQL = <<~SQL.squish
+    WITH RECURSIVE walk(id, path, cycle) AS (
+      SELECT ?::integer, ARRAY[?::integer], false
+      UNION ALL
+      SELECT tag_tags.tag_id, walk.path || tag_tags.tag_id, tag_tags.tag_id = ANY(walk.path)
+      FROM tag_tags
+      JOIN walk ON tag_tags.tagged_id = walk.id
+      WHERE NOT walk.cycle
+    )
+    SELECT DISTINCT id FROM walk WHERE id != ?
+  SQL
+
   def self.ancestor_ids_of(tag)
     walk_ids(tag, ANCESTOR_SQL)
+  end
+
+  def self.any_ancestor_ids_of(tag)
+    walk_ids(tag, ANCESTOR_ANY_SQL)
   end
 
   def self.descendant_ids_of(tag)
@@ -74,7 +92,7 @@ class Tag::MetaTag < ApplicationRecord
       return
     end
 
-    return unless Tag::MetaTag.ancestor_ids_of(parent_tag).include?(child_tag.id)
+    return unless Tag::MetaTag.any_ancestor_ids_of(parent_tag).include?(child_tag.id)
     errors.add(
       :base,
       "#{parent_tag.name} already implies #{child_tag.name}. This implication would create a cycle.",

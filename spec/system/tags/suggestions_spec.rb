@@ -14,7 +14,8 @@ RSpec.describe "Suggesting tags" do
     visit stats_post_path(post)
     click_link 'Suggest a tag'
 
-    select 'Bar Fight', from: 'tag_suggestion_tag_id'
+    select 'Label', from: 'tag_suggestion_tag_type'
+    fill_in 'tag_suggestion_tag_name', with: 'Bar Fight'
     fill_in 'tag_suggestion_note', with: 'There is a bar fight in chapter two.'
     click_button 'Suggest'
 

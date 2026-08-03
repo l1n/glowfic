@@ -21,7 +21,7 @@ RSpec.describe "Wrangling tags" do
     end
 
     within(table_titled('Awaiting Review')) do
-      within(find('tr', text: 'Bar Fight', match: :prefer_exact)) { click_button 'Canonical' }
+      within('tr', text: 'Bar Fight', match: :prefer_exact) { click_button 'Canonical' }
     end
 
     expect(page).to have_text('Bar Fight marked canonical.')

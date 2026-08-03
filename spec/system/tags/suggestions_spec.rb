@@ -44,7 +44,7 @@ RSpec.describe "Suggesting tags" do
 
     login(author)
     visit tag_suggestions_path
-    within(find('tr', text: 'Declined')) { click_button 'Decline' }
+    within('tr', text: 'Declined') { click_button 'Decline' }
     expect(page).to have_text('Nobody can suggest it on this post again.')
 
     relogin_as(other_reader)
@@ -54,7 +54,7 @@ RSpec.describe "Suggesting tags" do
 
     relogin_as(author)
     visit tag_suggestions_path
-    within(find('tr', text: 'Declined')) { click_button 'Allow again' }
+    within('tr', text: 'Declined') { click_button 'Allow again' }
     expect(page).to have_text('can be suggested again')
     expect(TagSuggestion.find_by(id: suggestion.id)).to be_nil
   end
@@ -92,13 +92,13 @@ RSpec.describe "Suggesting tags" do
     post.mark_read(reader, at_time: replies.first.created_at)
     visit stats_post_path(post)
 
-    expect(page).not_to have_text('Late Reveal')
     expect(page).to have_text('1 tag hidden until you have read further.')
+    expect(page).to have_no_text('Late Reveal')
 
     post.mark_read(reader, at_time: replies.last.created_at, force: true)
     visit stats_post_path(post)
 
     expect(page).to have_text('Late Reveal')
-    expect(page).not_to have_text('hidden until you have read further')
+    expect(page).to have_no_text('hidden until you have read further')
   end
 end

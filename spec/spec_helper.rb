@@ -184,7 +184,7 @@ RSpec.configure do |config|
     driven_by :selenium, using: :headless_chrome, options: { timeout: 120 } do |options|
       # Lets a machine without Chrome in a standard location point at one, e.g.
       # a Chrome for Testing download. shell.nix already exports CHROME_BIN.
-      options.binary = ENV['CHROME_BIN'] if ENV['CHROME_BIN'].present? && File.exist?(ENV['CHROME_BIN'].to_s)
+      options.binary = ENV.fetch('CHROME_BIN', nil) if ENV['CHROME_BIN'].present? && File.exist?(ENV['CHROME_BIN'].to_s)
       options.add_argument('--no-sandbox')
       options.add_argument('--disable-dev-shm-usage')
       options.add_argument("--user-data-dir=#{ENV['CHROMEDRIVER_CONFIG']}") if ENV['CHROMEDRIVER_CONFIG']

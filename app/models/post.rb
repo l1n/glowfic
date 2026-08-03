@@ -208,6 +208,44 @@ class Post < ApplicationRecord
     end
   end
 
+  # How far into this post the user has read, as a reply_order.
+  #
+  # Derived from post_views.read_at, a timestamp, so a reader who opened the
+  # thread when it was short and returned after 200 new replies resolves to a
+  # high reply_order without having read the intervening replies. Adequate for
+  # spoiler-hiding, but not a guarantee.
+  def read_reply_order_for(user)
+    return nil if user.nil?
+    return @read_reply_order[user.id] if defined?(@read_reply_order) && @read_reply_order.key?(user.id)
+
+    @read_reply_order ||= {}
+    @read_reply_order[user.id] = begin
+      viewed_at = last_read(user) || board.last_read(user)
+      if viewed_at.nil?
+        nil
+      else
+        replies.where(created_at: ..viewed_at).maximum(:reply_order) || 0
+      end
+    end
+  end
+
+  def last_reply_order
+    return @last_reply_order if defined?(@last_reply_order)
+    @last_reply_order = replies.maximum(:reply_order)
+  end
+
+  # Resolves the reader's position once rather than per tagging; use this
+  # instead of PostTag#revealed_to? in a loop.
+  def visible_post_tags_for(user)
+    read_order = read_reply_order_for(user)
+    post_tags.includes(:tag).select { |post_tag| post_tag.revealed_to?(user, read_reply_order: read_order) }
+  end
+
+  def hidden_spoiler_tag_count_for(user)
+    read_order = read_reply_order_for(user)
+    post_tags.count { |post_tag| !post_tag.revealed_to?(user, read_reply_order: read_order) }
+  end
+
   def hide_warnings_for(user)
     view_for(user).update(warnings_hidden: true)
   end

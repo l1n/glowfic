@@ -27,6 +27,8 @@ class Notification < ApplicationRecord
     import_fail: 1,
     new_favorite_post: 2,
     joined_favorite_post: 3,
+    wrangling_scope_merged: 4,
+    tag_suggested: 5,
   }
 
   attr_accessor :skip_email

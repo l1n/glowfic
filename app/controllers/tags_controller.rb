@@ -54,7 +54,9 @@ class TagsController < ApplicationController
 
     begin
       Tag.transaction do
-        @tag.parent_settings = process_tags(Setting, obj_param: :tag, id_param: :parent_setting_ids) if @tag.is_a?(Setting)
+        if @tag.is_a?(Setting) && @tag.hierarchy_editable_by?(current_user)
+          @tag.parent_settings = process_tags(Setting, obj_param: :tag, id_param: :parent_setting_ids)
+        end
         @tag.save!
       end
     rescue ActiveRecord::RecordInvalid => e
@@ -132,7 +134,10 @@ class TagsController < ApplicationController
 
   def permitted_params
     permitted = [:type, :description, :owned]
-    permitted.insert(0, :name, :user_id) if current_user.admin? || @tag.user == current_user
+    permitted.insert(0, :user_id) if current_user.admin? || @tag.user == current_user
+    if current_user.admin? || @tag.user == current_user || @tag.wrangleable_by?(current_user)
+      permitted.insert(0, :name)
+    end
     params.fetch(:tag, {}).permit(permitted)
   end
 end

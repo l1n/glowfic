@@ -20,7 +20,7 @@ RSpec.describe Tag::MetaTag do
 
       reverse = Tag::MetaTag.new(parent_tag: child, child_tag: parent)
       expect(reverse).not_to be_valid
-      expect(reverse.errors.full_messages.join).to include("loop")
+      expect(reverse.errors.full_messages.join).to include("cycle")
     end
 
     it "rejects an indirect cycle" do

@@ -34,7 +34,7 @@ class TagSuggestionsController < ApplicationController
 
     case outcome
       when :already_visible
-        flash[:error] = "That tag is already on this post."
+        flash[:error] = "Tag is already applied to this post."
         redirect_to post_path(@post)
       when :invalid
         @suggestion = record
@@ -44,27 +44,27 @@ class TagSuggestionsController < ApplicationController
       else
         # :created, :endorsed and :silently_deduped are indistinguishable to the
         # suggester on purpose; see TagSuggestion.submit.
-        flash[:success] = "Thanks — your suggestion has been sent to the author."
+        flash[:success] = "Suggestion recorded. The post author will review it."
         redirect_to post_path(@post)
     end
   end
 
   def accept
     @suggestion.accept!(resolver: current_user)
-    flash[:success] = "Added #{@suggestion.tag_display_name}."
+    flash[:success] = "Tag #{@suggestion.tag_display_name} applied."
     redirect_to tag_suggestions_path
   end
 
   def reject
     @suggestion.reject!(resolver: current_user)
-    flash[:success] = "Declined #{@suggestion.tag_display_name}. Nobody can suggest it on this post again."
+    flash[:success] = "Tag #{@suggestion.tag_display_name} declined. It cannot be suggested on this post again."
     redirect_to tag_suggestions_path
   end
 
   def allow_again
     name = @suggestion.tag_display_name
     @suggestion.allow_again!
-    flash[:success] = "#{name} can be suggested again."
+    flash[:success] = "Tag #{name} may be suggested again."
     redirect_to tag_suggestions_path
   end
 
@@ -86,7 +86,7 @@ class TagSuggestionsController < ApplicationController
 
   def require_author
     return if @suggestion.post.user_id == current_user.id
-    flash[:error] = "You do not have permission to do that."
+    flash[:error] = "You do not have permission to resolve this suggestion."
     redirect_to tag_suggestions_path
   end
 end

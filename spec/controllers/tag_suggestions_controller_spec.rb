@@ -37,14 +37,14 @@ RSpec.describe TagSuggestionsController do
       expect {
         post :create, params: { post_id: post_record.id, tag_suggestion: { tag_id: tag.id } }
       }.to change { TagSuggestion.count }.by(1)
-      expect(flash[:success]).to eq("Thanks — your suggestion has been sent to the author.")
+      expect(flash[:success]).to eq("Suggestion recorded. The post author will review it.")
     end
 
     it "reports a tag the suggester can already see" do
       PostTag.create!(post: post_record, tag: tag)
       login_as(reader)
       post :create, params: { post_id: post_record.id, tag_suggestion: { tag_id: tag.id } }
-      expect(flash[:error]).to eq("That tag is already on this post.")
+      expect(flash[:error]).to eq("Tag is already applied to this post.")
     end
 
     it "gives the same confirmation for a silently deduped suggestion" do
@@ -54,7 +54,7 @@ RSpec.describe TagSuggestionsController do
       expect {
         post :create, params: { post_id: post_record.id, tag_suggestion: { tag_id: tag.id } }
       }.not_to change { TagSuggestion.count }
-      expect(flash[:success]).to eq("Thanks — your suggestion has been sent to the author.")
+      expect(flash[:success]).to eq("Suggestion recorded. The post author will review it.")
       expect(flash[:error]).to be_nil
     end
 
@@ -86,7 +86,7 @@ RSpec.describe TagSuggestionsController do
       get :index
 
       expect(assigns(:resolved)).to match_array([rejected, accepted])
-      expect(response.body).to include("Allow again")
+      expect(response.body).to include("Permit again")
     end
 
     it "separates endorsements from pending decisions" do
@@ -107,7 +107,7 @@ RSpec.describe TagSuggestionsController do
     it "refuses a user who is not the author" do
       login_as(reader)
       post :accept, params: { id: suggestion.id }
-      expect(flash[:error]).to eq("You do not have permission to do that.")
+      expect(flash[:error]).to eq("You do not have permission to resolve this suggestion.")
       expect(suggestion.reload).to be_pending
     end
 

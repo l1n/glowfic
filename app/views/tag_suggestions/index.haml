@@ -4,7 +4,7 @@
 %table
   %thead
     %tr
-      %th.table-title{colspan: 5} Awaiting Your Decision
+      %th.table-title{colspan: 5} Pending Suggestions
     %tr
       %th.sub Post
       %th.sub Tag
@@ -14,7 +14,7 @@
   %tbody
     - if @pending.empty?
       %tr
-        %td.padding-10{colspan: 5} Nothing waiting.
+        %td.padding-10{colspan: 5} No pending suggestions.
     - @pending.each do |suggestion|
       %tr{class: cycle('even', 'odd')}
         %td= link_to suggestion.post.subject, post_path(suggestion.post)
@@ -26,7 +26,7 @@
         %td= link_to suggestion.user.username, user_path(suggestion.user)
         %td= suggestion.note
         %td
-          = button_to "Add", accept_tag_suggestion_path(suggestion), method: :post, class: 'button'
+          = button_to "Apply", accept_tag_suggestion_path(suggestion), method: :post, class: 'button'
           = button_to "Decline", reject_tag_suggestion_path(suggestion), method: :post, class: 'button'
 
 %table
@@ -40,7 +40,7 @@
   %tbody
     - if @endorsements.empty?
       %tr
-        %td.padding-10{colspan: 3} No endorsements yet.
+        %td.padding-10{colspan: 3} No endorsements.
     - @endorsements.each do |suggestion|
       %tr{class: cycle('even', 'odd')}
         %td= link_to suggestion.post.subject, post_path(suggestion.post)
@@ -48,7 +48,7 @@
         %td= link_to suggestion.user.username, user_path(suggestion.user)
 
 %p.subber
-  A reader reached for a tag you had already applied. Nothing to do — it just means the tag reads the way you intended.
+  An endorsement records that a reader independently suggested a tag already applied to the post. No action is required.
 
 %table
   %thead
@@ -62,7 +62,7 @@
   %tbody
     - if @resolved.empty?
       %tr
-        %td.padding-10{colspan: 4} Nothing resolved yet.
+        %td.padding-10{colspan: 4} No resolved suggestions.
     - @resolved.each do |suggestion|
       %tr{class: cycle('even', 'odd')}
         %td= link_to suggestion.post.subject, post_path(suggestion.post)
@@ -70,4 +70,4 @@
         %td= suggestion.status.titlecase
         %td
           - if suggestion.rejected?
-            = button_to "Allow again", allow_again_tag_suggestion_path(suggestion), method: :delete, class: 'button'
+            = button_to "Permit again", allow_again_tag_suggestion_path(suggestion), method: :delete, class: 'button'

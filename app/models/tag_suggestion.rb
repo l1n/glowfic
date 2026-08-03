@@ -128,29 +128,29 @@ class TagSuggestion < ApplicationRecord
     has_existing = tag_id.present?
     has_proposed = tag_type.present? && tag_name.present?
     return if has_existing ^ has_proposed
-    errors.add(:base, "A suggestion must name either an existing tag or a new tag name, not both.")
+    errors.add(:base, "A suggestion must name exactly one of an existing tag or a new tag name.")
   end
 
   def suggester_is_not_the_author
     return if post.nil? || user.nil?
     return unless post.user_id == user.id
-    errors.add(:base, "You can tag your own post directly.")
+    errors.add(:base, "An author must tag their own post directly.")
   end
 
   def post_accepts_suggestions
     return if post.nil?
     return if post.allow_tag_suggestions?
-    errors.add(:base, "This author is not accepting tag suggestions.")
+    errors.add(:base, "This post does not accept tag suggestions.")
   end
 
   def within_rate_limits
     return if user.nil? || post.nil?
 
     if TagSuggestion.pending.where(user_id: user.id).count >= MAX_PENDING_PER_USER
-      errors.add(:base, "You have too many suggestions awaiting a response.")
+      errors.add(:base, "Limit of #{MAX_PENDING_PER_USER} pending suggestions per user reached.")
     end
 
     return unless TagSuggestion.pending.where(post_id: post.id).count >= MAX_PENDING_PER_POST
-    errors.add(:base, "This post already has as many pending suggestions as it can hold.")
+    errors.add(:base, "Limit of #{MAX_PENDING_PER_POST} pending suggestions per post reached.")
   end
 end

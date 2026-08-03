@@ -132,7 +132,7 @@ RSpec.describe TagWranglingsController do
     it "refuses a merge across types" do
       login_as(create(:admin_user))
       patch :update, params: { id: setting.id, commit_action: 'merge', merger_id: create(:label).id }
-      expect(flash[:error]).to eq("Select a tag of the same type to merge into.")
+      expect(flash[:error]).to eq("Merge target must be an existing tag of the same type.")
     end
 
     it "refuses a tag outside the wrangler's scope" do
@@ -152,7 +152,7 @@ RSpec.describe TagWranglingsController do
     it "rejects an unknown action" do
       login_as(wrangler)
       patch :update, params: { id: setting.id, commit_action: 'explode' }
-      expect(flash[:error]).to eq("Unknown wrangling action.")
+      expect(flash[:error]).to eq("Unrecognized wrangling action.")
     end
   end
 end

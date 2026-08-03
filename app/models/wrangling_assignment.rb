@@ -43,7 +43,7 @@ class WranglingAssignment < ApplicationRecord
       Notification.notify_user(
         user,
         :wrangling_scope_merged,
-        error: "The setting #{source.name} was merged into #{target.name}, which changes what you wrangle.",
+        error: "Setting #{source.name} was merged into #{target.name}. Your wrangling scope has changed.",
       )
     end
   end

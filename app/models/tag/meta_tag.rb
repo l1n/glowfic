@@ -63,7 +63,7 @@ class Tag::MetaTag < ApplicationRecord
   def tags_share_a_type
     return if child_tag.nil? || parent_tag.nil?
     return if child_tag.type == parent_tag.type
-    errors.add(:base, "Implications can only connect tags of the same type.")
+    errors.add(:base, "An implication requires both tags to be of the same type.")
   end
 
   def edge_does_not_close_a_cycle
@@ -77,7 +77,7 @@ class Tag::MetaTag < ApplicationRecord
     return unless Tag::MetaTag.ancestor_ids_of(parent_tag).include?(child_tag.id)
     errors.add(
       :base,
-      "#{parent_tag.name} already implies #{child_tag.name}, directly or indirectly, so this would create a loop.",
+      "#{parent_tag.name} already implies #{child_tag.name}. This implication would create a cycle.",
     )
   end
 end

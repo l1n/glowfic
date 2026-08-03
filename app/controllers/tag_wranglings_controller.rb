@@ -27,7 +27,7 @@ class TagWranglingsController < ApplicationController
       when 'unwrangleable' then mark_unwrangleable
       when 'merge' then merge_into_target
       else
-        flash[:error] = "Unknown wrangling action."
+        flash[:error] = "Unrecognized wrangling action."
         redirect_to tag_wranglings_path
     end
   end
@@ -57,30 +57,30 @@ class TagWranglingsController < ApplicationController
 
   def mark_canonical
     @tag.update!(canonical: true)
-    flash[:success] = "#{@tag.name} marked canonical."
+    flash[:success] = "Tag #{@tag.name} marked canonical."
     redirect_to tag_wranglings_path(type: params[:type])
   end
 
   def mark_unwrangleable
     @tag.update!(unwrangleable: true)
-    flash[:success] = "#{@tag.name} will be skipped."
+    flash[:success] = "Tag #{@tag.name} marked unwrangleable."
     redirect_to tag_wranglings_path(type: params[:type])
   end
 
   def merge_into_target
     target = Tag.find_by(id: params[:merger_id])
     if target.nil? || target.type != @tag.type
-      flash[:error] = "Select a tag of the same type to merge into."
+      flash[:error] = "Merge target must be an existing tag of the same type."
       redirect_to tag_wranglings_path(type: params[:type]) and return
     end
     return not_permitted unless target.wrangleable_by?(current_user)
 
     if params[:destroy_loser].present? && current_user.has_permission?(:delete_tags)
       target.merge_with(@tag)
-      flash[:success] = "Merged and deleted #{@tag.name}."
+      flash[:success] = "Tag #{@tag.name} merged into #{target.name} and deleted."
     else
       target.merge_as_synonym(@tag)
-      flash[:success] = "#{@tag.name} is now a synonym of #{target.name}."
+      flash[:success] = "Tag #{@tag.name} is now a synonym of #{target.name}."
     end
     redirect_to tag_wranglings_path(type: params[:type])
   end

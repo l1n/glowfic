@@ -80,7 +80,7 @@
       %tr
         %th.sub.width-150 Spoiler Tags
         %td{class: cycle('odd', 'even')}
-          #{hidden_count} #{"tag".pluralize(hidden_count)} hidden until you have read further.
+          #{hidden_count} spoiler #{"tag".pluralize(hidden_count)} hidden until you have read further into this post.
     - if current_user && @post.allow_tag_suggestions? && @post.user_id != current_user.id && !current_user.read_only?
       %tr
         %th.sub.width-150 Tags

@@ -13,21 +13,21 @@
         %td.sub Existing tag
         %td= f.select :tag_id, options_from_collection_for_select(Tag.wrangleable.ordered_by_name.limit(200), :id, :name), include_blank: '— none —'
       %tr
-        %td.sub Or a new tag
+        %td.sub New tag
         %td
           = f.select :tag_type, options_for_select(Tag::TYPES), include_blank: '— type —'
           = f.text_field :tag_name, placeholder: 'Tag name'
       %tr
-        %td.sub Why?
-        %td= f.text_area :note, rows: 3, placeholder: 'Optional note for the author'
+        %td.sub Note
+        %td= f.text_area :note, rows: 3, placeholder: 'Optional. Shown to the post author.'
       %tr
         %td.sub Spoiler
         %td
           = f.check_box :spoiler
-          = f.label :spoiler, 'This tag spoils the post'
-          = f.number_field :reveal_after_reply_order, placeholder: 'Reveal after reply #'
+          = f.label :spoiler, 'Tag reveals a spoiler'
+          = f.number_field :reveal_after_reply_order, placeholder: 'Reveal after reply number'
       %tr
         %td{colspan: 2}= f.submit "Suggest", class: 'button'
 
 %p.subber
-  The author decides whether to add this. If they decline, it cannot be suggested on this post again.
+  The post author decides whether to apply the tag. A declined tag cannot be suggested on this post again.

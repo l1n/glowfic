@@ -18,7 +18,7 @@ RSpec.describe "Suggesting tags" do
     fill_in 'tag_suggestion_note', with: 'There is a bar fight in chapter two.'
     click_button 'Suggest'
 
-    expect(page).to have_text('Thanks — your suggestion has been sent to the author.')
+    expect(page).to have_text('Suggestion recorded. The post author will review it.')
 
     relogin_as(author)
     visit tag_suggestions_path
@@ -27,10 +27,10 @@ RSpec.describe "Suggesting tags" do
     within(row) do
       expect(page).to have_text('reader')
       expect(page).to have_text('There is a bar fight in chapter two.')
-      click_button 'Add'
+      click_button 'Apply'
     end
 
-    expect(page).to have_text('Added Bar Fight.')
+    expect(page).to have_text('Tag Bar Fight applied.')
     expect(post.reload.labels).to eq([tag])
   end
 
@@ -45,7 +45,7 @@ RSpec.describe "Suggesting tags" do
     login(author)
     visit tag_suggestions_path
     within('tr', text: 'Declined') { click_button 'Decline' }
-    expect(page).to have_text('Nobody can suggest it on this post again.')
+    expect(page).to have_text('It cannot be suggested on this post again.')
 
     relogin_as(other_reader)
     expect {
@@ -54,8 +54,8 @@ RSpec.describe "Suggesting tags" do
 
     relogin_as(author)
     visit tag_suggestions_path
-    within('tr', text: 'Declined') { click_button 'Allow again' }
-    expect(page).to have_text('can be suggested again')
+    within('tr', text: 'Declined') { click_button 'Permit again' }
+    expect(page).to have_text('may be suggested again')
     expect(TagSuggestion.find_by(id: suggestion.id)).to be_nil
   end
 
@@ -77,7 +77,7 @@ RSpec.describe "Suggesting tags" do
     within('table', text: 'Endorsements') do
       expect(page).to have_text('Hidden Twist')
     end
-    expect(page).to have_text('it just means the tag reads the way you intended')
+    expect(page).to have_text('No action is required')
   end
 
   scenario "A spoiler tag stays hidden until the reader has read far enough" do
@@ -92,7 +92,7 @@ RSpec.describe "Suggesting tags" do
     post.mark_read(reader, at_time: replies.first.created_at)
     visit stats_post_path(post)
 
-    expect(page).to have_text('1 tag hidden until you have read further.')
+    expect(page).to have_text('1 spoiler tag hidden until you have read further into this post.')
     expect(page).to have_no_text('Late Reveal')
 
     post.mark_read(reader, at_time: replies.last.created_at, force: true)

@@ -80,7 +80,7 @@ RSpec.describe TagSuggestion do
     it "refuses suggestions from the post's own author" do
       record = TagSuggestion.new(post: post, user: author, tag: tag)
       expect(record).not_to be_valid
-      expect(record.errors.full_messages.join).to include("your own post")
+      expect(record.errors.full_messages.join).to include("tag their own post directly")
     end
 
     it "refuses when the author has turned suggestions off" do

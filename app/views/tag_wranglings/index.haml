@@ -14,15 +14,14 @@
     %tr
       %td.padding-10{colspan: 5}
         %b Coverage:
-        #{@coverage.percentage}%
-        of #{number_with_delimiter(@coverage.total_taggings)} taggings use a canonical tag.
-        %span.subber #{number_with_delimiter(@coverage.remaining_tags)} tags not yet reviewed.
+        #{@coverage.percentage}% of #{number_with_delimiter(@coverage.total_taggings)} taggings use a canonical tag.
+        %span.subber #{number_with_delimiter(@coverage.remaining_tags)} tags not reviewed.
 
 - if @clusters.present?
   %table
     %thead
       %tr
-        %th.table-title{colspan: 2} Possible Duplicates
+        %th.table-title{colspan: 2} Candidate Duplicates
       %tr
         %th.sub Normalized
         %th.sub Tags
@@ -38,7 +37,7 @@
 %table
   %thead
     %tr
-      %th.table-title{colspan: 4} Awaiting Review
+      %th.table-title{colspan: 4} Unreviewed Tags
     %tr
       %th.sub Name
       %th.sub Type
@@ -47,7 +46,7 @@
   %tbody
     - if @tags.empty?
       %tr
-        %td.padding-10{colspan: 4} Nothing is waiting for you here.
+        %td.padding-10{colspan: 4} No tags await review.
     - @tags.each do |tag|
       %tr{class: cycle('even', 'odd')}
         %td= link_to tag.name, tag_path(tag)
@@ -57,18 +56,18 @@
           = form_tag tag_wrangling_path(tag), method: :patch, class: 'wrangling-actions' do
             = hidden_field_tag :type, @type
             = hidden_field_tag :commit_action, 'canonical'
-            = submit_tag "Canonical", class: 'button'
+            = submit_tag "Mark canonical", class: 'button'
           = form_tag tag_wrangling_path(tag), method: :patch, class: 'wrangling-actions' do
             = hidden_field_tag :type, @type
             = hidden_field_tag :commit_action, 'unwrangleable'
-            = submit_tag "Skip", class: 'button'
+            = submit_tag "Mark unwrangleable", class: 'button'
           = form_tag tag_wrangling_path(tag), method: :patch, class: 'wrangling-actions' do
             = hidden_field_tag :type, @type
             = hidden_field_tag :commit_action, 'merge'
-            = text_field_tag :merger_id, nil, placeholder: 'Merge into tag ID'
+            = text_field_tag :merger_id, nil, placeholder: 'Target tag ID'
             - if current_user.has_permission?(:delete_tags)
               = check_box_tag :destroy_loser
-              = label_tag :destroy_loser, 'delete'
+              = label_tag :destroy_loser, 'delete source tag'
             = submit_tag "Merge", class: 'button'
   %tfoot
     %tr

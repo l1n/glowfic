@@ -37,6 +37,6 @@ class PostTag < ApplicationRecord
 
   def reveal_threshold_requires_spoiler
     return if reveal_after_reply_order.nil? || spoiler?
-    errors.add(:reveal_after_reply_order, "only applies to a tagging marked as a spoiler")
+    errors.add(:reveal_after_reply_order, "requires the tagging to be marked as a spoiler")
   end
 end

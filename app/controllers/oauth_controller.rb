@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class OauthController < ApplicationController
   before_action :login_required, only: [:authorize, :revoke]
-  before_action :authenticate_token, only: [:test_request, :invalidate]
+  before_action :authenticate_token, only: [:test_request]
   protect_from_forgery with: :exception, unless: -> { api_request? }
 
   def token
@@ -40,12 +40,6 @@ class OauthController < ApplicationController
       flash[:success] = "You've revoked the token for #{@token.client_application.name}"
     end
     redirect_to oauth_clients_url
-  end
-
-  # Invalidate current token
-  def invalidate
-    @current_token.invalidate!
-    head status: 410
   end
 
   protected
@@ -99,9 +93,11 @@ class OauthController < ApplicationController
 
   private
 
+  # Scoped to Oauth2Token for the same reason as Authentication::Api#oauth_token_user:
+  # authorization codes live in the same table and must not authenticate requests.
   def authenticate_token
     token_value = request.headers['Authorization'].to_s.split(' ').last
-    @current_token = OauthToken.find_by(token: token_value, invalidated_at: nil) if token_value.present?
+    @current_token = Oauth2Token.active.find_by(token: token_value) if token_value.present?
     head :unauthorized unless @current_token
   end
 

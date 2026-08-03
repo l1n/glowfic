@@ -126,10 +126,8 @@ Rails.application.routes.draw do
     get :test_request
     post :revoke
     post :token
-    get :access_token
     post :authorize
     get :authorize
-    get '', to: 'oauth#index', as: :oauth
   end
 
   # API

@@ -141,6 +141,24 @@ RSpec.describe OauthController do
       get :test_request
       expect(response).to have_http_status(401)
     end
+
+    it "rejects expired token" do
+      user = create(:user)
+      app = ClientApplication.create!(user: user, name: "App", url: "http://example.com", callback_url: "http://example.com/cb")
+      token = Oauth2Token.create!(client_application: app, user: user, expires_at: 1.hour.ago)
+      request.headers['Authorization'] = "Bearer #{token.token}"
+      get :test_request
+      expect(response).to have_http_status(401)
+    end
+
+    it "does not accept an authorization code as a bearer token" do
+      user = create(:user)
+      app = ClientApplication.create!(user: user, name: "App", url: "http://example.com", callback_url: "http://example.com/cb")
+      verifier = Oauth2Verifier.create!(client_application: app, user: user)
+      request.headers['Authorization'] = "Bearer #{verifier.code}"
+      get :test_request
+      expect(response).to have_http_status(401)
+    end
   end
 
   describe "authorize" do

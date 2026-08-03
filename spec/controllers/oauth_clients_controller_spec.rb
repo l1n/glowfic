@@ -138,6 +138,13 @@ RSpec.describe OauthClientsController do
       expect(response).to be_redirect
       expect(response).to redirect_to(action: 'index')
     end
+
+    it "should report a failure to destroy" do
+      allow_any_instance_of(ClientApplication).to receive(:destroy!).and_raise(ActiveRecord::RecordNotDestroyed) # rubocop:todo RSpec/AnyInstance
+      expect { do_delete }.not_to change { ClientApplication.count }
+      expect(flash[:error]).to eq("Failed to destroy the client application")
+      expect(response).to redirect_to(action: 'index')
+    end
   end
 
   describe "update" do

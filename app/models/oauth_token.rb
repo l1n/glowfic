@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class OauthToken < ApplicationRecord
   belongs_to :client_application
   belongs_to :user

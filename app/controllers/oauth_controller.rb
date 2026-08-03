@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class OauthController < ApplicationController
   before_action :login_required, only: [:authorize, :revoke]
   before_action :authenticate_token, only: [:test_request, :invalidate]
@@ -108,4 +109,3 @@ class OauthController < ApplicationController
     request.headers['Authorization'].present? || params[:client_id].present?
   end
 end
-

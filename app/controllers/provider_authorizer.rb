@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ProviderAuthorizer
   attr_accessor :user, :params
 
@@ -32,12 +33,7 @@ class ProviderAuthorizer
   def redirect_uri
     uri = base_uri
     if params[:response_type] == 'code'
-      if uri.query
-        uri.query << '&'
-      else
-        uri.query = ''
-      end
-      uri.query << encode_response
+      uri.query = [uri.query, encode_response].compact.join('&')
     else
       uri.fragment = encode_response
     end

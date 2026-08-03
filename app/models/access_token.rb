@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class AccessToken < OauthToken
   validates :user, presence: true
   validates :secret, presence: true

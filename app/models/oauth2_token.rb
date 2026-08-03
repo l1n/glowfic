@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Oauth2Token < AccessToken
   attr_accessor :state
 

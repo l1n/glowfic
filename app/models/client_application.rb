@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ClientApplication < ApplicationRecord
   belongs_to :user
   has_many :tokens, class_name: "OauthToken", dependent: :destroy

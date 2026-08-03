@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class OauthClientsController < ApplicationController
   before_action :login_required
   before_action :find_client_application, only: [:show, :edit, :update, :destroy]

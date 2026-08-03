@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Oauth2Verifier < OauthToken
   validates :user, presence: true
   attr_accessor :state

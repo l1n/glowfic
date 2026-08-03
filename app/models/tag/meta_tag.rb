@@ -14,33 +14,47 @@ class Tag::MetaTag < ApplicationRecord
   validate :tags_share_a_type
   validate :edge_does_not_close_a_cycle
 
+  # Written out per direction rather than interpolating column names, so no
+  # identifier ever reaches the query as a substitution.
+  ANCESTOR_SQL = <<~SQL.squish
+    WITH RECURSIVE walk(id, path, cycle) AS (
+      SELECT ?::integer, ARRAY[?::integer], false
+      UNION ALL
+      SELECT tag_tags.tag_id, walk.path || tag_tags.tag_id, tag_tags.tag_id = ANY(walk.path)
+      FROM tag_tags
+      JOIN walk ON tag_tags.tagged_id = walk.id
+      WHERE NOT walk.cycle AND tag_tags.suggested = false
+    )
+    SELECT DISTINCT id FROM walk WHERE id != ?
+  SQL
+
+  DESCENDANT_SQL = <<~SQL.squish
+    WITH RECURSIVE walk(id, path, cycle) AS (
+      SELECT ?::integer, ARRAY[?::integer], false
+      UNION ALL
+      SELECT tag_tags.tagged_id, walk.path || tag_tags.tagged_id, tag_tags.tagged_id = ANY(walk.path)
+      FROM tag_tags
+      JOIN walk ON tag_tags.tag_id = walk.id
+      WHERE NOT walk.cycle AND tag_tags.suggested = false
+    )
+    SELECT DISTINCT id FROM walk WHERE id != ?
+  SQL
+
   def self.ancestor_ids_of(tag)
-    walk_ids(tag, start_column: :tagged_id, next_column: :tag_id)
+    walk_ids(tag, ANCESTOR_SQL)
   end
 
   def self.descendant_ids_of(tag)
-    walk_ids(tag, start_column: :tag_id, next_column: :tagged_id)
+    walk_ids(tag, DESCENDANT_SQL)
   end
 
   # Cycle-safe: rows predating the cycle validation, or created by an import,
   # must not be able to hang the traversal.
-  def self.walk_ids(tag, start_column:, next_column:)
+  def self.walk_ids(tag, sql)
     return [] if tag.nil? || tag.id.nil?
 
-    id = connection.quote(tag.id)
-    sql = <<~SQL.squish
-      WITH RECURSIVE walk(id, path, cycle) AS (
-        SELECT #{id}::integer, ARRAY[#{id}::integer], false
-        UNION ALL
-        SELECT tag_tags.#{next_column}, walk.path || tag_tags.#{next_column}, tag_tags.#{next_column} = ANY(walk.path)
-        FROM tag_tags
-        JOIN walk ON tag_tags.#{start_column} = walk.id
-        WHERE NOT walk.cycle AND tag_tags.suggested = false
-      )
-      SELECT DISTINCT id FROM walk WHERE id != #{id}
-    SQL
-
-    connection.select_values(sql).map(&:to_i)
+    query = sanitize_sql_array([sql, tag.id, tag.id, tag.id])
+    connection.select_values(query).map(&:to_i)
   end
   private_class_method :walk_ids
 

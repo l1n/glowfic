@@ -289,6 +289,10 @@ taggings, expandable on request. Note that changing a post's warnings resets
 reset for spoiler taggings is not wanted, as re-hiding a tagging a reader has
 already seen achieves nothing.
 
+Because the count is expandable by any reader, the reading-position gate is a
+default rather than an enforcement boundary. Section 6.5 makes this explicit
+rather than leaving it as an artefact of the presentation.
+
 **API.** `apipie` exposes post tags, so the reveal rule MUST apply there.
 Unrevealed taggings are redacted rather than omitted:
 
@@ -365,6 +369,62 @@ system, and must use the existing out-of-band report, which is a site-rules
 matter. A declined `ContentWarning` suggestion MAY be surfaced to mods as a
 signal without conferring authority to act on it.
 
+### 6.5 Reader-controlled reveal
+
+Deferred: not required for the initial implementation, specified here because it
+changes one cost assessment in section 6.3 and should not be designed twice.
+
+Reader tolerance for disclosure varies widely, from readers who want to know
+nothing about a story in advance to readers who treat tags as advertising and
+prefer to be told everything. Section 6.3 gates reveal on reading position
+alone, which encodes a single policy for every reader. The intent of marking a
+tagging as a spoiler is to describe *when* the tagged material arrives, not to
+decide on the reader's behalf whether they want to know.
+
+Two mechanisms are specified, and they compose:
+
+1. **Preference.** `users.reveal_spoiler_tags`, default false. When true,
+   spoiler taggings are revealed to that user regardless of reading position.
+2. **Click to reveal.** An unrevealed tagging renders as a count that any
+   reader MAY expand, whatever their preference. Persistence MAY follow the
+   `warnings_hidden` pattern, or MAY be per-request; the choice does not affect
+   the rest of this section.
+
+**Effect on reverse lookup.** This is the substantive consequence. Section 6.3
+rejects per-viewer filtering because it makes a tag listing depend on the
+requesting user's read state across every post in the result set, which is
+uncacheable. A preference does not have that shape: it is a single boolean on
+the user, so a listing has exactly two variants and both are cacheable. Option 3
+of section 6.3 therefore becomes affordable once the preference exists.
+
+Accordingly, when `reveal_spoiler_tags` is set, spoilered taggings MAY
+participate in tag-to-post listings for that user. Exclusion MUST remain the
+default, and any cache key for a tag listing MUST incorporate the preference.
+
+**Effect on the position gate.** Once a reader can expand the count or set the
+preference, reading position is a convenience that reveals tags automatically at
+the point they stop being disclosures. It is not an access control, and MUST NOT
+be described as one to authors. Authors mark *when*; readers choose *whether*.
+
+**Alternate paradigm.** A simpler model is available: define a spoiler tagging
+purely as one the reader must proactively reveal, and drop reading position
+entirely. This would remove `reveal_after_reply_order`, the dependency on
+`post_views.read_at`, and the timestamp limitation in section 6.3, at the cost
+of requiring a reader who has finished the post to keep expanding tags that no
+longer disclose anything to them. The two models are not far apart in
+implementation: the position gate is what decides the *initial* state of the
+control. This RFC specifies the position gate with reader override, but adopting
+the simpler model instead is a live option, and is cheaper to adopt before
+`reveal_after_reply_order` has data in it than after.
+
+**Content warnings.** A spoilered `ContentWarning` is in tension with the
+purpose of a content warning, since a warning withheld until the reader reaches
+the material has not warned anyone. A reader who sets `reveal_spoiler_tags` for
+plot reasons also opts into seeing spoilered warnings, which is coherent; the
+reader who most needs the warning is the one who has not set it. Whether
+`ContentWarning` taggings may be spoilered at all is recorded as an open item in
+section 10 rather than decided here.
+
 ## 7. Schema summary
 
 ```
@@ -375,6 +435,9 @@ users                  + allow_tag_suggestions
 tag_suggestions        new
 wrangling_assignments  new (user_id, setting_id)
 tag_tags               unchanged; `suggested` adopted per section 6.1
+
+deferred, section 6.5:
+users                  + reveal_spoiler_tags
 ```
 
 `post_tags` is currently a bare join table and several queries treat it as one.
@@ -392,6 +455,9 @@ correctly interpreted as confirmed without a data migration.
 3. Spoiler taggings. Self-contained and the most immediately useful to authors.
 4. Suggestions, once a wrangler group exists to absorb the resulting moderation
    load.
+5. Reader-controlled reveal, per section 6.5. Independent of steps 2 and 4, and
+   SHOULD be sequenced against step 3 rather than long after it, since it
+   determines whether `reveal_after_reply_order` is worth retaining.
 
 The two prerequisites in section 6.2, cycle validation and restriction of
 `parent_settings` editing, SHOULD be implemented ahead of step 2. Both are
@@ -433,8 +499,24 @@ value rather than presented as a list to be completed:
 13. A suggestion colliding with a tagging the suggester cannot observe is
     recorded as an endorsement.
 14. Mods cannot override an author's rejection of a `ContentWarning`.
+15. Readers get a `reveal_spoiler_tags` preference, and any reader may expand a
+    withheld tagging. The reading-position gate sets the default state, not an
+    access boundary. Deferred to a later phase; see section 6.5.
 
 ## 10. Open items
+
+**May a `ContentWarning` tagging be spoilered?** A warning withheld until the
+reader reaches the material has not warned anyone, and the reader it fails is
+precisely the one who has not opted into seeing spoilers. Options: forbid
+spoilering `ContentWarning` taggings; permit it but always reveal them to
+readers who have not opted out; or permit it unrestricted and treat the choice
+as the author's. This blocks nothing in the initial implementation, since
+nothing prevents the tagging today, but it SHOULD be settled before section 6.5
+ships, as that is the point at which the reader's own preference starts
+governing what they see.
+
+**Position gate or pure click-to-reveal?** Section 6.5 records both. The
+decision is cheaper before `reveal_after_reply_order` accumulates data.
 
 Endorsements require a schema decision at implementation time. They are close
 enough to `TagSuggestion` to reuse it with an additional status, and different

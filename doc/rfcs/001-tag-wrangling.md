@@ -406,6 +406,44 @@ preference, reading position is a convenience that reveals tags automatically at
 the point they stop being disclosures. It is not an access control, and MUST NOT
 be described as one to authors. Authors mark *when*; readers choose *whether*.
 
+**Rendering.** Reveal SHOULD be resolved on the client rather than by omitting
+markup on the server. The server renders every tagging into the document, with
+spoilered ones inside a collapsed disclosure element; the reader's preference
+sets whether it starts open.
+
+This follows a pattern the codebase already uses. `app/views/posts/show.haml:35`
+wraps author content warnings in `%details`/`%summary`, which gives
+click-to-reveal with no JavaScript at all. Building on it means the feature
+degrades correctly: with scripting unavailable the tags are still collapsed and
+still expandable. JavaScript is then needed only to apply the stored preference
+without a round trip, and `gon` already carries per-user state to the client
+(`app/controllers/application_controller.rb:213`).
+
+The benefit is that the tag markup stops varying per reader. Reveal becomes
+presentational, so it does not enter any fragment cache key, and rendering a
+post no longer needs the reader's position resolved before the tags can be
+emitted.
+
+**The tradeoff MUST be stated plainly to authors, because it is a real one.**
+Rendering server-side and omitting withheld tags means the tag names are absent
+from the page. Rendering client-side means the names are present in the document
+for every reader, including logged-out ones, and are readable from source or
+developer tools without expanding anything. This is consistent with the position
+taken above, that the gate is a default and not an access boundary, but it is a
+stronger claim than the initial implementation makes, and adopting it is a
+visible change in what a spoiler tag guarantees. Authors MUST be told that a
+spoiler tag hides the tag from the page as displayed, not from the page as
+transmitted.
+
+Two things MUST remain server-side regardless, because the client cannot
+enforce them:
+
+1. Reverse-lookup exclusion. A listing that omits a post cannot be reconstructed
+   client-side, and this is the mechanism that keeps a tag page from disclosing
+   the post.
+2. API redaction, per section 6.3. The API's consumer is a program, and shipping
+   names for the client to hide is meaningless there.
+
 **Alternate paradigm.** A simpler model is available: define a spoiler tagging
 purely as one the reader must proactively reveal, and drop reading position
 entirely. This would remove `reveal_after_reply_order`, the dependency on
@@ -502,6 +540,10 @@ value rather than presented as a list to be completed:
 15. Readers get a `reveal_spoiler_tags` preference, and any reader may expand a
     withheld tagging. The reading-position gate sets the default state, not an
     access boundary. Deferred to a later phase; see section 6.5.
+16. Reveal is resolved on the client, using the `%details`/`%summary` pattern
+    already used for content warnings, so it degrades without JavaScript and
+    does not vary the markup per reader. Reverse-lookup exclusion and API
+    redaction remain server-side. Deferred with 15.
 
 ## 10. Open items
 

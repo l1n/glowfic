@@ -81,7 +81,7 @@ RSpec.describe "Suggesting tags" do
     expect(page).to have_text('No action is required')
   end
 
-  scenario "A spoiler tag stays hidden until the reader has read far enough" do
+  scenario "A spoiler tag stays collapsed until the reader reveals it" do
     author = create(:user)
     reader = create(:user)
     post = create(:post, user: author)
@@ -90,16 +90,29 @@ RSpec.describe "Suggesting tags" do
     PostTag.create!(post: post, tag: tag, spoiler: true, reveal_after_reply_order: replies.last.reply_order)
 
     login(reader)
-    post.mark_read(reader, at_time: replies.first.created_at)
     visit stats_post_path(post)
 
-    expect(page).to have_text('1 spoiler tag hidden until you have read further into this post.')
-    expect(page).to have_no_text('Late Reveal')
+    expect(page).to have_selector('details.spoiler-tags')
+    expect(page).to have_text('1 spoiler tag')
+    expect(page).to have_no_selector('details.spoiler-tags[open]')
 
-    post.mark_read(reader, at_time: replies.last.created_at, force: true)
+    # The name is present in the document but not displayed until expanded.
+    find('details.spoiler-tags summary').click
+    expect(page).to have_link('Late Reveal')
+    expect(page).to have_text("from reply #{replies.last.reply_order}")
+  end
+
+  scenario "A reader who opts in sees spoiler tags already expanded" do
+    author = create(:user)
+    reader = create(:user, reveal_spoiler_tags: true)
+    post = create(:post, user: author)
+    tag = create(:label, name: 'Opted In')
+    PostTag.create!(post: post, tag: tag, spoiler: true)
+
+    login(reader)
     visit stats_post_path(post)
 
-    expect(page).to have_text('Late Reveal')
-    expect(page).to have_no_text('hidden until you have read further')
+    expect(page).to have_link('Opted In')
+    expect(page).to have_no_selector('details.spoiler-tags')
   end
 end

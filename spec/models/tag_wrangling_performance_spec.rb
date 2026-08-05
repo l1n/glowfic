@@ -6,45 +6,42 @@ RSpec.describe "tag wrangling performance" do # rubocop:disable RSpec/DescribeCl
   let(:author) { create(:user) }
   let(:reader) { create(:user) }
 
-  describe "spoiler reveal resolution" do
-    it "resolves a post's visible tags in a constant number of queries" do
+  describe "spoiler tag display" do
+    it "loads a post's taggings in a constant number of queries" do
       post = create(:post, user: author)
-      replies = create_list(:reply, 5, post: post, user: author)
-      10.times { PostTag.create!(post: post, tag: create(:label), spoiler: true, reveal_after_reply_order: 2) }
-      post.mark_read(reader, at_time: replies.last.created_at)
+      10.times { PostTag.create!(post: post, tag: create(:label), spoiler: true) }
 
       loaded = Post.find(post.id)
-      queries = count_queries { loaded.visible_post_tags_for(reader) }
+      reader.id # instantiate the let before measuring
+      queries = count_queries { loaded.displayable_post_tags.each { |pt| pt.expanded_for?(reader) } }
 
-      # post_tags + tags + post_view + reply lookup, and nothing per tagging.
-      expect(queries.size).to be <= 5
+      # post_tags plus tags, and nothing per tagging.
+      expect(queries.size).to be <= 3
     end
 
     it "does not grow with the number of taggings" do
       post = create(:post, user: author)
-      replies = create_list(:reply, 3, post: post, user: author)
-      post.mark_read(reader, at_time: replies.last.created_at)
-
+      reader.id # instantiate the let before measuring
       3.times { PostTag.create!(post: post, tag: create(:label), spoiler: true) }
-      small = count_queries { Post.find(post.id).visible_post_tags_for(reader) }.size
+      small = count_queries { Post.find(post.id).displayable_post_tags.map { |pt| pt.expanded_for?(reader) } }.size
 
       20.times { PostTag.create!(post: post, tag: create(:label), spoiler: true) }
-      large = count_queries { Post.find(post.id).visible_post_tags_for(reader) }.size
+      large = count_queries { Post.find(post.id).displayable_post_tags.map { |pt| pt.expanded_for?(reader) } }.size
 
       expect(large).to eq(small)
     end
 
-    it "resolves the reader's position once per post, not once per tagging" do
+    it "reads no post view state when resolving display" do
       post = create(:post, user: author)
-      replies = create_list(:reply, 3, post: post, user: author)
-      post.mark_read(reader, at_time: replies.last.created_at)
-      5.times { PostTag.create!(post: post, tag: create(:label), spoiler: true) }
+      create_list(:reply, 3, post: post, user: author)
+      PostTag.create!(post: post, tag: create(:label), spoiler: true)
 
       loaded = Post.find(post.id)
-      loaded.read_reply_order_for(reader)
-      queries = count_queries { 5.times { loaded.read_reply_order_for(reader) } }
+      reader.id # instantiate the let before measuring
+      loaded.displayable_post_tags.to_a
+      queries = count_queries { loaded.displayable_post_tags.each { |pt| pt.expanded_for?(reader) } }
 
-      expect(queries).to be_empty
+      expect(queries.join).not_to match(/post_views/i)
     end
   end
 

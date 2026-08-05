@@ -44,8 +44,7 @@ class TagSuggestion < ApplicationRecord
     existing_tagging = matching_tagging(post: post, tag: tag, tag_type: tag_type, tag_name: tag_name)
 
     if existing_tagging
-      read_order = post.read_reply_order_for(user)
-      return [nil, :already_visible] if existing_tagging.revealed_to?(user, read_reply_order: read_order)
+      return [nil, :already_visible] if existing_tagging.expanded_for?(user)
       return [endorse(post: post, user: user, tagging: existing_tagging, note: note), :endorsed]
     end
 

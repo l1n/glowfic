@@ -8,45 +8,36 @@ class PostTag < ApplicationRecord
 
   validates :post, uniqueness: { scope: :tag }
   validates :reveal_after_reply_order, numericality: { greater_than_or_equal_to: 0, allow_nil: true }
-  validate :reveal_threshold_requires_spoiler
-
-  # Without a fixed threshold, "the end of the post" moves every time a reply
-  # is added, so a tag would disappear again for a reader who had caught up.
-  before_validation :fix_reveal_threshold, on: :create
+  validate :content_warnings_are_not_spoilerable
 
   scope :spoilered, -> { where(spoiler: true) }
   scope :unspoilered, -> { where(spoiler: false) }
 
   # Spoilered taggings are excluded from tag -> post listings entirely, so a
-  # spoilered post does not appear under that tag.
+  # spoilered post does not appear under that tag. This is the one part of the
+  # feature the client cannot be trusted with.
   scope :for_reverse_lookup, -> { unspoilered }
 
-  # A nil reveal_after_reply_order means "reveal at the end of the post as it
-  # currently stands".
-  def revealed_to?(user, read_reply_order: nil)
+  # Whether the tagging is displayed already expanded. Reveal is otherwise a
+  # reader action: reading position plays no part.
+  def expanded_for?(user)
     return true unless spoiler?
     return false if user.nil?
+    return true if user.reveal_spoiler_tags?
     return true if post.user_id == user.id
-    return true if user.has_permission?(:edit_posts)
+    user.has_permission?(:edit_posts)
+  end
 
-    read_order = read_reply_order.nil? ? post.read_reply_order_for(user) : read_reply_order
-    return false if read_order.nil?
-
-    threshold = reveal_after_reply_order || post.last_reply_order
-    return true if threshold.nil? # no replies yet, so the end is the post itself
-    read_order >= threshold
+  # Descriptive rather than a gate: the reply from which the tag applies.
+  def applies_from_reply_order
+    reveal_after_reply_order
   end
 
   private
 
-  def reveal_threshold_requires_spoiler
-    return if reveal_after_reply_order.nil? || spoiler?
-    errors.add(:reveal_after_reply_order, "requires the tagging to be marked as a spoiler")
-  end
-
-  def fix_reveal_threshold
+  def content_warnings_are_not_spoilerable
     return unless spoiler?
-    return if reveal_after_reply_order.present?
-    self.reveal_after_reply_order = post&.last_reply_order
+    return unless tag.is_a?(ContentWarning)
+    errors.add(:spoiler, "cannot be set on a content warning, which must be visible before the content it warns about")
   end
 end

@@ -13,8 +13,8 @@ This document specifies three related additions to the glowfic tag system:
    together with the roles required to maintain it.
 2. Tag suggestions, allowing a reader to propose a tag on a post they do not
    own, with the post author retaining the decision.
-3. Spoiler taggings, which remain hidden from a reader until that reader has
-   read far enough into the post to have encountered the tagged material.
+3. Spoiler taggings, which are displayed collapsed and expanded by the reader,
+   for elements of the fiction a reader may prefer not to know in advance.
 
 The three are specified together because they share one schema change: a
 tagging must become a record carrying state rather than a bare join row.
@@ -107,9 +107,12 @@ has no upstream implementation to follow.
    reachable only from a console.
 3. **No reader contribution path.** A reader who observes that a post requires
    a content warning has no in-application means of saying so.
-4. **Tags disclose plot.** A tag describes the whole post and is displayed
-   before it. `Character Death` is a disclosure to a reader on reply 3 of 400.
-   Authors must currently choose between accurate tagging and non-disclosure.
+4. **Tags disclose plot, and readers differ on whether that matters.** A tag
+   describes the whole post and is displayed before it, so `Character Death` is
+   a disclosure to a reader on reply 3 of 400. Some readers avoid tags entirely
+   for this reason; others read tags precisely to decide what to read, and
+   regard the journey rather than the surprise as the point. Authors currently
+   choose between accurate tagging and non-disclosure on every reader's behalf.
 
 ## 6. Design
 
@@ -242,29 +245,52 @@ The following columns are added to `post_tags`:
 | `spoiler` | boolean, not null, default false | Tagging is withheld |
 | `reveal_after_reply_order` | integer, nullable | Reveal threshold |
 
-A spoiler tagging created without an explicit `reveal_after_reply_order` MUST
-have the threshold fixed to the post's last `reply_order` at the time the
-tagging is created. Resolving "the end of the post" dynamically would move the
-threshold every time a reply is added, so a tagging would become visible to a
-reader who had caught up and then hidden again on the next reply. The fixed
-threshold also matches author intent, which is to withhold the tag until the
-point the tagged material has been reached.
+**A spoiler tagging is one the reader must proactively reveal.** It is displayed
+collapsed, and expanded on request. Reveal is a reader action, not a state the
+server computes from how far they have read.
 
-A tagging is revealed to a user when any of the following holds:
+An earlier draft of this document gated reveal on reading position, so that a
+tagging became visible once the reader passed the reply it described. Reader
+feedback rejected that model on three grounds, all of which stand:
+
+1. **It serves nobody.** A reader avoiding disclosure does not read tags; a
+   reader who wants warnings does read them. A tag that appears only after the
+   material has been read assists neither.
+2. **It leaks by omission.** Auto-revealing after the fact tells the reader
+   something the author did not choose to tell them. If `Character Death`
+   appears once and no further tag follows, the reader has learned that the
+   death they just read was the only one. Withholding a tag until it is
+   redundant does not merely fail to protect; it converts the tag into a
+   statement about the rest of the post.
+3. **It reads as backwards.** The natural reading of "hidden until you have read
+   far enough" is that a warning arrives after the content it warns about.
+
+`reveal_after_reply_order` is retained, but its meaning changes: it is
+**descriptive, not a gate**. It records that a tag applies to the post from a
+given reply onwards, and is displayed alongside the tag once revealed. This is
+the part of the original design readers found valuable, because it distinguishes
+a element that runs through a whole thread from one that appears late, which is
+a distinction flat tagging cannot express. It also gives a natural anchor for
+linking a reader to the point where the tag begins to apply.
+
+A tagging is displayed expanded, without the reader acting, when any of:
 
 1. The user is the post author or holds `:edit_posts`.
 2. `spoiler` is false.
-3. The user's furthest-read `reply_order` is greater than or equal to
-   `reveal_after_reply_order`.
+3. The user has set the preference in section 6.5.
 
-Reading position derives from `post_views.read_at`. A user with no `post_view`,
-including any logged-out user, MUST NOT be shown spoiler taggings.
+No other condition expands it. In particular, reading position does not.
 
-**Limitation.** `read_at` is a timestamp. A reader who opened a post while it
-was short and returned after 200 further replies resolves to a high
-`reply_order` without having read the intervening replies. The failure mode is
-revealing early to a reader who skipped ahead. This is acceptable for
-non-disclosure but is not a guarantee and MUST NOT be described to users as one.
+**`ContentWarning` taggings MUST NOT be spoilered.** A warning exists to tell a
+reader about content before they reach it; a warning the reader must first
+discover cannot do that, and one revealed after the fact has failed entirely.
+There is no way to have content warnings without warning people about the
+content. The `spoiler` column therefore applies only to `Setting` and `Label`
+taggings, enforced by validation rather than by convention.
+
+This also disposes of the sharpest objection to the feature. Spoilering is for
+elements of the fiction a reader may or may not want to know in advance. It is
+not a mechanism for softening warnings, and must not become one.
 
 **Reverse lookup.** Hiding a tagging on the post page is not sufficient. If a
 spoiler tagging participates in tag-to-post listings, the tag page discloses the
@@ -444,24 +470,17 @@ enforce them:
 2. API redaction, per section 6.3. The API's consumer is a program, and shipping
    names for the client to hide is meaningless there.
 
-**Alternate paradigm.** A simpler model is available: define a spoiler tagging
-purely as one the reader must proactively reveal, and drop reading position
-entirely. This would remove `reveal_after_reply_order`, the dependency on
-`post_views.read_at`, and the timestamp limitation in section 6.3, at the cost
-of requiring a reader who has finished the post to keep expanding tags that no
-longer disclose anything to them. The two models are not far apart in
-implementation: the position gate is what decides the *initial* state of the
-control. This RFC specifies the position gate with reader override, but adopting
-the simpler model instead is a live option, and is cheaper to adopt before
-`reveal_after_reply_order` has data in it than after.
+**No dependency on reading position.** Because reveal is a reader action,
+nothing in this feature reads `post_views.read_at`. Removing that dependency
+also removes the timestamp limitation an earlier draft carried, whereby a reader
+who opened a post while it was short and returned much later resolved to a
+reading position they had not actually reached.
 
-**Content warnings.** A spoilered `ContentWarning` is in tension with the
-purpose of a content warning, since a warning withheld until the reader reaches
-the material has not warned anyone. A reader who sets `reveal_spoiler_tags` for
-plot reasons also opts into seeing spoilered warnings, which is coherent; the
-reader who most needs the warning is the one who has not set it. Whether
-`ContentWarning` taggings may be spoilered at all is recorded as an open item in
-section 10 rather than decided here.
+**Skip links.** Since `reveal_after_reply_order` is descriptive, a revealed
+tagging carries a usable anchor: the reply from which the tag applies. Linking
+it lets a reader jump to the point where an element enters the post. This is
+cheap once the datum is displayed rather than consumed as a gate, and is worth
+building at the same time.
 
 ## 7. Schema summary
 
@@ -493,9 +512,9 @@ correctly interpreted as confirmed without a data migration.
 3. Spoiler taggings. Self-contained and the most immediately useful to authors.
 4. Suggestions, once a wrangler group exists to absorb the resulting moderation
    load.
-5. Reader-controlled reveal, per section 6.5. Independent of steps 2 and 4, and
-   SHOULD be sequenced against step 3 rather than long after it, since it
-   determines whether `reveal_after_reply_order` is worth retaining.
+5. Reader-controlled reveal, per section 6.5: the `reveal_spoiler_tags`
+   preference and client-side expansion. Step 3 is of limited use without it,
+   since expansion is the only way a reader sees a spoiler tagging at all.
 
 The two prerequisites in section 6.2, cycle validation and restriction of
 `parent_settings` editing, SHOULD be implemented ahead of step 2. Both are
@@ -538,27 +557,27 @@ value rather than presented as a list to be completed:
     recorded as an endorsement.
 14. Mods cannot override an author's rejection of a `ContentWarning`.
 15. Readers get a `reveal_spoiler_tags` preference, and any reader may expand a
-    withheld tagging. The reading-position gate sets the default state, not an
-    access boundary. Deferred to a later phase; see section 6.5.
+    withheld tagging.
 16. Reveal is resolved on the client, using the `%details`/`%summary` pattern
     already used for content warnings, so it degrades without JavaScript and
     does not vary the markup per reader. Reverse-lookup exclusion and API
-    redaction remain server-side. Deferred with 15.
+    redaction remain server-side.
+17. Reveal is a reader action. Reading position does not expand a tagging, and
+    the feature reads no reading state at all. Revised after reader feedback;
+    see section 6.3.
+18. `reveal_after_reply_order` is descriptive rather than a gate: it records the
+    reply from which a tag applies, is shown once the tag is revealed, and
+    anchors a skip link.
+19. `ContentWarning` taggings cannot be spoilered, enforced by validation.
 
 ## 10. Open items
 
-**May a `ContentWarning` tagging be spoilered?** A warning withheld until the
-reader reaches the material has not warned anyone, and the reader it fails is
-precisely the one who has not opted into seeing spoilers. Options: forbid
-spoilering `ContentWarning` taggings; permit it but always reveal them to
-readers who have not opted out; or permit it unrestricted and treat the choice
-as the author's. This blocks nothing in the initial implementation, since
-nothing prevents the tagging today, but it SHOULD be settled before section 6.5
-ships, as that is the point at which the reader's own preference starts
-governing what they see.
-
-**Position gate or pure click-to-reveal?** Section 6.5 records both. The
-decision is cheaper before `reveal_after_reply_order` accumulates data.
+**Should a reader be able to see that a post has spoiler tags at all?** The
+collapsed control necessarily discloses that some number of tags exist and are
+withheld. For a sufficiently disclosure-averse reader that count is itself
+information, and a preference to suppress the control entirely may be wanted
+alongside the preference to expand it. Not specified here because it is not
+clear the demand exists.
 
 Endorsements require a schema decision at implementation time. They are close
 enough to `TagSuggestion` to reuse it with an additional status, and different

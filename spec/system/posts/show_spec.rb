@@ -217,6 +217,7 @@ RSpec.describe "Viewing posts" do
 
     login(user)
     visit post_path(shared_post)
+    expect(page).to have_selector('#post-title', text: shared_post.subject)
     expect(page).to have_no_text('Alicorn has a draft in progress')
 
     coauthor.update!(show_drafts_to_coauthors: true)
@@ -226,6 +227,7 @@ RSpec.describe "Viewing posts" do
     # the coauthor can opt back out for this thread specifically
     shared_post.author_for(coauthor).update!(show_drafts: false)
     visit post_path(shared_post)
+    expect(page).to have_selector('#post-title', text: shared_post.subject)
     expect(page).to have_no_text('Alicorn has a draft in progress')
   end
 
@@ -234,6 +236,7 @@ RSpec.describe "Viewing posts" do
 
     login(user)
     visit post_path(shared_post)
+    expect(page).to have_selector('#post-title', text: shared_post.subject)
     expect(page).to have_no_field('still_tagging')
     expect(page).to have_no_link("Use Default Draft Status")
 

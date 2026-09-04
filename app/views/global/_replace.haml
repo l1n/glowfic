@@ -1,11 +1,11 @@
 -# locals: ( obj:, name:, icon:, alt_icon: )
 
 .form-table#replace-form
-  .editor-title Replace All Uses of #{obj.class}
+  .editor-title= format(_("Replace All Uses of %{class}"), class: obj.class)
   = content_for :disclaimer
   %div
-    .sub Current
-    .sub New
+    .sub= _("Current")
+    .sub= _("New")
   %div
     .replace-icon
       = icon_tag icon
@@ -18,11 +18,11 @@
         = no_icon_tag id: 'new_icon'
       = content_for :options
   - if @posts.present?
-    .sub.colspan Optional: Select Post(s)
+    .sub.colspan= _("Optional: Select Post(s)")
     .odd.centered.colspan
-      .details *If none are selected, replaces all uses*
+      .details= _("*If none are selected, replaces all uses*")
   - @posts.each do |post|
     .replace-posts.checkbox-field{class: cycle('even', 'odd')}
       = check_box_tag :'post_ids[]', post.id, false, id: nil
       = link_to post.subject, post_path(post)
-  .form-table-ender= submit_tag "Replace", class: 'button'
+  .form-table-ender= submit_tag _("Replace"), class: 'button'

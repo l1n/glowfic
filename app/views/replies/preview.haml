@@ -1,27 +1,27 @@
 - if @unseen_replies.present?
   .content-header
     .padding-15
-      Unseen Replies
+      = _("Unseen Replies")
       = link_to unread_path(@post), class: 'view-button-link' do
-        .view-button.float-left Unread &raquo;
+        .view-button.float-left= _("Unread »")
 
   = render partial: 'replies/single', collection: @unseen_replies, as: :reply
   - if @unseen_replies.total_pages > 1
-    .post-ender ... and #{@unseen_replies.total_entries - @unseen_replies.per_page} more ...
+    .post-ender= format(_("... and %{per_page} more ..."), per_page: @unseen_replies.total_entries - @unseen_replies.per_page)
   %br
 
 - if @multi_replies.present?
   - multi_reply_new = @multi_replies_params.first["id"].blank?
   - if multi_reply_new
-    .content-header Adding multiple replies
+    .content-header= _("Adding multiple replies")
   - else
-    .content-header Editing reply and adding more
+    .content-header= _("Editing reply and adding more")
   - @multi_replies.each do |reply|
     = render 'replies/single', reply: reply, hide_footer: true, hide_post_edit_box: true
   = form_for @reply, html: { id: 'post_form' } do
     = hidden_field_tag :multi_replies_json, @multi_replies_params.to_json
     = hidden_field_tag :allow_dupe, @allow_dupe
-    = submit_tag (multi_reply_new ? 'Post Previewed' : 'Save Previewed'), class: 'button', id: 'submit_previewed_multi_reply_button', name: 'button_submit_previewed_multi_reply', data: { disable_with: 'Saving...', confirm: 'The reply currently in the editor will not be posted. Continue?' }
+    = submit_tag (multi_reply_new ? 'Post Previewed' : 'Save Previewed'), class: 'button', id: 'submit_previewed_multi_reply_button', name: 'button_submit_previewed_multi_reply', data: { disable_with: _("Saving..."), confirm: _("The reply currently in the editor will not be posted. Continue?") }
     %br
     %br
 - else
@@ -29,7 +29,7 @@
 
 - unless @adding_to_multi_reply
   - if @multi_replies.present?
-    .content-header Previewing
+    .content-header= _("Previewing")
   - else
     .content-header= @post.subject
     - if @post.description.present?

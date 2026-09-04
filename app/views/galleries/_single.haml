@@ -16,38 +16,38 @@
       = link_to gallery ? gallery.name : 'Galleryless icons', link, class: 'gallery-title'
       - if is_owner && !skip_forms
         = link_to add_gallery_path(gallery || { id: 0 }), class: 'gallery-add' do
-          .link-box.action-new + Add Icons
+          .link-box.action-new= _("+ Add Icons")
         - if gallery
           = link_to edit_gallery_path(gallery), class: 'gallery-edit' do
             .link-box.action-edit
               = image_tag "icons/pencil.png", alt: ''
-              Edit Gallery
-          = link_to gallery_path(gallery), method: :delete, data: { confirm: 'Are you sure you want to delete this gallery? (This will not delete the icons.)' }, class: 'gallery-delete' do
-            .link-box.action-delete x Delete Gallery
+              = _("Edit Gallery")
+          = link_to gallery_path(gallery), method: :delete, data: { confirm: _("Are you sure you want to delete this gallery? (This will not delete the icons.)") }, class: 'gallery-delete' do
+            .link-box.action-delete= _("x Delete Gallery")
       - if hide_minmax
         = link_to url_for(view: 'icons'), rel: 'nofollow', class: 'view-button-link' do
           .view-button{class: (:selected unless page_view == 'list')}
             = image_tag "icons/grid.png", class: 'icon-view', alt: ''
-            Icons
+            = _("Icons")
         = link_to url_for(view: 'list'), rel: 'nofollow', class: 'view-button-link' do
           .view-button{class: (:selected if page_view == 'list')}
             = image_tag "icons/list.png", class: 'list-view', alt: ''
-            List
+            = _("List")
       - else
         .gallery-box.float-right.gallery-minmax{data: { id: gallery.id }}
           = link_to '-', '#'
       - if !character_gallery.nil? && (is_owner || current_user.try(:admin?))
         .float-right
           = link_to '#', class: "section-up disabled-arrow" do
-            = image_tag "icons/arrow_up.png", title: 'Move Up', alt: 'Move Up'
+            = image_tag "icons/arrow_up.png", title: _("Move Up"), alt: _("Move Up")
           = link_to '#', class: "section-down disabled-arrow" do
-            = image_tag "icons/arrow_down.png", title: 'Move Down', alt: 'Move Down'
+            = image_tag "icons/arrow_down.png", title: _("Move Down"), alt: _("Move Down")
 %tbody{class: ("gallery-data-#{gallery.id}" if gallery)}
   - groups = gallery.gallery_groups_data if gallery
   - if groups.present?
     %tr.gallery-tags
       %th.subber{id: "gallery-tags-#{gallery.id}"}
-        Groups:
+        = _("Groups:")
         .tag-box
           - groups.each do |group|
             = link_to tag_path(group.id), class: 'tag-item-link' do
@@ -55,7 +55,7 @@
                 = group.name
   - if !gallery && is_owner
     %tr.gallery-subheader
-      %th.sub Unsorted icons without a gallery will appear here. They can still be individually assigned to a character with no galleries.
+      %th.sub= _("Unsorted icons without a gallery will appear here. They can still be individually assigned to a character with no galleries.")
   - icons ||= gallery ? gallery.icons : @user.galleryless_icons
   - icons = icons.pluck(:id, :keyword, :url, :credit)
   - if page_view == 'list' && icons.present?
@@ -67,4 +67,4 @@
           - if icons.present?
             = render partial_type, gallery: gallery, icons: icons, is_owner: is_owner, skip_forms: skip_forms
           - else
-            .centered.no-icons{colspan: colspan} — No icons yet —
+            .centered.no-icons{colspan: colspan}= _("— No icons yet —")

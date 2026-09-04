@@ -2,10 +2,10 @@
 
 - content_for :form do
   = form_for reply, html: { id: 'post_form' } do |f|
-    %b Reply
-    %button.view-button#rtf{type: 'button', class: ('selected' if reply.editor_mode == 'rtf')} Rich Text
-    %button.view-button#md{type: 'button', class: ('selected' if reply.editor_mode == 'md')} Markdown
-    %button.view-button#html{type: 'button', class: ('selected' if reply.editor_mode == 'html')} HTML
+    %b= _("Reply")
+    %button.view-button#rtf{type: 'button', class: ('selected' if reply.editor_mode == 'rtf')}= _("Rich Text")
+    %button.view-button#md{type: 'button', class: ('selected' if reply.editor_mode == 'md')}= _("Markdown")
+    %button.view-button#html{type: 'button', class: ('selected' if reply.editor_mode == 'html')}= _("HTML")
     %button.view-button#editor-help{type: 'button', title: 'Help'} ?
     %br
     = unread_warning.try(:html_safe)
@@ -27,48 +27,48 @@
     #post-form-wrapper
       = f.text_area :content, class: 'tinymce'
       - unless current_user.id == reply.user_id
-        %b= f.label :audit_comment, 'Moderator note'
+        %b= f.label :audit_comment, _("Moderator note")
         %br
-        = f.text_area :audit_comment, placeholder: 'Explain reason for moderation here', class: 'mod'
+        = f.text_area :audit_comment, placeholder: _("Explain reason for moderation here"), class: 'mod'
         %br
       - if multi_replies_params.blank?
-        = submit_tag (reply.new_record? ? 'Post' : 'Save'), class: 'button', id: 'submit_button', data: { disable_with: 'Saving...' }
-        = submit_tag "Preview", class: 'button', id: 'preview_button', name: 'button_preview', data: { disable_with: 'Previewing...' }
+        = submit_tag (reply.new_record? ? 'Post' : 'Save'), class: 'button', id: 'submit_button', data: { disable_with: _("Saving...") }
+        = submit_tag _("Preview"), class: 'button', id: 'preview_button', name: 'button_preview', data: { disable_with: _("Previewing...") }
         - if reply.new_record?
-          = submit_tag "Save Draft", class: 'button', id: 'draft_button', name: 'button_draft', formaction: drafts_path, data: { disable_with: 'Drafting...' }
+          = submit_tag _("Save Draft"), class: 'button', id: 'draft_button', name: 'button_draft', formaction: drafts_path, data: { disable_with: _("Drafting...") }
         - if @draft.present?
-          = button_tag "Delete Draft", class: 'button', id: 'delete_draft_button', name: '_method', value: 'delete', formaction: draft_path(@draft), data: { disable_with: 'Deleting...', confirm: "Delete draft?" }
+          = button_tag _("Delete Draft"), class: 'button', id: 'delete_draft_button', name: '_method', value: 'delete', formaction: draft_path(@draft), data: { disable_with: _("Deleting..."), confirm: _("Delete draft?") }
       - else
-        = submit_tag (multi_reply_new ? 'Post All' : 'Save All'), class: 'button', id: 'submit_button', data: { disable_with: 'Saving...' }
-        = submit_tag "Preview Current", class: 'button', id: 'preview_button', name: 'button_preview', data: { disable_with: 'Previewing...' }
-      = submit_tag "Add More Replies", class: 'button', id: 'add_more_button', name: 'button_add_more', data: { disable_with: 'Adding...' }
+        = submit_tag (multi_reply_new ? 'Post All' : 'Save All'), class: 'button', id: 'submit_button', data: { disable_with: _("Saving...") }
+        = submit_tag _("Preview Current"), class: 'button', id: 'preview_button', name: 'button_preview', data: { disable_with: _("Previewing...") }
+      = submit_tag _("Add More Replies"), class: 'button', id: 'add_more_button', name: 'button_add_more', data: { disable_with: _("Adding...") }
       - if multi_replies_params.present?
-        = submit_tag "Discard Replies", class: 'button', id: 'discard_multi_reply_button', name: 'button_discard_multi_reply', data: { disable_with: 'Discarding...', confirm: "Discard all replies added?" }
+        = submit_tag _("Discard Replies"), class: 'button', id: 'discard_multi_reply_button', name: 'button_discard_multi_reply', data: { disable_with: _("Discarding..."), confirm: _("Discard all replies added?") }
     - if reply.post.author_for(current_user).present?
       %hr.clear
       .post-note-editor
         .loading.float-right.hidden
-          = image_tag 'icons/loading.gif', title: 'Loading...', class: 'vmid', alt: 'Loading...'
+          = image_tag 'icons/loading.gif', title: _("Loading..."), class: 'vmid', alt: _("Loading...")
         .saveerror.float-right.hidden
-          = image_tag "icons/exclamation.png", title: 'Error', class: 'vmid', alt: ''
-          Error, please try again
+          = image_tag "icons/exclamation.png", title: _("Error"), class: 'vmid', alt: ''
+          = _("Error, please try again")
         .saveconf.float-right.hidden
-          = image_tag "icons/accept.png", title: 'Saved', class: 'vmid', alt: ''
-          Saved
-        %b Your Author Notes
-        = image_tag "icons/pencil.png".freeze, title: 'Edit', alt: 'Edit', class: 'edit-private-notes pointer'
+          = image_tag "icons/accept.png", title: _("Saved"), class: 'vmid', alt: ''
+          = _("Saved")
+        %b= _("Your Author Notes")
+        = image_tag "icons/pencil.png".freeze, title: _("Edit"), alt: _("Edit"), class: 'edit-private-notes pointer'
         %br
         .private-note
           - if (note = reply.post.author_for(current_user).private_note).present?
             = sanitize_written_content(note)
           - else
-            %em (You haven't written a note yet!)
+            %em= _("(You haven't written a note yet!)")
         .private-note-editor.hidden
           = text_area_tag :private_note, params[:private_note] || reply.post.author_for(current_user).private_note, id: 'post_private_note'
-          = submit_tag 'Save', class: 'save-private-note button'
-          = submit_tag 'Discard Changes', class: 'discard-private-note button'
+          = submit_tag _("Save"), class: 'save-private-note button'
+          = submit_tag _("Discard Changes"), class: 'discard-private-note button'
         #dialog-confirm{title: "Your author note has unsaved changes!"}
-          %p What would you like to do with your unsaved changes?
+          %p= _("What would you like to do with your unsaved changes?")
     - else
       %br
     = render 'writable/editor_help', editor_location: 'reply'

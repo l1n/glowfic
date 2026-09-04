@@ -26,8 +26,8 @@
     - unless hide_buttons
       - if Character.editable_by?(current_user, user_id)
         = link_to edit_character_path(char_id) do
-          = image_tag "icons/pencil.png", alt: 'Edit'
+          = image_tag "icons/pencil.png", alt: _("Edit")
       - if Character.deletable_by?(current_user, user_id)
-        = link_to character_path(char_id), method: :delete, data: { confirm: "Are you sure you want to delete #{char_name}?" } do
-          = image_tag "icons/cross.png", alt: 'Delete'
+        = link_to character_path(char_id), method: :delete, data: { confirm: format(_("Are you sure you want to delete %{char_name}?"), char_name: char_name) } do
+          = image_tag "icons/cross.png", alt: _("Delete")
         &nbsp;

@@ -2,20 +2,20 @@
 
 = form_with url: do_relocate_characters_path, method: :post do |f|
   .form-table
-    .editor-title Relocate Characters
+    .editor-title= _("Relocate Characters")
     %div
-      .sub= f.label :character_id, "Character Ids"
+      .sub= f.label :character_id, _("Character Ids")
       - id_fill = @char_ids.nil? ? params[:character_id] : @char_ids.join(', ')
       - id_fill ||= ''
-      %div{class: cycle('even', 'odd')}= f.text_field :character_id, value: id_fill, placeholder: 'Comma-separated list'
+      %div{class: cycle('even', 'odd')}= f.text_field :character_id, value: id_fill, placeholder: _("Comma-separated list")
     %div
-      .sub= f.label :user_id, 'New User Id'
-      %div{class: cycle('even', 'odd')}= f.text_field :user_id, value: params[:user_id], placeholder: "New User"
+      .sub= f.label :user_id, _("New User Id")
+      %div{class: cycle('even', 'odd')}= f.text_field :user_id, value: params[:user_id], placeholder: _("New User")
     %div
-      .sub With Templates
+      .sub= _("With Templates")
       .checkbox-field.padding-5{class: cycle('even', 'odd')}
         = f.check_box :include_templates, checked: params[:include_templates]
-        = f.label :include_templates, "Transfer Templates"
+        = f.label :include_templates, _("Transfer Templates")
     .form-table-ender
-      = f.submit 'Split', class: 'button', id: 'submit_button', data: { disable_with: 'Splitting...' }
-      = f.submit "Preview", class: 'button', id: 'preview_button', name: 'button_preview', data: { disable_with: 'Previewing...' }
+      = f.submit _("Split"), class: 'button', id: 'submit_button', data: { disable_with: _("Splitting...") }
+      = f.submit _("Preview"), class: 'button', id: 'preview_button', name: 'button_preview', data: { disable_with: _("Previewing...") }

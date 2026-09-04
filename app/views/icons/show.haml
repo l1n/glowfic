@@ -1,6 +1,6 @@
 - content_for :breadcrumbs do
   - if @icon.user_id == current_user.try(:id)
-    = link_to "Galleries", user_galleries_path(current_user)
+    = link_to _("Galleries"), user_galleries_path(current_user)
   - else
     = user_link(@icon.user)
     - unless @icon.user.deleted?
@@ -10,16 +10,16 @@
   - if @galleries.present?
     = link_to @galleries.first.name, url_for(@galleries.first)
   - else
-    = link_to_if params[:view] != 'galleries', "(#{@icon.galleries.count} Galleries)", icon_path(@icon, view: 'galleries'), rel: 'nofollow'
+    = link_to_if params[:view] != 'galleries', format(_("(%{count} Galleries)"), count: @icon.galleries.count), icon_path(@icon, view: 'galleries'), rel: 'nofollow'
   &raquo;
   = link_to_if params[:view].present?, @icon.keyword, @icon
   &raquo;
   - if params[:view] == 'galleries'
-    %b Galleries
+    %b= _("Galleries")
   - elsif params[:view] == 'posts'
-    %b Posts
+    %b= _("Posts")
   - else
-    %b Stats
+    %b= _("Stats")
 
 
 %div
@@ -36,7 +36,7 @@
       %td.centered{class: cycle('even', 'odd')}
         = link_to icon_path(@icon, view: 'stats'), rel: 'nofollow' do
           = image_tag "icons/chart_bar.png", alt: ''
-          Stats
+          = _("Stats")
     %tr
       %td.centered{class: cycle('even', 'odd')}
         = link_to icon_path(@icon, view: 'galleries'), rel: 'nofollow' do
@@ -46,58 +46,58 @@
       %td.centered{class: cycle('even', 'odd')}
         = link_to icon_path(@icon, view: 'posts'), rel: 'nofollow' do
           = image_tag "icons/book_open.png", alt: ''
-          Posts
+          = _("Posts")
     %tr
       %td.centered{class: cycle('even', 'odd')}
         = link_to search_replies_path(commit: true, icon_id: @icon.id, sort: :created_new) do
           = image_tag "icons/table_multiple.png", alt: ''
-          Replies
+          = _("Replies")
     - if @icon.user_id == current_user.try(:id)
       %tr
         %td.centered{class: cycle('even', 'odd')}
           = link_to edit_icon_path(@icon) do
             = image_tag "icons/pencil.png", alt: ''
-            Edit Icon
+            = _("Edit Icon")
       %tr
         %td.centered{class: cycle('even', 'odd')}
           = link_to avatar_icon_path(@icon), method: :post do
             = image_tag "icons/status_online.png", alt: ''
-            Make Avatar
+            = _("Make Avatar")
       %tr
         %td.centered{class: cycle('even', 'odd')}
           = link_to replace_icon_path(@icon) do
             = image_tag "icons/swap.png", style: 'width: 16px;', alt: ''
-            Replace Icon
+            = _("Replace Icon")
       %tr
         %td.centered{class: cycle('even', 'odd')}
-          = link_to @icon, method: :delete, data: { confirm: 'Are you sure you want to delete this icon?' } do
+          = link_to @icon, method: :delete, data: { confirm: _("Are you sure you want to delete this icon?") } do
             = image_tag "icons/cross.png", alt: ''
-            Delete Icon
+            = _("Delete Icon")
 
   - if params[:view] == 'galleries'
     %table.icon-right-content-box
       %thead
         %tr
-          %th.table-title Galleries
+          %th.table-title= _("Galleries")
       - if @galleries.present?
         = render partial: 'galleries/single', collection: @galleries, as: :gallery, locals: { klass: 'subber', skip_forms: true, is_owner: @icon.user == current_user }
       - else
         %tbody
           %tr
-            %td.even.centered — No galleries yet —
+            %td.even.centered= _("— No galleries yet —")
   - elsif params[:view] == 'posts'
     - content_for :posts_title do
-      Posts Containing Icon
+      = _("Posts Containing Icon")
     = render 'posts/list', posts: @posts, table_class: 'icon-right-content-box'
   - else
     %table.icon-right-content-box
       %thead
         %tr
-          %th.table-title{colspan: 2} Stats
+          %th.table-title{colspan: 2}= _("Stats")
       %tbody
         %tr
-          %th.sub.width-150 Times Used
+          %th.sub.width-150= _("Times Used")
           %td.even= @times_used.to_s
         %tr
-          %th.sub.width-150 Posts In
+          %th.sub.width-150= _("Posts In")
           %td.even= @posts_used

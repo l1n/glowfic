@@ -3,7 +3,7 @@
 %table.tag-right-content-box
   %thead
     %tr
-      %th.table-title{colspan: 6} Settings Tagged: #{localized_tag_name(@tag)}
+      %th.table-title{colspan: 6}= safe_format(_("Settings Tagged: %{tag}"), tag: localized_tag_name(@tag))
   %tbody
     - @tag.child_settings.each do |setting|
       %tr

@@ -6,7 +6,7 @@
       %details
         %summary
           = image_tag "icons/exclamation.png".freeze, class: 'vmid'.freeze, alt: ''
-          This author has set some general content warnings which might apply to their posts even when not otherwise warned.
+          = _("This author has set some general content warnings which might apply to their posts even when not otherwise warned.")
         %ul
           - user.user_tags.each do |warning|
             %li= localized_tag_link(warning.tag)

@@ -78,6 +78,15 @@ module ApplicationHelper
     options_for_select(layouts, default)
   end
 
+  # Interpolates into a translated string whose values are markup — a link, an icon, a
+  # name wrapped in <span lang>. Plain `format` returns an ordinary String, so the markup
+  # in it would be escaped on the way into the page; SafeBuffer#% escapes the values that
+  # aren't already safe and keeps the result safe. The text itself comes from the repo's
+  # own .po files, so it is trusted the same way the template around it is.
+  def safe_format(text, **values)
+    text.html_safe % values
+  end
+
   # The languages the interface has been translated into. "Automatic" leaves the choice
   # to the browser's Accept-Language, which is what a user who has never touched this
   # setting gets.

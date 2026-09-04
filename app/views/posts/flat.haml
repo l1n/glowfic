@@ -1,7 +1,7 @@
 !!!
 %html
   %head
-    %title #{@post.subject} | Glowfic Constellation
+    %title= format(_("%{subject} | Glowfic Constellation"), subject: @post.subject)
     %meta{ charset: "utf-8" }
     %meta{ name: "viewport", content: "width=device-width" }
     = stylesheet_link_tag 'application'
@@ -15,9 +15,9 @@
         &laquo; Back
       %br
       .details.float-right
-        Generated: #{pretty_time(@post.flat_post.updated_at)}
+        = format(_("Generated: %{updated_at}"), updated_at: pretty_time(@post.flat_post.updated_at))
       .details
-        Post last updated: #{pretty_time(@post.tagged_at)}
+        = format(_("Post last updated: %{tagged_at}"), tagged_at: pretty_time(@post.tagged_at))
       .content-header
         %span#post-title= @post.subject
       - if @post.description.present?
@@ -36,14 +36,14 @@
                 .spacer-alt
               .post-author
                 - if @post.user.deleted?
-                  %em (deleted user)
+                  %em= _("(deleted user)")
                 - else
                   = @post.user.username
           .post-edit-box
             = link_to @post, rel: 'alternate' do
-              = image_tag "icons/link.png", title: 'Permalink', alt: 'Permalink'
+              = image_tag "icons/link.png", title: _("Permalink"), alt: _("Permalink")
             = link_to post_path(@post, unread: true), method: :put do
-              = image_tag "icons/eye.png", title: 'Mark Unread Here', alt: 'Mark Unread'
+              = image_tag "icons/eye.png", title: _("Mark Unread Here"), alt: _("Mark Unread")
           .post-content= sanitize_written_content(@post.content.to_s, @post.editor_mode)
         .post-footer
           .right-align>

@@ -4,36 +4,36 @@
   .sub= f.label :name
   %div{class: cycle('even', 'odd')}
     - if current_user.admin? || f.object.user_id == current_user.id
-      = f.text_field :name, placeholder: "Tag Name"
+      = f.text_field :name, placeholder: _("Tag Name")
     - else
       = f.object.name
 - if current_user.admin? || f.object.user_id == current_user.id
   %div
-    .sub= f.label :locale, 'Original language'
+    .sub= f.label :locale, _("Original language")
     %div{class: cycle('even', 'odd')}
-      = f.select :locale, Glowfic::Locales.content_options, { include_blank: '— Site default —' }
-      .details The language the name and description above are written in.
+      = f.select :locale, Glowfic::Locales.content_options, { include_blank: _("— Site default —") }
+      .details= _("The language the name and description above are written in.")
 %div
-  .sub= f.label :user_id, 'Owner'
+  .sub= f.label :user_id, _("Owner")
   %div{class: cycle('even', 'odd')}
     - if current_user.admin? || f.object.user_id == current_user.id
       = f.select :user_id, options_from_collection_for_select(User.ordered.active, :id, :username, f.object.user_id), {}, { class: 'chosen-select' }
     - else
       = user_link(f.object.user)
 %div
-  .sub= f.label :owned, 'Owned?'
+  .sub= f.label :owned, _("Owned?")
   .checkbox-field{class: cycle('even', 'odd')}
     = f.check_box :owned
-    = f.label :owned, 'Tag belongs to owner'
+    = f.label :owned, _("Tag belongs to owner")
 - if f.object.is_a?(Setting)
   %div
     .sub= f.label :parent_settings
     %div{class: cycle('even', 'odd')}= tag_select(@tag, f, :parent_settings, data: { tag_id: f.object.id })
   %div
     .sub.vtop= f.label :description
-    %div{class: cycle('even', 'odd')}= f.text_area :description, placeholder: 'Description', cols: 35
+    %div{class: cycle('even', 'odd')}= f.text_area :description, placeholder: _("Description"), cols: 35
 %div
-  .sub.vtop Translations
+  .sub.vtop= _("Translations")
   %div{class: cycle('even', 'odd')}
     #tag-translations{data: { next_index: f.object.tag_translations.size }}
       = f.fields_for :tag_translations do |tf|
@@ -41,8 +41,8 @@
     %template#tag-translation-template
       = f.fields_for :tag_translations, TagTranslation.new(locale: current_user.writing_language), child_index: 'NEW_RECORD' do |tf|
         = render 'tags/translation_fields', tf: tf, describable: f.object.is_a?(Setting)
-    %button.button#add-tag-translation{type: 'button'} Add translation
+    %button.button#add-tag-translation{type: 'button'}= _("Add translation")
     .details
-      The name above is the tag's canonical name; add a row here for each language it also has a name in.
-      Readers see the name in their own interface language when one exists, and the original otherwise.
-.form-table-ender= submit_tag "Save", class: 'button'
+      = _("The name above is the tag's canonical name; add a row here for each language it also has a name in.")
+      = _("Readers see the name in their own interface language when one exists, and the original otherwise.")
+.form-table-ender= submit_tag _("Save"), class: 'button'

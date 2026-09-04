@@ -3,7 +3,7 @@
 %table.tag-right-content-box
   %thead
     %tr
-      %th.table-title{colspan: 2} Info
+      %th.table-title{colspan: 2}= _("Info")
   %tbody
     - if @tag.is_a?(Setting) && @tag.parent_settings.present?
       %tr
@@ -12,8 +12,8 @@
         %td{class: cycle('even', 'odd')}= safe_join(setting_links, ', ')
     - if @tag.is_a?(Setting)
       %tr
-        %th.sub.centered.width-150 Owner
-        %td{class: cycle('even', 'odd'), title: ('This setting is not marked as owned' unless @tag.owned?)}
+        %th.sub.centered.width-150= _("Owner")
+        %td{class: cycle('even', 'odd'), title: (_("This setting is not marked as owned") unless @tag.owned?)}
           = link_to @tag.user do
             - if @tag.owned?
               = @tag.user.username
@@ -22,6 +22,6 @@
     - description = @tag.localized_description
     - if description.text.present?
       %tr
-        %th.sub.centered.width-150.vtop Description
+        %th.sub.centered.width-150.vtop= _("Description")
         %td.written-content{ { class: cycle('even', 'odd') }.merge(localized_attrs(description)) }
           = sanitize_written_content(description.text)

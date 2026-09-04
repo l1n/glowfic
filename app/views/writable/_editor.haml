@@ -17,29 +17,29 @@
         %span#name= writable.name
         - klass = ['selector-popup-button']
         - klass << 'hidden' unless writable.character.try(:aliases).present?
-        = image_tag swap_icon_url, id: 'swap-alias', alt: 'Choose Alias', title: 'Choose Alias', class: klass
+        = image_tag swap_icon_url, id: 'swap-alias', alt: _("Choose Alias"), title: _("Choose Alias"), class: klass
         #alias-selector.selector-popup
-          %h4 Choose Alias
+          %h4= _("Choose Alias")
           = select_tag :character_alias, options_from_collection_for_select(writable.character.try(:aliases).to_a, :id, :name, writable.character_alias_id), prompt: writable.character.try(:name), class: 'chosen-select'
       .post-screenname{class: ('hidden' unless writable.character.try(:screenname))}= writable.character.try(:screenname)
       #post-author-spacer.spacer-alt{class: ('hidden' if writable.character)}
       .post-author
         = writable.user.username
         - if current_user.characters.present?
-          = image_tag swap_icon_url, id: 'swap-character', alt: 'Choose Character', title: 'Choose Character', class: 'selector-popup-button'
+          = image_tag swap_icon_url, id: 'swap-character', alt: _("Choose Character"), title: _("Choose Character"), class: 'selector-popup-button'
           #character-selector.selector-popup
             #swap-character-character
-              %h4 Choose Character
+              %h4= _("Choose Character")
               = select_tag :active_character,
               option_groups_from_collection_for_select(@templates, :plucked_characters, :name, :first, :last, writable.character_id),
               { prompt: current_user.username, class: 'chosen-select' }
             #swap-character-npc
-              %h4 Choose NPC
+              %h4= _("Choose NPC")
               = select_tag :active_npc,
               option_groups_from_collection_for_select(@npcs, :plucked_npcs, :name, :first, :last, writable.character_id),
               { prompt: "Select NPC or type to create" }
-            %button.view-button#select-character{type: 'button'} Character
-            %button.view-button#select-npc{type: 'button'} NPC
+            %button.view-button#select-character{type: 'button'}= _("Character")
+            %button.view-button#select-npc{type: 'button'}= _("NPC")
       - if writable.is_a?(Reply)
         .post-char-access
           - char_count = 10
@@ -85,7 +85,7 @@
     .gallery-icon
       = no_icon_tag pointer: true
       %br>
-      No Icon
+      = _("No Icon")
   = yield :form
   .clear &nbsp;
 - if writable.is_a?(Post)

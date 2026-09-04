@@ -4,7 +4,7 @@
   %thead
     %tr
       %th.search-params-header
-        Search Users
+        = _("Search Users")
         - if @search_results
           = "- #{@search_results.total_entries} results"
       %th.search-results-header
@@ -16,18 +16,18 @@
         = form_tag search_users_path, method: :get do
           %table.search-form
             %tr
-              %td.width-70= label_tag :search_username, 'Username'
+              %td.width-70= label_tag :search_username, _("Username")
               %td= text_field_tag :username, params[:username], style: 'width: 100%; margin: 5px 0px;', id: :search_username
             %tr
-              %td.centered{colspan: 2}= submit_tag "Search", class: 'button'
+              %td.centered{colspan: 2}= submit_tag _("Search"), class: 'button'
       %td.vtop
         - if @search_results.present?
           %table
             %thead
               %tr
-                %th.sub Name
-                %th.width-70.sub.centered Moiety
-                %th.sub Date Joined
+                %th.sub= _("Name")
+                %th.width-70.sub.centered= _("Moiety")
+                %th.sub= _("Date Joined")
             %tbody
               - @search_results.each do |user|
                 %tr.user-row

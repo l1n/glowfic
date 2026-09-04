@@ -1,14 +1,14 @@
 - content_for :breadcrumbs do
-  = link_to "Tags", tags_path
+  = link_to _("Tags"), tags_path
   &raquo;
-  = link_to @tag.type.pluralize.titlecase, tags_path(view: @tag.type)
+  = link_to tag_type_plural(@tag.type), tags_path(view: @tag.type)
   &raquo;
   = localized_tag_link(@tag)
   &raquo;
-  %b Edit
+  %b= _("Edit")
 
 = form_for @tag.becomes(Tag) do |f|
   - f.object = @tag.becomes(@tag.class) # handles the STI with Tag/Setting/ContentWarning properly
   .form-table#tag-editor
-    .editor-title Edit #{@tag.type.titlecase}
+    .editor-title= safe_format(_("Edit %{type}"), type: tag_type_name(@tag.type))
     = render 'editor', f: f

@@ -1,15 +1,15 @@
 %table
   %thead
     %tr
-      %th.table-title{colspan: 3} Users
+      %th.table-title{colspan: 3}= _("Users")
     %tr
       %th.subber.padding-10{colspan: 3}
         = form_tag search_users_path, method: :get do
-          = label_tag :search_username, 'Search by username:'
+          = label_tag :search_username, _("Search by username:")
           = text_field_tag :username, params[:username], style: 'margin: 0px 5px;', id: :search_username
-          = submit_tag "Search", class: 'button'
+          = submit_tag _("Search"), class: 'button'
     %tr
-      %th.sub Name
-      %th.width-70.sub.centered Moiety
-      %th.sub Date Joined
+      %th.sub= _("Name")
+      %th.width-70.sub.centered= _("Moiety")
+      %th.sub= _("Date Joined")
   = render 'list', users: @users

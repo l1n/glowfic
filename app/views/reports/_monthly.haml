@@ -5,7 +5,7 @@
 %table
   %thead
     %tr
-      %th.table-title{colspan: 6} Monthly Report
+      %th.table-title{colspan: 6}= _("Monthly Report")
   - 1.upto(1.month.ago.end_of_month.day) do |num_days|
     - day = 1.month.ago.end_of_month - (num_days - 1).days
     - posts = posts_from_relation(@posts.where(tagged_at: day.all_day))
@@ -15,10 +15,10 @@
           %th.subber{colspan: 6}= day.strftime("%b %d, %Y")
         %tr
           %th.sub.width-15
-          %th.sub Thread
-          %th.sub Continuity
-          %th.sub Authors
-          %th.sub Replies
-          %th.sub Last Updated
+          %th.sub= _("Thread")
+          %th.sub= _("Continuity")
+          %th.sub= _("Authors")
+          %th.sub= _("Replies")
+          %th.sub= _("Last Updated")
         - posts.each do |post|
           = render 'posts/list_item', post: post, hide_continuity: false

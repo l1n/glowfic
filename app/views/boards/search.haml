@@ -4,7 +4,7 @@
   %thead
     %tr
       %th.search-params-header
-        Search Continuities
+        = _("Search Continuities")
         - if @search_results
           = "- #{@search_results.total_entries} results"
       %th.search-results-header
@@ -16,31 +16,31 @@
         = form_tag search_continuities_path, method: :get do
           %table.search-form
             %tr
-              %td.width-70= label_tag :name, 'Name'
+              %td.width-70= label_tag :name, _("Name")
               %td= text_field_tag :name, params[:name], style: 'width: 100%; margin: 5px 0px; box-sizing: border-box;', id: :name
             %tr
-              %td Acronym
+              %td= _("Acronym")
               %td.padding-5
                 = check_box_tag :abbrev, true, params[:abbrev].present?, { class: 'vmid no-margin', style: 'margin-bottom: 3px;' }
-                = label_tag :abbrev, 'Search for acronym'
+                = label_tag :abbrev, _("Search for acronym")
             %tr
-              %td= label_tag :exclude_board_ids, 'Exclude'
+              %td= label_tag :exclude_board_ids, _("Exclude")
               %td= select_tag :exclude_board_ids, options_from_collection_for_select(@exclude_boards || [], :id, :name, params[:exclude_board_ids]),
                 { class: 'chosen-select', prompt: '— Choose Continuity —', multiple: true, name: 'exclude_board_ids[]' }
             %tr
-              %td= label_tag :author_id, 'Author'
+              %td= label_tag :author_id, _("Author")
               %td= select_tag :author_id, options_from_collection_for_select(@user || [], :id, :username,
                 params[:author_id]), { class: 'chosen-select', prompt: '— Choose Author —', multiple: true }
             %tr
-              %td.centered{colspan: 2}= submit_tag "Search", class: 'button'
+              %td.centered{colspan: 2}= submit_tag _("Search"), class: 'button'
       %td.vtop
         - if @search_results.present?
           %table
             %thead
               %tr
-                %th.sub Name
-                %th.sub Authors
-                %th.sub Last Updated
+                %th.sub= _("Name")
+                %th.sub= _("Authors")
+                %th.sub= _("Last Updated")
             %tbody
               = render partial: 'list_item', collection: @search_results, as: :board
 

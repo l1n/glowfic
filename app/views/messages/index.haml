@@ -5,14 +5,14 @@
       - if @messages.present?
         %tr
           %th.sub.width-15
-          %th.sub Subject
-          %th.sub= @view == 'inbox' ? 'Sender' : 'Recipient'
-          %th.sub Sent
+          %th.sub= _("Subject")
+          %th.sub= @view == 'inbox' ? _("Sender") : _("Recipient")
+          %th.sub= _("Sent")
           %th.sub#select-all-cell= check_box_tag :select_all, nil, class: 'check-all', data: { check_box_name: "marked_ids[]" }
     %tbody
       - if @messages.empty?
         %tr
-          %td.centered.padding-10.even — No messages yet —
+          %td.centered.padding-10.even= _("— No messages yet —")
       - else
         - @messages.each do |message|
           %tr.message-row
@@ -22,7 +22,7 @@
             %td{class: klass}
               = link_to message.unempty_subject, message
               - if message.num_in_thread.to_i > 1
-                (#{message.num_in_thread})
+                = format(_("(%{num_in_thread})"), num_in_thread: message.num_in_thread)
             %td{class: klass}
               - if @view == 'inbox'
                 = message_sender(message)
@@ -33,9 +33,9 @@
         %tr
           %td.right-align.padding-5{colspan: 5, class: cycle('even', 'odd')}
             - if @view == 'inbox'
-              = submit_tag "Mark Read", class: 'button'
-              = submit_tag "Mark Unread", class: 'button'
-            = submit_tag "Delete", class: 'button', data: { confirm: "Are you sure you want to delete these messages?" }
+              = submit_tag _("Mark Read"), class: 'button'
+              = submit_tag _("Mark Unread"), class: 'button'
+            = submit_tag _("Delete"), class: 'button', data: { confirm: _("Are you sure you want to delete these messages?") }
     - if @messages.total_pages > 1
       %tfoot
         %tr

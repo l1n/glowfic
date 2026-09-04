@@ -1,22 +1,22 @@
 - content_for :breadcrumbs do
-  = link_to "Indexes", indexes_path
+  = link_to _("Indexes"), indexes_path
   &raquo;
   = link_to @index.name, @index
   &raquo;
-  %b Edit
+  %b= _("Edit")
 
 = form_for @index, method: :put do |f|
   .form-table#index-editor
-    .editor-title Edit Index
+    .editor-title= _("Edit Index")
     = render 'editor', f: f
 
 %br
 %br
 
 - content_for :reorder_title do
-  Organize Index Sections
+  = _("Organize Index Sections")
   = link_to new_index_section_path params: { index_id: @index.id } do
-    .link-box.action-new + New Section
+    .link-box.action-new= _("+ New Section")
 = render 'boards/reorder_sections', sections: @index_sections
 
 %br

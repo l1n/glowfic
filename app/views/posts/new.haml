@@ -2,8 +2,8 @@
   = render 'import'
 - else
   .content-header
-    Create a new post
+    = _("Create a new post")
     - if current_user.has_permission?(:import_posts)
       = link_to new_post_path(view: :import), class: 'view-button-link' do
-        .view-button Import &raquo;
+        .view-button= _("Import »")
   = render 'write', post: @post

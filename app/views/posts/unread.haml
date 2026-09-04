@@ -1,17 +1,17 @@
 - content_for :posts_title do
   - if @started
-    Opened
+    = _("Opened")
   - else
-    Unread
-  Posts
+    = _("Unread")
+  = _("Posts")
   = link_to hidden_posts_path, class: 'view-button-link' do
-    .view-button Hidden &raquo;
+    .view-button= _("Hidden »")
   = link_to unread_posts_path(started: !@started), class: 'view-button-link' do
     .view-button
       - if @started
-        All Threads &raquo;
+        = _("All Threads »")
       - else
-        Opened Threads &raquo;
+        = _("Opened Threads »")
 
 = form_tag mark_posts_path, method: :post do
   = render 'posts/list', posts: @posts, show_unread_count: true, check_box_name: 'marked_ids[]', colored: current_user&.moiety_colors_unread?
@@ -19,17 +19,17 @@
     %table
       %tr
         %td.right-align.padding-5{colspan: 8, class: cycle('even', 'odd')}
-          = submit_tag "Hide from Unread", class: 'button'
-          = submit_tag "Mark Read", class: 'button'
+          = submit_tag _("Hide from Unread"), class: 'button'
+          = submit_tag _("Mark Read"), class: 'button'
 %br
 
 = form_tag mark_continuities_path, method: :post do
   .form-table#mark-continuities
-    .editor-title Mark Entire Continuity
+    .editor-title= _("Mark Entire Continuity")
     .even
       = select_tag :board_id,
                    options_from_collection_for_select(Board.where(id: params[:board_id]), :id, :name, params[:board_id]),
                    { class: 'chosen-select', prompt: '— Choose Continuity —' }
     .form-table-ender
-      = submit_tag "Hide from Unread", class: 'button'
-      = submit_tag "Mark Read", class: 'button'
+      = submit_tag _("Hide from Unread"), class: 'button'
+      = submit_tag _("Mark Read"), class: 'button'

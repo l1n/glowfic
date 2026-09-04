@@ -1,9 +1,9 @@
 - content_for :breadcrumbs do
-  = link_to 'Blocks', blocks_path
+  = link_to _("Blocks"), blocks_path
   &raquo;
-  %b New
+  %b= _("New")
 
 = form_for @block do |f|
   .form-table
-    .editor-title Block User
+    .editor-title= _("Block User")
     = render 'editor', f: f

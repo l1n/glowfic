@@ -1,9 +1,9 @@
 - content_for :breadcrumbs do
-  = link_to "News", news_index_path
+  = link_to _("News"), news_index_path
   &raquo;
-  %b Edit
+  %b= _("Edit")
 
 = form_for @news do |f|
   .form-table#news-table
-    .editor-title Edit News Post
+    .editor-title= _("Edit News Post")
     = render 'editor', f: f

@@ -1,30 +1,30 @@
 -# locals: ()
 
 - content_for :breadcrumbs do
-  %b Add New
+  %b= _("Add New")
 
 = form_tag icon_gallery_path(id: @gallery&.id || 0),
   method: :post,
   class: 'icon-upload',
   data: { 'form-data' => @s3_direct_post.fields, url: @s3_direct_post.url, host: URI.parse(@s3_direct_post.url).host, limit: 150 } do
   .content-header
-    %span.vmid Add New Icons to Gallery: #{@gallery.try(:name) || 'Galleryless'}
+    %span.vmid= format(_("Add New Icons to Gallery: %{Galleryless}"), Galleryless: @gallery.try(:name) || 'Galleryless')
     - if @gallery
       = link_to add_gallery_path(@gallery, type: 'existing'), class: 'view-button-link' do
         .view-button
           = image_tag "icons/grid.png", class: 'icon-view', alt: ''
-          Add Existing Icons &raquo;
+          = _("Add Existing Icons »")
   #icon-upload
-    .subber Upload Files
+    .subber= _("Upload Files")
     .odd
       = file_field_tag "icons[][file]", id: "icon_files", class: 'icon_files', multiple: true
       %span.progress-box
   .form-table#icon-table
     %div
       .sub.width-15
-      .sub URL
-      .sub Keyword
-      .sub Credit
+      .sub= _("URL")
+      .sub= _("Keyword")
+      .sub= _("Credit")
       .sub
     - len = @icons.empty? ? 1 : @icons.size
     - len.times do |i|
@@ -41,14 +41,14 @@
         .url-cell.input-cell{class: klass}
           %span.conf{class: ('hidden' unless s3_key.present?)}
             = image_tag "icons/accept.png", alt: ''
-            Uploaded
+            = _("Uploaded")
             %span.filename= @icons[i].try(:[], :filename)
-          = text_field_tag "icons[][url]", url, placeholder: "URL", class: ('hidden' if s3_key.present?), id: "icons_#{i}_url"
+          = text_field_tag "icons[][url]", url, placeholder: _("URL"), class: ('hidden' if s3_key.present?), id: "icons_#{i}_url"
           = hidden_field_tag "icons[][s3_key]", s3_key, id: "icons_#{i}_s3_key"
           = hidden_field_tag "icons[][filename]", @icons[i].try(:[], :filename), id: "icons_#{i}_filename"
-        .keyword-cell.input-cell{class: klass}= text_field_tag "icons[][keyword]", keyword, placeholder: "Keyword", id: "icons_#{i}_keyword"
-        .credit-cell.input-cell{class: klass}= text_field_tag "icons[][credit]", @icons[i].try(:[], :credit), placeholder: "Credit", id: "icons_#{i}_credit"
+        .keyword-cell.input-cell{class: klass}= text_field_tag "icons[][keyword]", keyword, placeholder: _("Keyword"), id: "icons_#{i}_keyword"
+        .credit-cell.input-cell{class: klass}= text_field_tag "icons[][credit]", @icons[i].try(:[], :credit), placeholder: _("Credit"), id: "icons_#{i}_credit"
         .icon-buttons{class: klass}
-          %a{href: '#'}= image_tag "icons/add.png", class: "icon-row-add", alt: 'Add Row'
-          %a{href: '#'}= image_tag "icons/minus.png", class: "icon-row-rem", alt: 'Delete Row'
-      .submit-row.form-table-ender= submit_tag "Add New Icons", class: 'button'
+          %a{href: '#'}= image_tag "icons/add.png", class: "icon-row-add", alt: _("Add Row")
+          %a{href: '#'}= image_tag "icons/minus.png", class: "icon-row-rem", alt: _("Delete Row")
+      .submit-row.form-table-ender= submit_tag _("Add New Icons"), class: 'button'

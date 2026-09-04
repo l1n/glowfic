@@ -2,20 +2,20 @@
 
 %div
   .sub= f.label :name
-  .even= f.text_field :name, placeholder: "Template Name"
+  .even= f.text_field :name, placeholder: _("Template Name")
 %div
   .sub.vtop= f.label :description
   .odd= f.text_area :description
 %div
-  .sub= f.label :retired, 'Retired?'
+  .sub= f.label :retired, _("Retired?")
   .even.checkbox-field
     = f.check_box :retired
-    = f.label :retired, 'Do not display member characters in character selector', class: 'vmid'
+    = f.label :retired, _("Do not display member characters in character selector"), class: 'vmid'
 - if @selectable_characters.present?
   %div
-    .sub.vtop= f.label :characters_ids, 'Characters'
+    .sub.vtop= f.label :characters_ids, _("Characters")
     .odd.checkbox-fields
       = collection_check_boxes :template, :character_ids, @selectable_characters, :id, :name, selected: @character_ids do |box|
         = box.check_box
         = box.label
-.form-table-ender= submit_tag "Save", class: 'button'
+.form-table-ender= submit_tag _("Save"), class: 'button'

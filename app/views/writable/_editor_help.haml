@@ -3,107 +3,105 @@
 #editor-help-box.hidden
   %ul
     - unless editor_location == 'profile'
-      %li= link_to 'General editor help', '#editor-help-general'
-    %li= link_to 'RTF editor', '#editor-help-rtf'
-    %li= link_to 'HTML editor', '#editor-help-html'
-    %li= link_to 'Markdown editor', '#editor-help-md'
+      %li= link_to _("General editor help"), '#editor-help-general'
+    %li= link_to _("RTF editor"), '#editor-help-rtf'
+    %li= link_to _("HTML editor"), '#editor-help-html'
+    %li= link_to _("Markdown editor"), '#editor-help-md'
   - unless editor_location == 'profile'
     #editor-help-general
-      %h3 General editor help
-      %h4 Joining a thread
+      %h3= _("General editor help")
+      %h4= _("Joining a thread")
       %p
-        To join a thread, press the "Join Thread" expander, then write a reply and submit it.
+        = _("To join a thread, press the \"Join Thread\" expander, then write a reply and submit it.")
       %p
-        Most threads
-        %strong are not
-        intended to be open to the public, so please ensure you only join threads where that's allowed.
-        This
-        %strong does not
-        necessarily correspond to continuities that have "Anyone" as their listed authors.
+        = _("Most threads")
+        %strong= _("are not")
+        = _("intended to be open to the public, so please ensure you only join threads where that's allowed.")
+        = _("This")
+        %strong= _("does not")
+        = _("necessarily correspond to continuities that have \"Anyone\" as their listed authors.")
       %p
-        Note that just clicking the "Join Thread" expander will not cause you to join the thread, but will show the editor.
-        You can safely reload the page and you will not have joined the thread.
-        If you then submit the editor and reply to the thread, you will then be listed as one of its authors.
-      %h4 The info box
+        = _("Note that just clicking the \"Join Thread\" expander will not cause you to join the thread, but will show the editor.")
+        = _("You can safely reload the page and you will not have joined the thread.")
+        = _("If you then submit the editor and reply to the thread, you will then be listed as one of its authors.")
+      %h4= _("The info box")
       %p
-        The left panel (or upper panel, on mobile) offers information about the character you're posting with.
+        = _("The left panel (or upper panel, on mobile) offers information about the character you're posting with.")
       %p
-        The bottom bar is your username, and pressing the 'Choose Character' symbol in this bar allows you to swap to a character, or to your default user account.
-        If the character you select has aliases attached, you can use the 'Choose Alias' symbol on the character's name bar to swap between those and the character's default name.
+        = _("The bottom bar is your username, and pressing the 'Choose Character' symbol in this bar allows you to swap to a character, or to your default user account.")
+        = _("If the character you select has aliases attached, you can use the 'Choose Alias' symbol on the character's name bar to swap between those and the character's default name.")
       %p
-        The icon can be clicked to open a display of the galleries attached to the character.
-        You can then click one of these icons to select it.
-        Alternatively, you can use the keyword dropdown box to select an icon.
-      %h4 Quick switcher
+        = _("The icon can be clicked to open a display of the galleries attached to the character.")
+        = _("You can then click one of these icons to select it.")
+        = _("Alternatively, you can use the keyword dropdown box to select an icon.")
+      %h4= _("Quick switcher")
       %p
-        Once you have used a character in a thread, they can then be found under the info box by their default icon (or the first letters of their name, if no default icon is set).
-        Clicking these boxes allows you to switch back between them more easily, or to your default user account.
-        The user account can be hidden from this list in your account settings, and the number of characters shown here is limited to the ten most recent in the thread.
+        = _("Once you have used a character in a thread, they can then be found under the info box by their default icon (or the first letters of their name, if no default icon is set).")
+        = _("Clicking these boxes allows you to switch back between them more easily, or to your default user account.")
+        = _("The user account can be hidden from this list in your account settings, and the number of characters shown here is limited to the ten most recent in the thread.")
   #editor-help-rtf
-    %h3 RTF editor
+    %h3= _("RTF editor")
     %p
-      The RTF editor (powered by TinyMCE) allows you to type text while showing you approximately how it will be displayed on the page.
-      It also provides a toolbar for more formatting options, most of which are also accessible using standard keyboard shortcuts.
+      = _("The RTF editor (powered by TinyMCE) allows you to type text while showing you approximately how it will be displayed on the page.")
+      = _("It also provides a toolbar for more formatting options, most of which are also accessible using standard keyboard shortcuts.")
     %p
-      Paragraphs are inserted using the Return key.
-      Single linebreaks can be inserted by also holding the Shift key when you press the Return key.
+      = _("Paragraphs are inserted using the Return key.")
+      = _("Single linebreaks can be inserted by also holding the Shift key when you press the Return key.")
     %p
-      %strong Beware:
-      when pasting content into the editor, such as from another reply or from another website, you may accidentally transfer font or background formatting properties.
-      Please instead paste without formatting (usually available on right-click) and re-format with bold, italics, underline (etc.) as necessary, to avoid breaking the display of the text for users on other layouts.
+      %strong= _("Beware:")
+      = _("when pasting content into the editor, such as from another reply or from another website, you may accidentally transfer font or background formatting properties.")
+      = _("Please instead paste without formatting (usually available on right-click) and re-format with bold, italics, underline (etc.) as necessary, to avoid breaking the display of the text for users on other layouts.")
   #editor-help-html
-    %h3 HTML editor
+    %h3= _("HTML editor")
     %p
-      The HTML editor doesn't offer you the same functionality that the RTF editor does, but allows a simpler interface.
-      It also permits more control over the formatting of your text if you know HTML or CSS.
+      = _("The HTML editor doesn't offer you the same functionality that the RTF editor does, but allows a simpler interface.")
+      = _("It also permits more control over the formatting of your text if you know HTML or CSS.")
     %p
-      The HTML tags permitted are listed below.
-      If you use an unpermitted tag, it will not show when you
+      = _("The HTML tags permitted are listed below.")
       - if editor_location == 'profile'
-        save your profile.
+        = _("If you use an unpermitted tag, it will not show when you save your profile.")
       - else
-        use the preview button or save your reply.
+        = _("If you use an unpermitted tag, it will not show when you use the preview button or save your reply.")
     %p
-      The site will automatically insert linebreak tags into the HTML when you use a manual linebreak in the editor.
-      It will also wrap blocks of text split by an empty line in paragraphs, unless any of the text contains a
-      %code="<p>"
-      or a
-      %code="<br>"
-      tag.
+      = _("The site will automatically insert linebreak tags into the HTML when you use a manual linebreak in the editor.")
+      - p_tag = tag.code('<p>')
+      - br_tag = tag.code('<br>')
+      = safe_format(_("It will also wrap blocks of text split by an empty line in paragraphs, unless any of the text contains a %{p} or a %{br} tag."), p: p_tag, br: br_tag)
     %p
-      To mark a passage as being in another language, wrap it in a span with a
-      %code lang
-      attribute:
-      %code="<span lang=\"es\">Buenos días</span>"
-      \. Screen readers then pronounce it with the right voice, and browsers hyphenate and spellcheck it with the right rules.
-      The
-      %strong Language
-      control above the editor does this to the selected text for you, starting from the writing language set in your
-      = link_to 'account settings', edit_user_path(current_user)
-      \. The Rich Text editor has the same thing in its toolbar.
+      - lang_attribute = tag.code('lang')
+      - lang_example = tag.code('<span lang="es">Buenos días</span>')
+      = safe_format(_("To mark a passage as being in another language, wrap it in a span with a %{attribute} attribute: %{example}."), attribute: lang_attribute, example: lang_example)
+      = _("Screen readers then pronounce it with the right voice, and browsers hyphenate and spellcheck it with the right rules.")
+      - language_control = tag.strong(_("Language"))
+      - settings_link = link_to(_("account settings"), edit_user_path(current_user))
+      = safe_format(_("The %{control} control above the editor does this to the selected text for you, starting from the writing language set in your %{settings}."), control: language_control, settings: settings_link)
+      = _("The Rich Text editor has the same thing in its toolbar.")
     #markup-allowed-tags
-      %strong Allowed tags:
+      %strong= _("Allowed tags:")
       %ul.inline-list
-        - Glowfic::ALLOWED_TAGS.sort.each do |tag|
-          %li <code>#{tag}</code>
+        - Glowfic::ALLOWED_TAGS.sort.each do |allowed_tag|
+          %li
+            %code= allowed_tag
     %br
     #markup-allowed-attributes
-      %strong Allowed attributes (by tag):
+      %strong= _("Allowed attributes (by tag):")
       %ul
         - Glowfic::ALLOWED_ATTRIBUTES.each do |tag_name, attrs|
           %li
-            - if tag_name == :all
-              %strong #{tag_name}:
-            - else
-              %strong <code>#{tag_name}</code>:
+            %strong
+              - if tag_name == :all
+                #{tag_name}:
+              - else
+                = succeed ':' do
+                  %code= tag_name
             %ul.inline-list
               - attrs.each do |attribute|
-                %li <code>#{attribute}</code>
+                %li
+                  %code= attribute
   #editor-help-md
-    %h3 Markdown editor
+    %h3= _("Markdown editor")
     %p
-      The markdown editor provides a step between the html and rtf editors. A guide to markdown syntax can be found
-      = (link_to 'here', 'https://www.markdownguide.org/basic-syntax/', target: '_blank', rel: 'noopener') + ","
-      and it also supports inline html.
+      - markdown_link = link_to(_("here"), 'https://www.markdownguide.org/basic-syntax/', target: '_blank', rel: 'noopener')
+      = safe_format(_("The markdown editor provides a step between the html and rtf editors. A guide to markdown syntax can be found %{link}, and it also supports inline html."), link: markdown_link)
     %p
-      It does not, however, support multiple inline breaks very well, unless they are manually specified. For long vertical spaces typical in some glowfic posts, you'll need to switch to another editor for now!
+      = _("It does not, however, support multiple inline breaks very well, unless they are manually specified. For long vertical spaces typical in some glowfic posts, you'll need to switch to another editor for now!")

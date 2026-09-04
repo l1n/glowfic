@@ -3,9 +3,9 @@
 %table.tag-right-content-box
   %thead
     %tr
-      %th.table-title{colspan: 4} Galleries Tagged: #{localized_tag_name(@tag)}
+      %th.table-title{colspan: 4}= safe_format(_("Galleries Tagged: %{tag}"), tag: localized_tag_name(@tag))
   %tbody
     - if @galleries.present?
       = render partial: 'galleries/expandable', collection: @galleries, as: :gallery, locals: { tag: @tag }
     - else
-      %td.centered.padding-5{class: cycle('even', 'odd'), colspan: 4} — No galleries yet —
+      %td.centered.padding-5{class: cycle('even', 'odd'), colspan: 4}= _("— No galleries yet —")

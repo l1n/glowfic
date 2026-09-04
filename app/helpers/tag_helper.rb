@@ -40,6 +40,28 @@ module TagHelper
     { lang: localized.locale, dir: (localized.rtl? ? 'rtl' : nil) }.compact
   end
 
+  # Tag types are class names, so the interface can't just titlecase them into English
+  # headings and links; these give the translated name for one.
+  def tag_type_name(type)
+    case type
+      when 'Setting' then _("Setting")
+      when 'Label' then _("Label")
+      when 'ContentWarning' then _("Content Warning")
+      when 'GalleryGroup' then _("Gallery Group")
+      else type.to_s.titlecase
+    end
+  end
+
+  def tag_type_plural(type)
+    case type
+      when 'Setting' then _("Settings")
+      when 'Label' then _("Labels")
+      when 'ContentWarning' then _("Content Warnings")
+      when 'GalleryGroup' then _("Gallery Groups")
+      else type.to_s.pluralize.titlecase
+    end
+  end
+
   def tag_select(obj, form, assoc, opts={})
     attr_name = assoc.to_s.singularize + "_ids"
     preview_collection = instance_variable_get(:"@#{assoc}")

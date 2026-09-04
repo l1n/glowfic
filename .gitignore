@@ -48,3 +48,7 @@ dump.rdb
 
 # installed locally by the eslint step in .github/workflows/reviewdog.yml
 node_modules/
+
+# intermediate files left behind by `rake gettext:find`
+locale/**/*.edit.po
+locale/**/*.time_stamp

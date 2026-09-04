@@ -1,12 +1,12 @@
 .content-header
-  Admin Tools
+  = _("Admin Tools")
 
 .subber
-  Post Tools
-=link_to "Post Importer", new_post_path(view: :import)
+  = _("Post Tools")
+=link_to _("Post Importer"), new_post_path(view: :import)
 %br
-=link_to "Flat Post Regenerator", regenerate_flat_posts_path
+=link_to _("Flat Post Regenerator"), regenerate_flat_posts_path
 
 .subber
-  Character Tools
-=link_to "Character Relocator", relocate_characters_path
+  = _("Character Tools")
+=link_to _("Character Relocator"), relocate_characters_path

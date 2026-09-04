@@ -1,10 +1,7 @@
 = render 'breadcrumbs', subtitle: 'Split Post', post: @post
 
-Splitting
-= link_to @reply.post.subject, @reply.post
-at reply id #
-= params[:reply_id]
-\. New Post:
+- split_post_link = link_to(@reply.post.subject, @reply.post)
+= safe_format(_("Splitting %{post} at reply id # %{reply_id}. New Post:"), post: split_post_link, reply_id: params[:reply_id])
 
 .content-header= params[:subject]
 - @reply.id = nil

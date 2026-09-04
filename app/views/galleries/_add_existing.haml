@@ -1,29 +1,29 @@
 -# locals: ()
 
 - content_for :breadcrumbs do
-  %b Add Existing
+  %b= _("Add Existing")
 
 = form_tag icon_gallery_path(@gallery), method: :post, id: 'add-gallery-icons' do
   = hidden_field_tag :image_ids
   .content-header
-    %span.vmid Add Existing Icons to Gallery: #{@gallery.name}
+    %span.vmid= format(_("Add Existing Icons to Gallery: %{name}"), name: @gallery.name)
     = link_to add_gallery_path(@gallery), class: 'view-button-link' do
       .view-button
         = image_tag "icons/list.png", class: 'list-view', alt: ''
-        Add New Icons &raquo;
+        = _("Add New Icons »")
   .form-table#add-existing
-    .form-table-ender Click icons to select, then press Add Icons to Gallery at the bottom.
-    .sub Galleryless Icons
+    .form-table-ender= _("Click icons to select, then press Add Icons to Gallery at the bottom.")
+    .sub= _("Galleryless Icons")
     .even.icons#icons-0
       .checkbox-field
         = check_box_tag :select_all, 0, false, class: 'select-all'
-        %span Select all icons
+        %span= _("Select all icons")
       .gallery-icons
         - @unassigned.each do |icon|
           .gallery-icon
             = icon_tag icon, class: 'add-gallery-icon', 'data-id': icon.id
             %span.icon-keyword= icon.keyword
-    .form-table-ender= submit_tag "Add Icons to Gallery", class: 'button'
+    .form-table-ender= submit_tag _("Add Icons to Gallery"), class: 'button'
     - current_user.galleries.ordered_by_name.each do |gallery|
       - next if gallery.id == @gallery.id
       .sub.gallery-minmax{data: { id: gallery.id }}
@@ -32,6 +32,6 @@
       .icons.hidden{class: cycle('even', 'odd'), id: "icons-#{gallery.id}"}
         .checkbox-field
           = check_box_tag :select_all, gallery.id, false, class: 'select-all', id: nil
-          %span Select all icons
+          %span= _("Select all icons")
     .form-table-ender
-      = submit_tag "Add Icons to Gallery", class: 'button'
+      = submit_tag _("Add Icons to Gallery"), class: 'button'

@@ -1,8 +1,8 @@
 - content_for :breadcrumbs do
   - if @template.user_id == current_user.try(:id)
-    = link_to "You", user_path(current_user)
+    = link_to _("You"), user_path(current_user)
     &raquo;
-    = link_to "Your Characters", user_characters_path(current_user)
+    = link_to _("Your Characters"), user_characters_path(current_user)
   - else
     = user_link(@template.user)
     - unless @template.user.deleted?
@@ -15,33 +15,33 @@
   %thead
     %tr
       %th.table-title{colspan: 6}
-        Template: #{@template.name}
+        = format(_("Template: %{name}"), name: @template.name)
         - if @template.user_id == current_user.try(:id)
           = link_to new_character_path(template_id: @template.id) do
-            .link-box.action-new + New Instance
+            .link-box.action-new= _("+ New Instance")
           = link_to edit_template_path(@template) do
             .link-box.action-edit
               = image_tag "icons/pencil.png"
-              Edit Template
-          = link_to @template, method: :delete, data: { confirm: 'Are you sure you want to delete this template?' } do
-            .link-box.action-delete x Delete Template
+              = _("Edit Template")
+          = link_to @template, method: :delete, data: { confirm: _("Are you sure you want to delete this template?") } do
+            .link-box.action-delete= _("x Delete Template")
         = link_to character_menu_link(view: 'icons'), rel: 'nofollow', class: 'view-button-link' do
           .view-button{class: (:selected unless page_view == 'list')}
             = image_tag "icons/grid.png", class: 'icon-view', alt: ''
-            Icons
+            = _("Icons")
         = link_to character_menu_link(view: 'list'), rel: 'nofollow', class: 'view-button-link' do
           .view-button{class: (:selected if page_view == 'list')}
             = image_tag "icons/list.png", class: 'list-view', alt: ''
-            List
+            = _("List")
         - unless @template.retired # If the template is retired, it always shows all of its characters
           - if show_retired
             = link_to character_menu_link(retired: false), class: 'view-button-link' do
               .view-button
-                Hide Retired
+                = _("Hide Retired")
           - else
             = link_to character_menu_link(retired: true), class: 'view-button-link' do
               .view-button
-                All Characters
+                = _("All Characters")
   %tbody
     - if page_view == 'list'
       = render 'characters/list_section', characters: @template.characters, show_retired: @template.retired || show_retired

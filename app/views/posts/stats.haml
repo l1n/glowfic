@@ -4,41 +4,41 @@
   %thead
     %tr
       %th.table-title{colspan: 2}
-        Metadata:
+        = _("Metadata:")
         = link_to @post.subject, @post
         - if @post.metadata_editable_by?(current_user)
           = link_to edit_post_path(@post) do
             .link-box.action-edit
               = image_tag "icons/pencil.png", alt: ''
-              Edit Post
+              = _("Edit Post")
     - if @post.description.present?
       %tr
         %td.post-subheader{colspan: 2, style: 'width: unset;'}= sanitize_simple_link_text(@post.description)
   %tbody
     %tr
-      %th.sub.width-150 Status
+      %th.sub.width-150= _("Status")
       %td{class: cycle('odd', 'even')}
         - if @post.on_hiatus?
-          = image_tag "icons/hourglass.png", class: 'vmid', title: 'On Hiatus', alt: ''
-          On Hiatus
+          = image_tag "icons/hourglass.png", class: 'vmid', title: _("On Hiatus"), alt: ''
+          = _("On Hiatus")
         - elsif @post.active?
-          = image_tag "icons/book_open.png", class: 'vmid', title: 'In Progress', alt: ''
-          In Progress
+          = image_tag "icons/book_open.png", class: 'vmid', title: _("In Progress"), alt: ''
+          = _("In Progress")
         - elsif @post.complete?
-          = image_tag "icons/book.png", class: 'vmid', title: 'Complete', alt: ''
-          Complete
+          = image_tag "icons/book.png", class: 'vmid', title: _("Complete"), alt: ''
+          = _("Complete")
         - elsif @post.abandoned?
-          = image_tag "icons/book_grey.png", class: 'vmid', title: 'Abandoned', alt: ''
-          Abandoned
+          = image_tag "icons/book_grey.png", class: 'vmid', title: _("Abandoned"), alt: ''
+          = _("Abandoned")
     %tr
-      %th.sub.width-150 Audience
+      %th.sub.width-150= _("Audience")
       %td{class: cycle('odd', 'even')}
         = privacy_state(@post.privacy, dark_layout: current_user&.layout_darkmode?)
         - if @post.privacy_access_list?
           \-
           = safe_join(@post.post_viewers.map(&:user).map { |u| user_link(u) }, ', ')
     %tr
-      %th.sub.width-150 Authors
+      %th.sub.width-150= _("Authors")
       %td{class: cycle('odd', 'even')}
         - post_authors = @post.post_authors.joins(:user).includes(:user).order(Arel.sql('LOWER(users.username) asc'))
         %ul
@@ -46,9 +46,9 @@
             %li
               = user_link(post_author.user)
               - unless post_author.joined?
-                (invited)
+                = _("(invited)")
     %tr
-      %th.sub.width-150.vtop Characters
+      %th.sub.width-150.vtop= _("Characters")
       %td{class: cycle('odd', 'even')}
         %ul
           - @post.character_appearance_counts.each do |character, count|
@@ -59,21 +59,21 @@
 
     - if @post.settings.present?
       %tr
-        %th.sub.width-150 Setting
+        %th.sub.width-150= _("Setting")
         - setting_links = @post.settings.ordered_by_post_tag.map { |setting| localized_tag_link(setting) }
         %td{class: cycle('odd', 'even')}= safe_join(setting_links, ', ')
     - if @post.content_warnings.present?
       %tr
-        %th.sub.width-150 Content Warnings
+        %th.sub.width-150= _("Content Warnings")
         - warning_links = @post.content_warnings.ordered_by_post_tag.map { |warning| localized_tag_link(warning) }
         %td{class: cycle('odd', 'even')}= safe_join(warning_links, ', ')
     - if @post.labels.present?
       %tr
-        %th.sub.width-150 Labels
+        %th.sub.width-150= _("Labels")
         - label_links = @post.labels.ordered_by_post_tag.map { |label| localized_tag_link(label) }
         %td{class: cycle('odd', 'even')}= safe_join(label_links, ', ')
     %tr
-      %th.sub.width-150.vtop Word Count
+      %th.sub.width-150.vtop= _("Word Count")
       %td{class: cycle('odd', 'even')}
         = number_with_delimiter(@post.total_word_count)
         - if @post.joined_authors.many?
@@ -83,8 +83,8 @@
                 = username + ':'
                 = number_with_delimiter(count)
     %tr
-      %th.sub.width-150 Time Begun
+      %th.sub.width-150= _("Time Begun")
       %td{class: cycle('odd', 'even')}= pretty_time(@post.created_at)
     %tr
-      %th.sub.width-150 Time Last Updated
+      %th.sub.width-150= _("Time Last Updated")
       %td{class: cycle('odd', 'even')}= pretty_time(@post.tagged_at)

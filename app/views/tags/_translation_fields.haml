@@ -2,20 +2,20 @@
 
 .tag-translation
   %div
-    .sub= tf.label :locale, 'Language'
+    .sub= tf.label :locale, _("Language")
     .tag-translation-field
-      = tf.select :locale, Glowfic::Locales.content_options, { include_blank: '— Choose Language —' }, { class: 'tag-translation-locale' }
+      = tf.select :locale, Glowfic::Locales.content_options, { include_blank: _("— Choose Language —") }, { class: 'tag-translation-locale' }
   %div
-    .sub= tf.label :name, 'Name'
+    .sub= tf.label :name, _("Name")
     .tag-translation-field
-      = tf.text_field :name, placeholder: 'Tag Name', lang: tf.object.locale, dir: (tf.object.rtl? ? 'rtl' : nil)
+      = tf.text_field :name, placeholder: _("Tag Name"), lang: tf.object.locale, dir: (tf.object.rtl? ? 'rtl' : nil)
   - if describable
     %div
-      .sub.vtop= tf.label :description, 'Description'
+      .sub.vtop= tf.label :description, _("Description")
       .tag-translation-field
-        = tf.text_area :description, placeholder: 'Description', cols: 35, lang: tf.object.locale, dir: (tf.object.rtl? ? 'rtl' : nil)
+        = tf.text_area :description, placeholder: _("Description"), cols: 35, lang: tf.object.locale, dir: (tf.object.rtl? ? 'rtl' : nil)
   %div
     .sub &nbsp;
     .checkbox-field.tag-translation-field
       = tf.check_box :_destroy, class: 'tag-translation-destroy'
-      = tf.label :_destroy, 'Remove this translation when saving'
+      = tf.label :_destroy, _("Remove this translation when saving")

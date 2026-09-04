@@ -3,9 +3,9 @@
 %table.tag-right-content-box
   %thead
     %tr
-      %th.table-title{colspan: 3} Users With Content Warning: #{localized_tag_name(@tag)}
+      %th.table-title{colspan: 3}= safe_format(_("Users With Content Warning: %{tag}"), tag: localized_tag_name(@tag))
     %tr
-      %th.sub Name
-      %th.width-70.sub.centered Moiety
-      %th.sub Date Joined
+      %th.sub= _("Name")
+      %th.width-70.sub.centered= _("Moiety")
+      %th.sub= _("Date Joined")
   = render 'users/list', users: @users

@@ -1,23 +1,23 @@
 = render 'breadcrumbs', subtitle: 'Delete History', post: @post
 
-.content-header History of Deleted Replies
+.content-header= _("History of Deleted Replies")
 = render 'posts/paginator', paginated: @deleted_audits
 %br
 
 - if @deleted_audits.present?
-  .subber Preceding context
+  .subber= _("Preceding context")
   = render partial: 'replies/single', collection: @preceding, as: :reply
   %br
 
   .subber
-    Reply deleted #{pretty_time(@audit.created_at)} by #{user_link(@audit.user)}
+    = safe_format(_("Reply deleted %{created_at} by %{user}"), created_at: pretty_time(@audit.created_at), user: user_link(@audit.user))
     - if @deleted.editable_by?(current_user)
       = link_to restore_reply_path(id: @audit.auditable_id), method: :post do
-        %button{style: 'float: right; margin: 0;'} Restore
+        %button{style: 'float: right; margin: 0;'}= _("Restore")
         .clear
   = render 'replies/single', reply: @deleted
   %br
 
   - if @following.present?
-    .subber Following context
+    .subber= _("Following context")
     = render partial: 'replies/single', collection: @following, as: :reply

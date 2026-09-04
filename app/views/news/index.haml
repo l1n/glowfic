@@ -1,8 +1,8 @@
 .content-header
-  Site News
+  = _("Site News")
   - if current_user&.has_permission?(:create_news)
     = link_to new_news_path do
-      .link-box.action-new + New News Post
+      .link-box.action-new= _("+ New News Post")
 = render @news
 
 - if @news.total_entries > @news.per_page

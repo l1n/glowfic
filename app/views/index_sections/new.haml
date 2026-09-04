@@ -1,12 +1,12 @@
 - content_for :breadcrumbs do
-  = link_to "Indexes", indexes_path
+  = link_to _("Indexes"), indexes_path
   &raquo;
   = link_to @section.index.name, @section.index
   &raquo;
-  %b New Section
+  %b= _("New Section")
 
 
 = form_for @section, url: index_sections_path, method: :post do |f|
   .form-table#index-section-editor
-    .editor-title Create #{@index.try(:name)} Section
+    .editor-title= format(_("Create %{name} Section"), name: @index.try(:name))
     = render 'editor', f: f

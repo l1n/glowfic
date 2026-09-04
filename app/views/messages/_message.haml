@@ -15,26 +15,26 @@
     .message= generate_short(message.message)
     .float-right
       - if message.created_at
-        .message-time Sent #{pretty_time(message.created_at)}
+        .message-time= format(_("Sent %{created_at}"), created_at: pretty_time(message.created_at))
 
 .post-container.message-expanded{class: exp_klass, id: "expanded-#{message.id}"}
   - if message.id && !message_counter.nil?
     .message-expand
       .message-menu{data: { id: message.id }}
-        .float-left.message-menu-text Click to collapse
+        .float-left.message-menu-text= _("Click to collapse")
         .float-right
           - if message.created_at
-            .message-time Sent #{pretty_time(message.created_at)}
+            .message-time= format(_("Sent %{created_at}"), created_at: pretty_time(message.created_at))
   .padding-10
     .post-info-box
       - if message.sender.try(:avatar)
         .post-icon= icon_tag message.sender.avatar
       .post-info-text
         .post-character
-          %b From:
+          %b= _("From:")
           = message_sender(message)
         .post-screenname
-          %b To:
+          %b= _("To:")
           - if message.recipient
             = user_link(message.recipient)
     .message-content= sanitize_written_content(message.message)

@@ -2,7 +2,7 @@
 
 - klass = cycle('even', 'odd')
 %div
-  .sub= f.label :blocked_user_id, 'User'
+  .sub= f.label :blocked_user_id, _("User")
   %div{class: klass}
     - if blocked_user.nil?
       = f.select :blocked_user_id, options_from_collection_for_select(@users,
@@ -11,18 +11,18 @@
     - else
       = blocked_user.username
 %div
-  .sub= f.label :block_interactions, 'Interactions'
+  .sub= f.label :block_interactions, _("Interactions")
   .checkbox-field{class: klass}
     = f.check_box :block_interactions
-    = f.label :block_interactions, "Prevent them from interacting with you?"
+    = f.label :block_interactions, _("Prevent them from interacting with you?")
 %div
   .sub= f.label :hide_them
   .narrow-select{class: klass}
-    Prevent you from seeing their:
+    = _("Prevent you from seeing their:")
     = f.select :hide_them, options_from_collection_for_select(@options.to_a, :second, :first, @block.hide_them), { class: 'chosen-select' }
 %div
-  .sub= f.label :hide_me, 'Hide yourself'
+  .sub= f.label :hide_me, _("Hide yourself")
   .narrow-select{class: klass}
-    Prevent them from seeing your:
+    = _("Prevent them from seeing your:")
     = f.select :hide_me, options_from_collection_for_select(@options.to_a, :second, :first, @block.hide_me), { class: 'chosen-select' }
-.form-table-ender= submit_tag "Save", class: 'button'
+.form-table-ender= submit_tag _("Save"), class: 'button'

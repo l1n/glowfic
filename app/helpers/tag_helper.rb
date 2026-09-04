@@ -24,6 +24,12 @@ module TagHelper
     record.localized_name.text.to_s
   end
 
+  # The same language-aware link as localized_tag_link, from the [id, name, locale] triple
+  # a list that plucks tag columns has instead of a record.
+  def localized_tag_column_link(id, name, locale)
+    link_to(localized_span(Tag::Localized.new(name, locale)), tag_path(id))
+  end
+
   def localized_span(localized)
     text = localized.text.to_s
     return ''.html_safe if text.blank?

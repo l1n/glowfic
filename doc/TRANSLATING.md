@@ -59,6 +59,27 @@ This rewrites `locale/glowfic.pot` from the source and merges the new strings in
 runtime (the English is shown instead) until a translator confirms them, so it's safe to
 commit the merge before the translations catch up.
 
+## The long-form pages
+
+The terms of service, privacy policy and DMCA policy are documents, not interfaces. They
+are not in the `.po` files, and deliberately so: split into several hundred sentence
+fragments they can't be translated into something coherent, let alone something that still
+means what the English means.
+
+Translate them as whole pages instead. Rails picks a template by locale automatically, so
+adding
+
+```
+app/views/about/tos.es.haml
+```
+
+is all that's needed — readers whose interface language is Spanish get that page, everyone
+else keeps `tos.haml`. The same works for `privacy`, `dmca` and `contact`.
+
+Because these carry legal weight, a translation of one should say, at the top, that the
+English version is the one that governs, and it should be reviewed by someone who is
+comfortable with both languages and the subject matter.
+
 ## What translators should know
 
 - `%{name}`-style placeholders and `%s`/`%d` must survive into the translation; the text

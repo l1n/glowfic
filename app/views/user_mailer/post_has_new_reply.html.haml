@@ -1,8 +1,8 @@
 %div{style: 'width: 500px; margin: 0px auto; background-color: #8B8687; color:#EEEEEE; padding: 0px; font-size: 18px;'}
   %div{style: 'padding: 15px; overflow: hidden;'}
     %span{style: 'line-height: 28px;'}
-      New reply in
-      = link_to @reply.post.subject, reply_url(@reply, host: current_host, protocol: 'https'), style: 'color: #EEEEEE;'
+      - post_link = link_to(@reply.post.subject, reply_url(@reply, host: current_host, protocol: 'https'), style: 'color: #EEEEEE;')
+      = safe_format(_("New reply in %{post}"), post: post_link)
 
 %div{style: 'background-color: #D8D8D8; color:#101010; overflow: auto; width: 500px; margin: 0px auto;'}
   %div{style: 'padding: 10px; text-align: left;'}

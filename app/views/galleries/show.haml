@@ -9,7 +9,7 @@
       = user_link(@user)
       - unless @user.deleted?
         &raquo;
-        = link_to "#{@user.username}'s Galleries", user_galleries_path(@user)
+        = link_to format(_("%{username}'s Galleries"), username: @user.username), user_galleries_path(@user)
     &raquo;
     %b= @gallery ? @gallery.name : 'Galleryless Icons'
 

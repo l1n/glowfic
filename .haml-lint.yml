@@ -17,6 +17,11 @@ linters:
   InlineStyles:
     exclude: app/views/user_mailer/*
 
+  # The plain-text parts of emails have no HTML context to escape into, and escaping
+  # there turns apostrophes in translated text and post subjects into &#39; in the mail.
+  UnescapedHtml:
+    exclude: "**/*.text.haml"
+
   InstanceVariables:
     enabled: false
 

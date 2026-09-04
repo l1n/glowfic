@@ -6,6 +6,6 @@
   = _("Preview")
 
 = format(_("Transferring the following characters from %{username} to %{new_user_username}"), username: @characters.first.user.username, new_user_username: @new_user.username)
-= render 'characters/icon_view', name: 'User characters', characters: @characters, show_retired: true
+= render 'characters/icon_view', name: _("User characters"), characters: @characters, show_retired: true
 
 = render 'relocate'

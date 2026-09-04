@@ -7,7 +7,7 @@
     = user_link(@character.user)
     - unless @character.user.deleted?
       &raquo;
-      = link_to "#{@character.user.username}'s Characters", user_characters_path(@character.user)
+      = link_to format(_("%{username}'s Characters"), username: @character.user.username), user_characters_path(@character.user)
   - if @character.template
     &raquo;
     = link_to @character.template.name, template_path(@character.template)
@@ -105,7 +105,7 @@
             %td.icon-box
               .centered.padding-5= _("— No galleries yet —")
   - elsif params[:view] == 'posts'
-    - content_for(:posts_title) { 'Recent Threads' }
+    - content_for(:posts_title) { _("Recent Threads") }
     = render 'posts/list', posts: @posts, table_class: 'character-right-content-box'
   - else
     - reset_cycle

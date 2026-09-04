@@ -42,22 +42,27 @@ module TagHelper
 
   # Tag types are class names, so the interface can't just titlecase them into English
   # headings and links; these give the translated name for one.
+  #
+  # They carry the gettext context 'tag type' because the English collides with unrelated
+  # wording elsewhere: a Setting tag is a place a story happens, which is not what
+  # "Settings" means on the account page, and the two want different words in other
+  # languages. The context has to be a literal at each call for xgettext to see it.
   def tag_type_name(type)
     case type
-      when 'Setting' then _("Setting")
-      when 'Label' then _("Label")
-      when 'ContentWarning' then _("Content Warning")
-      when 'GalleryGroup' then _("Gallery Group")
+      when 'Setting' then p_('tag type', "Setting")
+      when 'Label' then p_('tag type', "Label")
+      when 'ContentWarning' then p_('tag type', "Content Warning")
+      when 'GalleryGroup' then p_('tag type', "Gallery Group")
       else type.to_s.titlecase
     end
   end
 
   def tag_type_plural(type)
     case type
-      when 'Setting' then _("Settings")
-      when 'Label' then _("Labels")
-      when 'ContentWarning' then _("Content Warnings")
-      when 'GalleryGroup' then _("Gallery Groups")
+      when 'Setting' then p_('tag type', "Settings")
+      when 'Label' then p_('tag type', "Labels")
+      when 'ContentWarning' then p_('tag type', "Content Warnings")
+      when 'GalleryGroup' then p_('tag type', "Gallery Groups")
       else type.to_s.pluralize.titlecase
     end
   end

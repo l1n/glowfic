@@ -29,8 +29,8 @@
       .post-footer
         .right-align>
           .padding-5>
-            = precede 'Posted '.freeze do
+            = precede "#{_('Posted')} " do
               %span.post-posted=pretty_time(reply.created_at, format: ApplicationHelper::TIME_FORMAT)
             - if reply.created_at.to_i != reply.last_updated.to_i
-              = precede ' | Updated '.freeze do
+              = precede " | #{_('Updated')} " do
                 %span.post-updated=pretty_time(reply.last_updated, format: ApplicationHelper::TIME_FORMAT)

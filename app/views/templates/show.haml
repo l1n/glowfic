@@ -7,7 +7,7 @@
     = user_link(@template.user)
     - unless @template.user.deleted?
       &raquo;
-      = link_to "#{@template.user.username}'s Characters", user_characters_path(@template.user)
+      = link_to format(_("%{username}'s Characters"), username: @template.user.username), user_characters_path(@template.user)
   &raquo;
   %b= @template.name
 
@@ -49,5 +49,5 @@
       = render 'characters/icon_view', characters: @template.characters, show_retired: @template.retired || show_retired
 - if @posts.present?
   %br
-  - content_for(:posts_title) { 'Posts with Template Instances' }
+  - content_for(:posts_title) { _("Posts with Template Instances") }
   = render 'posts/list', posts: @posts

@@ -13,7 +13,7 @@
   %tr.gallery-header
     %th.gallery-table-title{class: klass, colspan: colspan}
       - link = gallery ? gallery_path(gallery) : user_gallery_path(id: 0, user_id: @user.id)
-      = link_to gallery ? gallery.name : 'Galleryless icons', link, class: 'gallery-title'
+      = link_to gallery ? gallery.name : _("Galleryless icons"), link, class: 'gallery-title'
       - if is_owner && !skip_forms
         = link_to add_gallery_path(gallery || { id: 0 }), class: 'gallery-add' do
           .link-box.action-new= _("+ Add Icons")

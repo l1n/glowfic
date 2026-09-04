@@ -18,11 +18,11 @@
             %tr
               %td{ style: 'width: 80px;' }= label_tag :user_id, _("User")
               %td= select_tag :user_id, options_from_collection_for_select([@user].compact || [], :id, :username, params[:user_id]),
-                { class: 'chosen-select', prompt: '— Choose User —' }
+                { class: 'chosen-select', prompt: _("— Choose User —") }
             %tr
               %td= label_tag :post_id, _("Posts")
               %td= select_tag :post_id, options_from_collection_for_select(@posts || [], :id, :subject, params[:post_id]),
-                { class: 'chosen-select', prompt: '— Choose Post —', multiple: true }
+                { class: 'chosen-select', prompt: _("— Choose Post —"), multiple: true }
             %tr
               %td= label_tag :condensed, _("Condensed")
               %td
@@ -96,10 +96,10 @@
                     .post-footer
                       .right-align>
                         - if reply.created_at
-                          = precede 'Posted '.freeze do
+                          = precede "#{_('Posted')} " do
                             %span.post-posted=pretty_time(reply.created_at)
                         - if has_edit_audits?(@audits, reply)
-                          = surround ' | Updated '.freeze, ' | '.freeze do
+                          = surround " | #{_('Updated')} ", ' | '.freeze do
                             %span.post-updated=pretty_time(reply.last_updated)
                           = link_to _("See History").freeze, path_for(reply, 'history_%s'), class: 'post-history'.freeze
   - if @search_results && @search_results.total_pages > 1

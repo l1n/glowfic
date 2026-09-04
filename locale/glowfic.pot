@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: glowfic 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-04 17:45+0000\n"
-"PO-Revision-Date: 2026-09-04 17:45+0000\n"
+"POT-Creation-Date: 2026-09-04 18:01+0000\n"
+"PO-Revision-Date: 2026-09-04 18:01+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -21,7 +21,19 @@ msgstr ""
 msgid "# of Icons"
 msgstr ""
 
+msgid "%d of %d"
+msgstr ""
+
+msgid "%{count} %{time_count}"
+msgstr ""
+
 msgid "%{subject} | Glowfic Constellation"
+msgstr ""
+
+msgid "%{subject}."
+msgstr ""
+
+msgid "%{subject}. See it here:"
 msgstr ""
 
 msgid "%{time} by %{user}"
@@ -243,6 +255,12 @@ msgstr ""
 msgid "Alternatively, you can use the keyword dropdown box to select an icon."
 msgstr ""
 
+msgid "An author you favorited has joined a post"
+msgstr ""
+
+msgid "An author you favorited has written a new post"
+msgstr ""
+
 msgid "Any Constellation user"
 msgstr ""
 
@@ -420,6 +438,9 @@ msgstr ""
 msgid "Choose NPC"
 msgstr ""
 
+msgid "Choose New Password »"
+msgstr ""
+
 msgid "Click icons to select, then press Add Icons to Gallery at the bottom."
 msgstr ""
 
@@ -468,10 +489,15 @@ msgstr ""
 msgid "Content"
 msgstr ""
 
+msgctxt "tag type"
 msgid "Content Warning"
 msgstr ""
 
 msgid "Content Warning: "
+msgstr ""
+
+msgctxt "tag type"
+msgid "Content Warnings"
 msgstr ""
 
 msgid "Content Warnings"
@@ -573,6 +599,9 @@ msgstr ""
 msgid "Delete Gallery"
 msgstr ""
 
+msgid "Delete History"
+msgstr ""
+
 msgid "Delete Icon"
 msgstr ""
 
@@ -628,6 +657,9 @@ msgid "Do not display in character selector"
 msgstr ""
 
 msgid "Do not display member characters in character selector"
+msgstr ""
+
+msgid "Do not group characters page"
 msgstr ""
 
 msgid "Donate via Paypal"
@@ -768,6 +800,9 @@ msgstr ""
 msgid "Fields Changed"
 msgstr ""
 
+msgid "First"
+msgstr ""
+
 msgid "First Unread"
 msgstr ""
 
@@ -795,7 +830,12 @@ msgstr ""
 msgid "Galleries Tagged: %{tag}"
 msgstr ""
 
+msgctxt "tag type"
 msgid "Gallery Group"
+msgstr ""
+
+msgctxt "tag type"
+msgid "Gallery Groups"
 msgstr ""
 
 msgid "Gallery Groups"
@@ -805,6 +845,9 @@ msgid "Gallery Name"
 msgstr ""
 
 msgid "Galleryless Icons"
+msgstr ""
+
+msgid "Galleryless icons"
 msgstr ""
 
 msgid "General editor help"
@@ -822,7 +865,13 @@ msgstr ""
 msgid "Group"
 msgstr ""
 
+msgid "Group characters page by template"
+msgstr ""
+
 msgid "Group the icon picker by gallery"
+msgstr ""
+
+msgid "Group: %{name}"
 msgstr ""
 
 msgid "Grouped »"
@@ -868,6 +917,12 @@ msgid "Hidden »"
 msgstr ""
 
 msgid "Hide"
+msgstr ""
+
+msgid "Hide \"Add Bookmark\" button"
+msgstr ""
+
+msgid "Hide \"Edit\" and \"Delete\" buttons"
 msgstr ""
 
 msgid "Hide Reply Buttons"
@@ -1011,7 +1066,12 @@ msgstr ""
 msgid "Keyword"
 msgstr ""
 
+msgctxt "tag type"
 msgid "Label"
+msgstr ""
+
+msgctxt "tag type"
+msgid "Labels"
 msgstr ""
 
 msgid "Labels"
@@ -1024,6 +1084,9 @@ msgid "Language"
 msgstr ""
 
 msgid "Language:"
+msgstr ""
+
+msgid "Last"
 msgstr ""
 
 msgid "Last Regenerated Before"
@@ -1209,6 +1272,21 @@ msgstr ""
 msgid "New User Id"
 msgstr ""
 
+msgid "New message from %{sender}: %{subject}"
+msgstr ""
+
+msgid "New reply in %{post}"
+msgstr ""
+
+msgid "New reply in the thread %{subject}"
+msgstr ""
+
+msgid "Newer"
+msgstr ""
+
+msgid "Newest"
+msgstr ""
+
 msgid "News"
 msgstr ""
 
@@ -1222,6 +1300,9 @@ msgid "No Character"
 msgstr ""
 
 msgid "No Icon"
+msgstr ""
+
+msgid "No Template"
 msgstr ""
 
 msgid "No icon"
@@ -1254,6 +1335,12 @@ msgstr ""
 msgid "Old Password"
 msgstr ""
 
+msgid "Older"
+msgstr ""
+
+msgid "Oldest"
+msgstr ""
+
 msgid "On Hiatus"
 msgstr ""
 
@@ -1276,6 +1363,9 @@ msgid "Opened Threads »"
 msgstr ""
 
 msgid "Optional: Select Post(s)"
+msgstr ""
+
+msgid "Or copy and paste this link into your browser:"
 msgstr ""
 
 msgid "Organize Continuity Sections"
@@ -1326,6 +1416,12 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
+msgid "Password Reset"
+msgstr ""
+
+msgid "Password Reset Link"
+msgstr ""
+
 msgid "Permalink"
 msgstr ""
 
@@ -1344,13 +1440,28 @@ msgstr ""
 msgid "Post"
 msgstr ""
 
+msgid "Post All"
+msgstr ""
+
 msgid "Post Importer"
+msgstr ""
+
+msgid "Post Previewed"
 msgstr ""
 
 msgid "Post Tools"
 msgstr ""
 
+msgid "Post import failed"
+msgstr ""
+
+msgid "Post import succeeded"
+msgstr ""
+
 msgid "Post last updated: %{tagged_at}"
+msgstr ""
+
+msgid "Posted"
 msgstr ""
 
 msgid "Posted on %{time} by %{user}"
@@ -1369,6 +1480,9 @@ msgid "Posts Per Page:"
 msgstr ""
 
 msgid "Posts Tagged: %{tag}"
+msgstr ""
+
+msgid "Posts with Template Instances"
 msgstr ""
 
 msgid "Preceding context"
@@ -1417,6 +1531,9 @@ msgid "Readers see the name in their own interface language when one exists, and
 msgstr ""
 
 msgid "Received"
+msgstr ""
+
+msgid "Recent Threads"
 msgstr ""
 
 msgid "Recently Updated"
@@ -1518,7 +1635,13 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+msgid "Save All"
+msgstr ""
+
 msgid "Save Draft"
+msgstr ""
+
+msgid "Save Previewed"
 msgstr ""
 
 msgid "Saved"
@@ -1593,6 +1716,12 @@ msgstr ""
 msgid "See History"
 msgstr ""
 
+msgid "See it here:"
+msgstr ""
+
+msgid "Select NPC or type to create"
+msgstr ""
+
 msgid "Select all icons"
 msgstr ""
 
@@ -1611,10 +1740,18 @@ msgstr ""
 msgid "Sent %{created_at}"
 msgstr ""
 
+msgctxt "tag type"
+msgid "Setting"
+msgstr ""
+
 msgid "Setting"
 msgstr ""
 
 msgid "Setting:"
+msgstr ""
+
+msgctxt "tag type"
+msgid "Settings"
 msgstr ""
 
 msgid "Settings"
@@ -1878,6 +2015,9 @@ msgstr ""
 msgid "Ungroup"
 msgstr ""
 
+msgid "Ungrouped Characters"
+msgstr ""
+
 msgid "Ungrouped »"
 msgstr ""
 
@@ -1918,6 +2058,9 @@ msgid "Uploaded to site"
 msgstr ""
 
 msgid "User"
+msgstr ""
+
+msgid "User characters"
 msgstr ""
 
 msgid "Username"
@@ -2013,6 +2156,12 @@ msgstr ""
 msgid "Your Output Today"
 msgstr ""
 
+msgid "Your account's password has been reset."
+msgstr ""
+
+msgid "Your account's password has been reset. Follow this link to choose a new password:"
+msgstr ""
+
 msgid "Your reading position on this thread is earlier than this page, so it has not been updated."
 msgstr ""
 
@@ -2073,7 +2222,22 @@ msgstr ""
 msgid "» Next Day"
 msgstr ""
 
+msgid "— Any Alias —"
+msgstr ""
+
+msgid "— Choose Author —"
+msgstr ""
+
+msgid "— Choose Character —"
+msgstr ""
+
+msgid "— Choose Continuity —"
+msgstr ""
+
 msgid "— Choose Language —"
+msgstr ""
+
+msgid "— Choose Post —"
 msgstr ""
 
 msgid "— Choose Section —"
@@ -2086,6 +2250,9 @@ msgid "— Choose Template —"
 msgstr ""
 
 msgid "— Choose Type —"
+msgstr ""
+
+msgid "— Choose User —"
 msgstr ""
 
 msgid "— No alias —"

@@ -39,7 +39,7 @@
         - if @draft.present?
           = button_tag _("Delete Draft"), class: 'button', id: 'delete_draft_button', name: '_method', value: 'delete', formaction: draft_path(@draft), data: { disable_with: _("Deleting..."), confirm: _("Delete draft?") }
       - else
-        = submit_tag (multi_reply_new ? 'Post All' : 'Save All'), class: 'button', id: 'submit_button', data: { disable_with: _("Saving...") }
+        = submit_tag (multi_reply_new ? _("Post All") : _("Save All")), class: 'button', id: 'submit_button', data: { disable_with: _("Saving...") }
         = submit_tag _("Preview Current"), class: 'button', id: 'preview_button', name: 'button_preview', data: { disable_with: _("Previewing...") }
       = submit_tag _("Add More Replies"), class: 'button', id: 'add_more_button', name: 'button_add_more', data: { disable_with: _("Adding...") }
       - if multi_replies_params.present?

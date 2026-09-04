@@ -1,4 +1,5 @@
-#{@subject}.
+-# unescaped: this is a plain-text part, where &#39; would show up literally
+!= format(_("%{subject}."), subject: @subject)
 - if @notification.post
-  See it here:
+  != _("See it here:")
   = post_url(@notification.post, host: current_host, protocol: 'https')

@@ -18,19 +18,19 @@
             %tr
               %td.width-70= label_tag :board_id, _("Continuity")
               %td= select_tag :board_id, options_from_collection_for_select(@board || [], :id, :name, params[:board_id]),
-                { class: 'chosen-select', prompt: '— Choose Continuity —' }
+                { class: 'chosen-select', prompt: _("— Choose Continuity —") }
             %tr
               %td= label_tag :exclude_board_ids, _("Exclude Continuity")
               %td= select_tag :exclude_board_ids, options_from_collection_for_select(@exclude_boards || [], :id, :name, params[:exclude_board_ids]),
-                { class: 'chosen-select', prompt: '— Choose Continuity —', multiple: true, name: 'exclude_board_ids[]' }
+                { class: 'chosen-select', prompt: _("— Choose Continuity —"), multiple: true, name: 'exclude_board_ids[]' }
             %tr
               %td= label_tag :author_id, _("Author")
               %td= select_tag :author_id, options_from_collection_for_select(@user || [], :id, :username, params[:author_id]),
-                { class: 'chosen-select', prompt: '— Choose Author —', multiple: true }
+                { class: 'chosen-select', prompt: _("— Choose Author —"), multiple: true }
             %tr
               %td= label_tag :character_id, _("Character")
               %td= select_tag :character_id, options_from_collection_for_select(@character || [], :id, :selector_name, params[:character_id]),
-                { prompt: '— Choose Character —' }
+                { prompt: _("— Choose Character —") }
             %tr
               %td= label_tag :setting_id, _("Setting")
               %td= select_tag :setting_id, options_from_collection_for_select(@setting || [], :id, :name, params[:setting_id]), { prompt: _("— Choose Setting —") }

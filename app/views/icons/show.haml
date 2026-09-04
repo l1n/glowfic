@@ -5,7 +5,7 @@
     = user_link(@icon.user)
     - unless @icon.user.deleted?
       &raquo;
-      = link_to "#{@icon.user.username}'s Galleries", user_galleries_path(@icon.user)
+      = link_to format(_("%{username}'s Galleries"), username: @icon.user.username), user_galleries_path(@icon.user)
   &raquo;
   - if @galleries.present?
     = link_to @galleries.first.name, url_for(@galleries.first)

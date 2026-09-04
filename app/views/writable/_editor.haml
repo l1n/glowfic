@@ -37,7 +37,7 @@
               %h4= _("Choose NPC")
               = select_tag :active_npc,
               option_groups_from_collection_for_select(@npcs, :plucked_npcs, :name, :first, :last, writable.character_id),
-              { prompt: "Select NPC or type to create" }
+              { prompt: _("Select NPC or type to create") }
             %button.view-button#select-character{type: 'button'}= _("Character")
             %button.view-button#select-npc{type: 'button'}= _("NPC")
       - if writable.is_a?(Reply)

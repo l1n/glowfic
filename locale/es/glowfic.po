@@ -18,14 +18,26 @@ msgstr ""
 msgid "# of Icons"
 msgstr ""
 
+msgid "%d of %d"
+msgstr ""
+
+msgid "%{count} %{time_count}"
+msgstr ""
+
 msgid "%{subject} | Glowfic Constellation"
 msgstr ""
 
-msgid "%{time} by %{user}"
+msgid "%{subject}."
 msgstr ""
 
-msgid "%{type}: %{tag}"
+msgid "%{subject}. See it here:"
 msgstr ""
+
+msgid "%{time} by %{user}"
+msgstr "%{time} por %{user}"
+
+msgid "%{type}: %{tag}"
+msgstr "%{type}: %{tag}"
 
 msgid "%{username}'s Characters"
 msgstr ""
@@ -139,7 +151,7 @@ msgid "Abandoned"
 msgstr ""
 
 msgid "Account"
-msgstr ""
+msgstr "Cuenta"
 
 msgid "Acronym"
 msgstr ""
@@ -148,7 +160,7 @@ msgid "Add Bookmark"
 msgstr ""
 
 msgid "Add Existing"
-msgstr ""
+msgstr "Añadir existente"
 
 msgid "Add Existing Icons to Gallery: %{name}"
 msgstr ""
@@ -166,7 +178,7 @@ msgid "Add More Replies"
 msgstr ""
 
 msgid "Add New"
-msgstr ""
+msgstr "Añadir nuevo"
 
 msgid "Add New Icons"
 msgstr ""
@@ -187,13 +199,13 @@ msgid "Add Row"
 msgstr ""
 
 msgid "Add translation"
-msgstr ""
+msgstr "Añadir traducción"
 
 msgid "Adding multiple replies"
 msgstr ""
 
 msgid "Adding..."
-msgstr ""
+msgstr "Añadiendo..."
 
 msgid "Additionally, any threads not locked to their authors will not be covered by post blocking."
 msgstr ""
@@ -202,10 +214,10 @@ msgid "Admin Tools"
 msgstr ""
 
 msgid "Alias"
-msgstr ""
+msgstr "Alias"
 
 msgid "Aliases"
-msgstr ""
+msgstr "Alias"
 
 msgid "Aliases and Pseudonyms"
 msgstr ""
@@ -232,12 +244,18 @@ msgid "All search terms were too common for full-text search (%{words}). Falling
 msgstr ""
 
 msgid "Allowed attributes (by tag):"
-msgstr ""
+msgstr "Atributos permitidos (por etiqueta):"
 
 msgid "Allowed tags:"
-msgstr ""
+msgstr "Etiquetas permitidas:"
 
 msgid "Alternatively, you can use the keyword dropdown box to select an icon."
+msgstr ""
+
+msgid "An author you favorited has joined a post"
+msgstr ""
+
+msgid "An author you favorited has written a new post"
 msgstr ""
 
 msgid "Any Constellation user"
@@ -253,7 +271,7 @@ msgid "Are you sure you want to delete %{name}?"
 msgstr ""
 
 msgid "Are you sure you want to delete %{tag}?"
-msgstr ""
+msgstr "¿Seguro que quieres eliminar %{tag}?"
 
 msgid "Are you sure you want to delete these messages?"
 msgstr ""
@@ -283,7 +301,7 @@ msgid "Are you sure you want to delete this section?"
 msgstr ""
 
 msgid "Are you sure you want to delete this tag?"
-msgstr ""
+msgstr "¿Seguro que quieres eliminar esta etiqueta?"
 
 msgid "Are you sure you want to delete this template?"
 msgstr ""
@@ -316,7 +334,7 @@ msgid "Audience"
 msgstr ""
 
 msgid "Author"
-msgstr ""
+msgstr "Autor"
 
 msgid "Author Profile"
 msgstr ""
@@ -328,13 +346,13 @@ msgid "Author warnings"
 msgstr ""
 
 msgid "Authors"
-msgstr ""
+msgstr "Autores"
 
 msgid "Automatic (browser setting)"
-msgstr ""
+msgstr "Automático (según el navegador)"
 
 msgid "Avatar"
-msgstr ""
+msgstr "Avatar"
 
 msgid "Back to Top"
 msgstr ""
@@ -355,13 +373,13 @@ msgid "Blocked User"
 msgstr ""
 
 msgid "Blocks"
-msgstr ""
+msgstr "Bloqueos"
 
 msgid "Bookmark Name"
 msgstr ""
 
 msgid "Bookmarks"
-msgstr ""
+msgstr "Marcadores"
 
 msgid "Cameo Continuities"
 msgstr ""
@@ -403,10 +421,10 @@ msgid "Character Tools"
 msgstr ""
 
 msgid "Characters"
-msgstr ""
+msgstr "Personajes"
 
 msgid "Characters Tagged: %{tag}"
-msgstr ""
+msgstr "Personajes etiquetados: %{tag}"
 
 msgid "Choose Alias"
 msgstr ""
@@ -415,6 +433,9 @@ msgid "Choose Character"
 msgstr ""
 
 msgid "Choose NPC"
+msgstr ""
+
+msgid "Choose New Password »"
 msgstr ""
 
 msgid "Click icons to select, then press Add Icons to Gallery at the bottom."
@@ -454,22 +475,27 @@ msgid "Condensed"
 msgstr ""
 
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmar"
 
 msgid "Confirm Password"
 msgstr ""
 
 msgid "Contact Us"
-msgstr ""
+msgstr "Contáctanos"
 
 msgid "Content"
 msgstr ""
 
+msgctxt "tag type"
 msgid "Content Warning"
-msgstr ""
+msgstr "Advertencia de contenido"
 
 msgid "Content Warning: "
 msgstr ""
+
+msgctxt "tag type"
+msgid "Content Warnings"
+msgstr "Advertencias de contenido"
 
 msgid "Content Warnings"
 msgstr ""
@@ -478,10 +504,10 @@ msgid "Content Warnings:"
 msgstr ""
 
 msgid "Continuities"
-msgstr ""
+msgstr "Continuidades"
 
 msgid "Continuity"
-msgstr ""
+msgstr "Continuidad"
 
 msgid "Continuity Name"
 msgstr ""
@@ -493,7 +519,7 @@ msgid "Continuity:"
 msgstr ""
 
 msgid "Contribute"
-msgstr ""
+msgstr "Contribuir"
 
 msgid "Contribute to the Constellation"
 msgstr ""
@@ -517,7 +543,7 @@ msgid "Create Index"
 msgstr ""
 
 msgid "Create New"
-msgstr ""
+msgstr "Crear nuevo"
 
 msgid "Create New Template"
 msgstr ""
@@ -544,22 +570,22 @@ msgid "DMCA"
 msgstr ""
 
 msgid "Daily Report"
-msgstr ""
+msgstr "Informe diario"
 
 msgid "Daily Report - %{day}"
 msgstr ""
 
 msgid "Date Joined"
-msgstr ""
+msgstr "Fecha de registro"
 
 msgid "Default view"
 msgstr ""
 
 msgid "Delete"
-msgstr ""
+msgstr "Eliminar"
 
 msgid "Delete %{type}"
-msgstr ""
+msgstr "Eliminar %{type}"
 
 msgid "Delete Character"
 msgstr ""
@@ -568,6 +594,9 @@ msgid "Delete Draft"
 msgstr ""
 
 msgid "Delete Gallery"
+msgstr ""
+
+msgid "Delete History"
 msgstr ""
 
 msgid "Delete Icon"
@@ -586,10 +615,10 @@ msgid "Deleted Replies"
 msgstr ""
 
 msgid "Deleting..."
-msgstr ""
+msgstr "Eliminando..."
 
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 msgid "Description:"
 msgstr ""
@@ -610,7 +639,7 @@ msgid "Discarding..."
 msgstr ""
 
 msgid "Dismiss"
-msgstr ""
+msgstr "Descartar"
 
 msgid "Dismiss all content warnings"
 msgstr ""
@@ -627,6 +656,9 @@ msgstr ""
 msgid "Do not display member characters in character selector"
 msgstr ""
 
+msgid "Do not group characters page"
+msgstr ""
+
 msgid "Donate via Paypal"
 msgstr ""
 
@@ -640,13 +672,13 @@ msgid "Duplicate Character"
 msgstr ""
 
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 msgid "Edit %{name}"
 msgstr ""
 
 msgid "Edit %{type}"
-msgstr ""
+msgstr "Editar %{type}"
 
 msgid "Edit Alias"
 msgstr ""
@@ -760,9 +792,12 @@ msgid "Favorite Type"
 msgstr ""
 
 msgid "Favorites"
-msgstr ""
+msgstr "Favoritos"
 
 msgid "Fields Changed"
+msgstr ""
+
+msgid "First"
 msgstr ""
 
 msgid "First Unread"
@@ -781,19 +816,24 @@ msgid "Force Regenerate?"
 msgstr ""
 
 msgid "Forgot Password?"
-msgstr ""
+msgstr "¿Olvidaste tu contraseña?"
 
 msgid "From:"
-msgstr ""
+msgstr "De:"
 
 msgid "Galleries"
-msgstr ""
+msgstr "Galerías"
 
 msgid "Galleries Tagged: %{tag}"
-msgstr ""
+msgstr "Galerías etiquetadas: %{tag}"
 
+msgctxt "tag type"
 msgid "Gallery Group"
-msgstr ""
+msgstr "Grupo de galerías"
+
+msgctxt "tag type"
+msgid "Gallery Groups"
+msgstr "Grupos de galerías"
 
 msgid "Gallery Groups"
 msgstr ""
@@ -804,6 +844,9 @@ msgstr ""
 msgid "Galleryless Icons"
 msgstr ""
 
+msgid "Galleryless icons"
+msgstr ""
+
 msgid "General editor help"
 msgstr ""
 
@@ -811,7 +854,7 @@ msgid "Generated: %{updated_at}"
 msgstr ""
 
 msgid "Glowfic Constellation home"
-msgstr ""
+msgstr "Inicio de Glowfic Constellation"
 
 msgid "Go to previous position"
 msgstr ""
@@ -819,7 +862,13 @@ msgstr ""
 msgid "Group"
 msgstr ""
 
+msgid "Group characters page by template"
+msgstr ""
+
 msgid "Group the icon picker by gallery"
+msgstr ""
+
+msgid "Group: %{name}"
 msgstr ""
 
 msgid "Grouped »"
@@ -832,10 +881,10 @@ msgid "Groups:"
 msgstr ""
 
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 msgid "HTML editor"
-msgstr ""
+msgstr "Editor HTML"
 
 msgid "Has Warnings"
 msgstr ""
@@ -865,6 +914,12 @@ msgid "Hidden »"
 msgstr ""
 
 msgid "Hide"
+msgstr ""
+
+msgid "Hide \"Add Bookmark\" button"
+msgstr ""
+
+msgid "Hide \"Edit\" and \"Delete\" buttons"
 msgstr ""
 
 msgid "Hide Reply Buttons"
@@ -949,7 +1004,7 @@ msgid "Inactive »"
 msgstr ""
 
 msgid "Inbox"
-msgstr ""
+msgstr "Bandeja de entrada"
 
 msgid "Include Flatposts Regenerated Since Post Last Tagged"
 msgstr ""
@@ -967,13 +1022,13 @@ msgid "Indexes"
 msgstr ""
 
 msgid "Info"
-msgstr ""
+msgstr "Información"
 
 msgid "Interactions"
 msgstr ""
 
 msgid "Interface language"
-msgstr ""
+msgstr "Idioma de la interfaz"
 
 msgid "Invite coauthors:"
 msgstr ""
@@ -1008,8 +1063,13 @@ msgstr ""
 msgid "Keyword"
 msgstr ""
 
+msgctxt "tag type"
 msgid "Label"
-msgstr ""
+msgstr "Etiqueta"
+
+msgctxt "tag type"
+msgid "Labels"
+msgstr "Etiquetas"
 
 msgid "Labels"
 msgstr ""
@@ -1018,9 +1078,12 @@ msgid "Labels:"
 msgstr ""
 
 msgid "Language"
-msgstr ""
+msgstr "Idioma"
 
 msgid "Language:"
+msgstr "Idioma:"
+
+msgid "Last"
 msgstr ""
 
 msgid "Last Regenerated Before"
@@ -1033,7 +1096,7 @@ msgid "List"
 msgstr ""
 
 msgid "Loading..."
-msgstr ""
+msgstr "Cargando..."
 
 msgid "Lock Authors"
 msgstr ""
@@ -1045,13 +1108,13 @@ msgid "Locked?"
 msgstr ""
 
 msgid "Log in"
-msgstr ""
+msgstr "Iniciar sesión"
 
 msgid "Log out"
-msgstr ""
+msgstr "Cerrar sesión"
 
 msgid "Login"
-msgstr ""
+msgstr "Iniciar sesión"
 
 msgid "Make Avatar"
 msgstr ""
@@ -1099,13 +1162,13 @@ msgid "Mark this as a large continuity with many authors"
 msgstr ""
 
 msgid "Markdown"
-msgstr ""
+msgstr "Markdown"
 
 msgid "Markdown editor"
-msgstr ""
+msgstr "Editor Markdown"
 
 msgid "Marks a passage as being in another language, so screen readers pronounce it correctly and browsers hyphenate it properly."
-msgstr ""
+msgstr "Marca un pasaje como escrito en otro idioma, para que los lectores de pantalla lo pronuncien correctamente y los navegadores lo dividan bien en sílabas."
 
 msgid "Mega?"
 msgstr ""
@@ -1129,7 +1192,7 @@ msgid "Moderator note from %{user} - "
 msgstr ""
 
 msgid "Moiety"
-msgstr ""
+msgstr "Moiety"
 
 msgid "Moiety hex"
 msgstr ""
@@ -1162,10 +1225,10 @@ msgid "NPCs"
 msgstr ""
 
 msgid "Name"
-msgstr ""
+msgstr "Nombre"
 
 msgid "Name (case-insensitive)"
-msgstr ""
+msgstr "Nombre (sin distinguir mayúsculas)"
 
 msgid "New"
 msgstr ""
@@ -1206,8 +1269,23 @@ msgstr ""
 msgid "New User Id"
 msgstr ""
 
-msgid "News"
+msgid "New message from %{sender}: %{subject}"
 msgstr ""
+
+msgid "New reply in %{post}"
+msgstr "Nueva respuesta en %{post}"
+
+msgid "New reply in the thread %{subject}"
+msgstr ""
+
+msgid "Newer"
+msgstr ""
+
+msgid "Newest"
+msgstr ""
+
+msgid "News"
+msgstr "Novedades"
 
 msgid "Next Post »"
 msgstr ""
@@ -1220,6 +1298,9 @@ msgstr ""
 
 msgid "No Icon"
 msgstr ""
+
+msgid "No Template"
+msgstr "Sin plantilla"
 
 msgid "No icon"
 msgstr ""
@@ -1240,7 +1321,7 @@ msgid "Notification"
 msgstr ""
 
 msgid "Notifications"
-msgstr ""
+msgstr "Notificaciones"
 
 msgid "Notify when a favorited author makes a new post"
 msgstr ""
@@ -1249,6 +1330,12 @@ msgid "Old"
 msgstr ""
 
 msgid "Old Password"
+msgstr ""
+
+msgid "Older"
+msgstr ""
+
+msgid "Oldest"
 msgstr ""
 
 msgid "On Hiatus"
@@ -1275,6 +1362,9 @@ msgstr ""
 msgid "Optional: Select Post(s)"
 msgstr ""
 
+msgid "Or copy and paste this link into your browser:"
+msgstr ""
+
 msgid "Organize Continuity Sections"
 msgstr ""
 
@@ -1288,7 +1378,7 @@ msgid "Organize Unsectioned Posts"
 msgstr ""
 
 msgid "Original language"
-msgstr ""
+msgstr "Idioma original"
 
 msgid "Original post"
 msgstr ""
@@ -1309,10 +1399,10 @@ msgid "Outline when jumping to unread"
 msgstr ""
 
 msgid "Owned?"
-msgstr ""
+msgstr "¿Con propietario?"
 
 msgid "Owner"
-msgstr ""
+msgstr "Propietario"
 
 msgid "Paging"
 msgstr ""
@@ -1321,7 +1411,13 @@ msgid "Paragraphs are inserted using the Return key."
 msgstr ""
 
 msgid "Password"
-msgstr ""
+msgstr "Contraseña"
+
+msgid "Password Reset"
+msgstr "Restablecer contraseña"
+
+msgid "Password Reset Link"
+msgstr "Enlace para restablecer la contraseña"
 
 msgid "Permalink"
 msgstr ""
@@ -1339,22 +1435,37 @@ msgid "Please set your avatar directly from the desired icon's page."
 msgstr ""
 
 msgid "Post"
+msgstr "Publicar"
+
+msgid "Post All"
 msgstr ""
 
 msgid "Post Importer"
 msgstr ""
 
+msgid "Post Previewed"
+msgstr ""
+
 msgid "Post Tools"
+msgstr ""
+
+msgid "Post import failed"
+msgstr ""
+
+msgid "Post import succeeded"
 msgstr ""
 
 msgid "Post last updated: %{tagged_at}"
 msgstr ""
 
+msgid "Posted"
+msgstr "Publicado"
+
 msgid "Posted on %{time} by %{user}"
-msgstr ""
+msgstr "Publicado el %{time} por %{user}"
 
 msgid "Posts"
-msgstr ""
+msgstr "Publicaciones"
 
 msgid "Posts Containing Icon"
 msgstr ""
@@ -1366,13 +1477,16 @@ msgid "Posts Per Page:"
 msgstr ""
 
 msgid "Posts Tagged: %{tag}"
+msgstr "Publicaciones etiquetadas: %{tag}"
+
+msgid "Posts with Template Instances"
 msgstr ""
 
 msgid "Preceding context"
 msgstr ""
 
 msgid "Press OK to confirm logout"
-msgstr ""
+msgstr "Pulsa Aceptar para confirmar el cierre de sesión"
 
 msgid "Prevent them from interacting with you?"
 msgstr ""
@@ -1384,7 +1498,7 @@ msgid "Prevent you from seeing their:"
 msgstr ""
 
 msgid "Preview"
-msgstr ""
+msgstr "Vista previa"
 
 msgid "Preview Current"
 msgstr ""
@@ -1393,13 +1507,13 @@ msgid "Previewing"
 msgstr ""
 
 msgid "Previewing..."
-msgstr ""
+msgstr "Generando vista previa..."
 
 msgid "Privacy"
 msgstr ""
 
 msgid "Privacy Policy"
-msgstr ""
+msgstr "Política de privacidad"
 
 msgid "Privacy:"
 msgstr ""
@@ -1408,16 +1522,19 @@ msgid "Quick switcher"
 msgstr ""
 
 msgid "RTF editor"
-msgstr ""
+msgstr "Editor RTF"
 
 msgid "Readers see the name in their own interface language when one exists, and the original otherwise."
-msgstr ""
+msgstr "Los lectores ven el nombre en el idioma de su interfaz cuando existe, y el original en caso contrario."
 
 msgid "Received"
 msgstr ""
 
-msgid "Recently Updated"
+msgid "Recent Threads"
 msgstr ""
+
+msgid "Recently Updated"
+msgstr "Actualizado recientemente"
 
 msgid "Recipient"
 msgstr ""
@@ -1438,7 +1555,7 @@ msgid "Relocate Characters"
 msgstr ""
 
 msgid "Remember Me"
-msgstr ""
+msgstr "Recordarme"
 
 msgid "Remove Bookmark"
 msgstr ""
@@ -1453,7 +1570,7 @@ msgid "Remove from character page and show in separate dropdown when writing"
 msgstr ""
 
 msgid "Remove this translation when saving"
-msgstr ""
+msgstr "Eliminar esta traducción al guardar"
 
 msgid "Rename Bookmark"
 msgstr ""
@@ -1462,7 +1579,7 @@ msgid "Reorder"
 msgstr ""
 
 msgid "Replace"
-msgstr ""
+msgstr "Reemplazar"
 
 msgid "Replace All Uses of %{class}"
 msgstr ""
@@ -1477,7 +1594,7 @@ msgid "Replies"
 msgstr ""
 
 msgid "Replies Owed"
-msgstr ""
+msgstr "Respuestas pendientes"
 
 msgid "Reply"
 msgstr ""
@@ -1510,31 +1627,37 @@ msgid "Retired?"
 msgstr ""
 
 msgid "Rich Text"
-msgstr ""
+msgstr "Texto enriquecido"
 
 msgid "Save"
+msgstr "Guardar"
+
+msgid "Save All"
 msgstr ""
 
 msgid "Save Draft"
+msgstr ""
+
+msgid "Save Previewed"
 msgstr ""
 
 msgid "Saved"
 msgstr ""
 
 msgid "Saving..."
-msgstr ""
+msgstr "Guardando..."
 
 msgid "Screen Name"
 msgstr ""
 
 msgid "Screen readers then pronounce it with the right voice, and browsers hyphenate and spellcheck it with the right rules."
-msgstr ""
+msgstr "Así los lectores de pantalla lo pronuncian con la voz correcta, y los navegadores lo dividen en sílabas y lo corrigen con las reglas correctas."
 
 msgid "Screenname"
 msgstr ""
 
 msgid "Search"
-msgstr ""
+msgstr "Buscar"
 
 msgid "Search Bookmarks"
 msgstr ""
@@ -1564,7 +1687,7 @@ msgid "Search by username:"
 msgstr ""
 
 msgid "Search for a tag:"
-msgstr ""
+msgstr "Buscar una etiqueta:"
 
 msgid "Search for acronym"
 msgstr ""
@@ -1590,11 +1713,17 @@ msgstr ""
 msgid "See History"
 msgstr ""
 
+msgid "See it here:"
+msgstr ""
+
+msgid "Select NPC or type to create"
+msgstr ""
+
 msgid "Select all icons"
 msgstr ""
 
 msgid "Send"
-msgstr ""
+msgstr "Enviar"
 
 msgid "Send Message"
 msgstr ""
@@ -1603,10 +1732,14 @@ msgid "Sender"
 msgstr ""
 
 msgid "Sent"
-msgstr ""
+msgstr "Enviado"
 
 msgid "Sent %{created_at}"
 msgstr ""
+
+msgctxt "tag type"
+msgid "Setting"
+msgstr "Ambientación"
 
 msgid "Setting"
 msgstr ""
@@ -1614,11 +1747,15 @@ msgstr ""
 msgid "Setting:"
 msgstr ""
 
+msgctxt "tag type"
 msgid "Settings"
-msgstr ""
+msgstr "Ambientaciones"
+
+msgid "Settings"
+msgstr "Configuración"
 
 msgid "Settings Tagged: %{tag}"
-msgstr ""
+msgstr "Ambientaciones etiquetadas: %{tag}"
 
 msgid "Show"
 msgstr ""
@@ -1642,13 +1779,13 @@ msgid "Show user character"
 msgstr ""
 
 msgid "Sign In"
-msgstr ""
+msgstr "Iniciar sesión"
 
 msgid "Sign Up"
-msgstr ""
+msgstr "Registrarse"
 
 msgid "Sign up"
-msgstr ""
+msgstr "Registrarse"
 
 msgid "Single linebreaks can be inserted by also holding the Shift key when you press the Return key."
 msgstr ""
@@ -1690,7 +1827,7 @@ msgid "Status"
 msgstr ""
 
 msgid "Subject"
-msgstr ""
+msgstr "Asunto"
 
 msgid "Subject:"
 msgstr ""
@@ -1702,16 +1839,16 @@ msgid "Subsection"
 msgstr ""
 
 msgid "Tag Name"
-msgstr ""
+msgstr "Nombre de la etiqueta"
 
 msgid "Tag belongs to owner"
-msgstr ""
+msgstr "La etiqueta pertenece al propietario"
 
 msgid "Tags"
-msgstr ""
+msgstr "Etiquetas"
 
 msgid "Template"
-msgstr ""
+msgstr "Plantilla"
 
 msgid "Template Cluster Name"
 msgstr ""
@@ -1732,7 +1869,7 @@ msgid "Terms"
 msgstr ""
 
 msgid "Terms of Service"
-msgstr ""
+msgstr "Términos del servicio"
 
 msgid "The %{control} control above the editor does this to the selected text for you, starting from the writing language set in your %{settings}."
 msgstr ""
@@ -1747,7 +1884,7 @@ msgid "The RTF editor (powered by TinyMCE) allows you to type text while showing
 msgstr ""
 
 msgid "The Rich Text editor has the same thing in its toolbar."
-msgstr ""
+msgstr "El editor de texto enriquecido tiene lo mismo en su barra de herramientas."
 
 msgid "The bottom bar is your username, and pressing the 'Choose Character' symbol in this bar allows you to swap to a character, or to your default user account."
 msgstr ""
@@ -1759,10 +1896,10 @@ msgid "The info box"
 msgstr ""
 
 msgid "The language the name and description above are written in."
-msgstr ""
+msgstr "El idioma en el que están escritos el nombre y la descripción de arriba."
 
 msgid "The language you usually write in. The editor's language buttons default to this, so marking up a passage in another language is one click."
-msgstr ""
+msgstr "El idioma en el que sueles escribir. Los botones de idioma del editor parten de este, así que marcar un pasaje en otro idioma es un solo clic."
 
 msgid "The left panel (or upper panel, on mobile) offers information about the character you're posting with."
 msgstr ""
@@ -1771,7 +1908,7 @@ msgid "The markdown editor provides a step between the html and rtf editors. A g
 msgstr ""
 
 msgid "The name above is the tag's canonical name; add a row here for each language it also has a name in."
-msgstr ""
+msgstr "El nombre de arriba es el nombre canónico de la etiqueta; añade una fila aquí por cada idioma en el que también tenga nombre."
 
 msgid "The reply currently in the editor will not be posted. Continue?"
 msgstr ""
@@ -1804,7 +1941,7 @@ msgid "This post's authors %{also}have general content warnings that might apply
 msgstr ""
 
 msgid "This setting is not marked as owned"
-msgstr ""
+msgstr "Esta ambientación no está marcada como propia"
 
 msgid "Thread"
 msgstr ""
@@ -1831,7 +1968,7 @@ msgid "Time Last Updated"
 msgstr ""
 
 msgid "Time zone"
-msgstr ""
+msgstr "Zona horaria"
 
 msgid "Times Used"
 msgstr ""
@@ -1843,13 +1980,13 @@ msgid "To mark a passage as being in another language, wrap it in a span with a 
 msgstr ""
 
 msgid "To:"
-msgstr ""
+msgstr "Para:"
 
 msgid "Today"
 msgstr ""
 
 msgid "Total:"
-msgstr ""
+msgstr "Total:"
 
 msgid "Transfer Templates"
 msgstr ""
@@ -1858,10 +1995,10 @@ msgid "Transferring the following characters from %{username} to %{new_user_user
 msgstr ""
 
 msgid "Translations"
-msgstr ""
+msgstr "Traducciones"
 
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 msgid "URL"
 msgstr ""
@@ -1875,6 +2012,9 @@ msgstr ""
 msgid "Ungroup"
 msgstr ""
 
+msgid "Ungrouped Characters"
+msgstr ""
+
 msgid "Ungrouped »"
 msgstr ""
 
@@ -1885,7 +2025,7 @@ msgid "Unlock Authors"
 msgstr ""
 
 msgid "Unread"
-msgstr ""
+msgstr "No leídos"
 
 msgid "Unread »"
 msgstr ""
@@ -1894,13 +2034,13 @@ msgid "Unseen Replies"
 msgstr ""
 
 msgid "Unset"
-msgstr ""
+msgstr "Sin definir"
 
 msgid "Unsorted icons without a gallery will appear here. They can still be individually assigned to a character with no galleries."
 msgstr ""
 
 msgid "Updated"
-msgstr ""
+msgstr "Actualizado"
 
 msgid "Upgrade Account"
 msgstr ""
@@ -1915,16 +2055,19 @@ msgid "Uploaded to site"
 msgstr ""
 
 msgid "User"
+msgstr "Usuario"
+
+msgid "User characters"
 msgstr ""
 
 msgid "Username"
-msgstr ""
+msgstr "Nombre de usuario"
 
 msgid "Users"
-msgstr ""
+msgstr "Usuarios"
 
 msgid "Users With Content Warning: %{tag}"
-msgstr ""
+msgstr "Usuarios con la advertencia de contenido: %{tag}"
 
 msgid "Version: %{version}"
 msgstr ""
@@ -1951,7 +2094,7 @@ msgid "What would you like to do with your unsaved changes?"
 msgstr ""
 
 msgid "Which language to show the site's own text in. Translations are contributed by volunteers, so not every language is available yet."
-msgstr ""
+msgstr "En qué idioma mostrar el texto propio del sitio. Las traducciones las aportan voluntarios, así que todavía no están disponibles todos los idiomas."
 
 msgid "With Templates"
 msgstr ""
@@ -1960,7 +2103,7 @@ msgid "Word Count"
 msgstr ""
 
 msgid "Wrap selection"
-msgstr ""
+msgstr "Envolver la selección"
 
 msgid "Write something!"
 msgstr ""
@@ -1969,7 +2112,7 @@ msgid "Writer"
 msgstr ""
 
 msgid "Writing language"
-msgstr ""
+msgstr "Idioma de escritura"
 
 msgid "X"
 msgstr ""
@@ -2008,6 +2151,12 @@ msgid "Your Galleries"
 msgstr ""
 
 msgid "Your Output Today"
+msgstr ""
+
+msgid "Your account's password has been reset."
+msgstr ""
+
+msgid "Your account's password has been reset. Follow this link to choose a new password:"
 msgstr ""
 
 msgid "Your reading position on this thread is earlier than this page, so it has not been updated."
@@ -2070,7 +2219,22 @@ msgstr ""
 msgid "» Next Day"
 msgstr ""
 
+msgid "— Any Alias —"
+msgstr ""
+
+msgid "— Choose Author —"
+msgstr "— Elige un autor —"
+
+msgid "— Choose Character —"
+msgstr "— Elige un personaje —"
+
+msgid "— Choose Continuity —"
+msgstr "— Elige una continuidad —"
+
 msgid "— Choose Language —"
+msgstr "— Elige un idioma —"
+
+msgid "— Choose Post —"
 msgstr ""
 
 msgid "— Choose Section —"
@@ -2080,10 +2244,13 @@ msgid "— Choose Setting —"
 msgstr ""
 
 msgid "— Choose Template —"
-msgstr ""
+msgstr "— Elige una plantilla —"
 
 msgid "— Choose Type —"
-msgstr ""
+msgstr "— Elige un tipo —"
+
+msgid "— Choose User —"
+msgstr "— Elige un usuario —"
 
 msgid "— No alias —"
 msgstr ""
@@ -2095,7 +2262,7 @@ msgid "— No blocks yet —"
 msgstr ""
 
 msgid "— No characters yet —"
-msgstr ""
+msgstr "— Todavía no hay personajes —"
 
 msgid "— No continuities hidden —"
 msgstr ""
@@ -2107,7 +2274,7 @@ msgid "— No favorites yet —"
 msgstr ""
 
 msgid "— No galleries yet —"
-msgstr ""
+msgstr "— Todavía no hay galerías —"
 
 msgid "— No icons yet —"
 msgstr ""
@@ -2116,10 +2283,10 @@ msgid "— No items yet —"
 msgstr ""
 
 msgid "— No matching tags —"
-msgstr ""
+msgstr "— No hay etiquetas coincidentes —"
 
 msgid "— No messages yet —"
-msgstr ""
+msgstr "— Todavía no hay mensajes —"
 
 msgid "— No posts hidden —"
 msgstr ""
@@ -2131,7 +2298,7 @@ msgid "— Nothing written today —"
 msgstr ""
 
 msgid "— Site default —"
-msgstr ""
+msgstr "— Predeterminado del sitio —"
 
 msgid "↳ Name"
 msgstr ""

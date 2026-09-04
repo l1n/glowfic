@@ -1,2 +1,3 @@
-#{@subject}. See it here:
+-# unescaped: this is a plain-text part, where &#39; would show up literally
+!= format(_("%{subject}. See it here:"), subject: @subject)
 = message_url(@message, host: current_host, protocol: 'https')

@@ -53,8 +53,8 @@
     %div
       .sub= _("Default view")
       %div{class: cycle('even', 'odd')}
-        = f.select(:default_view, options_for_select({ Icon: 'icon', List: 'list' }, current_user.default_view))
-        = f.select(:default_character_split, options_for_select({ 'Group characters page by template': 'template', 'Do not group characters page': 'none' }, current_user.default_character_split))
+        = f.select(:default_view, options_for_select({ _("Icon") => 'icon', _("List") => 'list' }, current_user.default_view))
+        = f.select(:default_character_split, options_for_select({ _("Group characters page by template") => 'template', _("Do not group characters page") => 'none' }, current_user.default_character_split))
         .checkbox-field
           = f.check_box :default_hide_retired_characters
           = f.label :default_hide_retired_characters, _("Hide retired characters")
@@ -90,7 +90,7 @@
         = f.label :hide_warnings, _("Hide content warnings")
     %div
       .sub= f.label :default_editor
-      - editor_modes = { 'Rich Text': 'rtf', HTML: 'html', Markdown: 'md' }
+      - editor_modes = { _("Rich Text") => 'rtf', _("HTML") => 'html', _("Markdown") => 'md' }
       %div{class: cycle('even', 'odd')}= f.select(:default_editor, options_for_select(editor_modes, current_user.default_editor))
     %div
       .sub= _("Split icon picker")
@@ -107,9 +107,9 @@
       .checkbox-fields{class: cycle('even', 'odd')}
         - unless current_user.read_only?
           = f.check_box :default_hide_edit_delete_buttons
-          = f.label :default_hide_edit_delete_buttons, 'Hide "Edit" and "Delete" buttons'
+          = f.label :default_hide_edit_delete_buttons, _("Hide \"Edit\" and \"Delete\" buttons")
         = f.check_box :default_hide_add_bookmark_button
-        = f.label :default_hide_add_bookmark_button, 'Hide "Add Bookmark" button'
+        = f.label :default_hide_add_bookmark_button, _("Hide \"Add Bookmark\" button")
     .form-table-ender= submit_tag _("Save"), class: 'button'
 
 %br

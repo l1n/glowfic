@@ -66,9 +66,9 @@
       .right-align>
         .padding-5>
           - if reply.created_at
-            = precede 'Posted '.freeze do
+            = precede "#{_('Posted')} " do
               %span.post-posted=pretty_time(reply.created_at)
           - if has_edit_audits?(@audits, reply)
-            = surround ' | Updated '.freeze, ' | '.freeze do
+            = surround " | #{_('Updated')} ", ' | '.freeze do
               %span.post-updated=pretty_time(reply.last_updated)
             = link_to _("See History").freeze, path_for(reply, 'history_%s'), class: 'post-history'.freeze

@@ -7,6 +7,12 @@
       = f.text_field :name, placeholder: "Tag Name"
     - else
       = f.object.name
+- if current_user.admin? || f.object.user_id == current_user.id
+  %div
+    .sub= f.label :locale, 'Original language'
+    %div{class: cycle('even', 'odd')}
+      = f.select :locale, Glowfic::Locales.content_options, { include_blank: '— Site default —' }
+      .details The language the name and description above are written in.
 %div
   .sub= f.label :user_id, 'Owner'
   %div{class: cycle('even', 'odd')}
@@ -26,4 +32,17 @@
   %div
     .sub.vtop= f.label :description
     %div{class: cycle('even', 'odd')}= f.text_area :description, placeholder: 'Description', cols: 35
+%div
+  .sub.vtop Translations
+  %div{class: cycle('even', 'odd')}
+    #tag-translations{data: { next_index: f.object.tag_translations.size }}
+      = f.fields_for :tag_translations do |tf|
+        = render 'tags/translation_fields', tf: tf, describable: f.object.is_a?(Setting)
+    %template#tag-translation-template
+      = f.fields_for :tag_translations, TagTranslation.new(locale: current_user.writing_language), child_index: 'NEW_RECORD' do |tf|
+        = render 'tags/translation_fields', tf: tf, describable: f.object.is_a?(Setting)
+    %button.button#add-tag-translation{type: 'button'} Add translation
+    .details
+      The name above is the tag's canonical name; add a row here for each language it also has a name in.
+      Readers see the name in their own interface language when one exists, and the original otherwise.
 .form-table-ender= submit_tag "Save", class: 'button'

@@ -9,11 +9,15 @@ class Tag < ApplicationRecord
   has_many :characters, through: :character_tags, dependent: :destroy
   has_many :gallery_tags, dependent: :destroy, inverse_of: :tag
   has_many :galleries, through: :gallery_tags, dependent: :destroy
+  has_many :tag_translations, -> { ordered }, dependent: :destroy, inverse_of: :tag
 
   TYPES = %w(Setting Label ContentWarning GalleryGroup)
 
   validates :name, :type, presence: true
   validates :name, uniqueness: { scope: :type }
+  validates :locale, inclusion: { in: Glowfic::Locales::CODES }, allow_nil: true
+
+  accepts_nested_attributes_for :tag_translations, allow_destroy: true, reject_if: :blank_translation?
 
   scope :ordered_by_type, -> { order(type: :desc, name: :asc) }
 
@@ -60,6 +64,46 @@ class Tag < ApplicationRecord
     tag_json
   end
 
+  # Name and description in the requested language, falling back to the canonical
+  # copy stored on the tag itself. The language the text is *actually* in comes back
+  # alongside it, so callers can mark it up with lang="" when it isn't the one the
+  # reader asked for. A tag with no translations behaves exactly as it always has.
+  Localized = Struct.new(:text, :locale) do
+    def rtl?
+      Glowfic::Locales.rtl?(locale)
+    end
+  end
+
+  # The language the canonical name/description are written in.
+  def source_locale
+    locale.presence || Glowfic::Locales::DEFAULT
+  end
+
+  def localized_name(target=I18n.locale)
+    translation = translation_for(target)
+    return Localized.new(name, source_locale) if translation.nil?
+    Localized.new(translation.name, translation.locale)
+  end
+
+  def localized_description(target=I18n.locale)
+    translation = translation_for(target)
+    return Localized.new(description, source_locale) if translation.nil? || translation.description.blank?
+    Localized.new(translation.description, translation.locale)
+  end
+
+  # Prefers an exact match ("pt-BR") over the bare language ("pt"), so a region-specific
+  # translation wins for readers who asked for that region.
+  def translation_for(target)
+    codes = [target.to_s.presence, Glowfic::Locales.base_code(target)].compact.uniq
+    return nil if codes.empty? || codes.include?(source_locale)
+    by_locale = tag_translations.index_by(&:locale)
+    codes.filter_map { |code| by_locale[code] }.first
+  end
+
+  def translated_locales
+    tag_translations.map(&:locale)
+  end
+
   def id_for_select
     return id if persisted? # id present on unpersisted records when associated record is invalid
     "_#{name}"
@@ -98,5 +142,12 @@ class Tag < ApplicationRecord
       other_tag.destroy
       # rubocop:enable Rails/SkipsModelValidations
     end
+  end
+
+  private
+
+  def blank_translation?(attributes)
+    attributes = attributes.with_indifferent_access if attributes.respond_to?(:with_indifferent_access)
+    attributes[:locale].blank? || attributes[:name].blank?
   end
 end

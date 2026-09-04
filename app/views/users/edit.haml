@@ -32,6 +32,16 @@
         = f.check_box :favorite_notifications
         = f.label :favorite_notifications, 'Notify when a favorited author makes a new post'
     %div
+      .sub= f.label :locale, 'Interface language'
+      %div{class: cycle('even', 'odd')}
+        = f.select :locale, locale_options(current_user.locale)
+        .details Which language to show the site's own text in. Translations are contributed by volunteers, so not every language is available yet.
+    %div
+      .sub= f.label :content_language, 'Writing language'
+      %div{class: cycle('even', 'odd')}
+        = f.select :content_language, content_language_options(current_user.content_language)
+        .details The language you usually write in. The editor's language buttons default to this, so marking up a passage in another language is one click.
+    %div
       .sub= f.label :timezone, 'Time zone'
       %div{class: cycle('even', 'odd')}= f.select(:timezone, timezone_options(current_user.timezone))
     %div

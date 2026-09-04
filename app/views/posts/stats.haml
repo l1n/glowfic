@@ -60,17 +60,17 @@
     - if @post.settings.present?
       %tr
         %th.sub.width-150 Setting
-        - setting_links = @post.settings.ordered_by_post_tag.map { |tag| link_to tag.name, tag_path(tag) }
+        - setting_links = @post.settings.ordered_by_post_tag.map { |setting| localized_tag_link(setting) }
         %td{class: cycle('odd', 'even')}= safe_join(setting_links, ', ')
     - if @post.content_warnings.present?
       %tr
         %th.sub.width-150 Content Warnings
-        - warning_links = @post.content_warnings.ordered_by_post_tag.map { |tag| link_to tag.name, tag_path(tag) }
+        - warning_links = @post.content_warnings.ordered_by_post_tag.map { |warning| localized_tag_link(warning) }
         %td{class: cycle('odd', 'even')}= safe_join(warning_links, ', ')
     - if @post.labels.present?
       %tr
         %th.sub.width-150 Labels
-        - label_links = @post.labels.ordered_by_post_tag.map { |tag| link_to tag.name, tag_path(tag) }
+        - label_links = @post.labels.ordered_by_post_tag.map { |label| localized_tag_link(label) }
         %td{class: cycle('odd', 'even')}= safe_join(label_links, ', ')
     %tr
       %th.sub.width-150.vtop Word Count

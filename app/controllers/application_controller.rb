@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
   before_action :set_login_gon
   before_action :check_forced_logout
   around_action :set_timezone
+  around_action :set_locale
   after_action :store_location
 
   protected
@@ -214,10 +215,51 @@ class ApplicationController < ActionController::Base
     gon.api_token = session[:api_token]["value"] if logged_in?
   end
 
+  # Feeds the editor's language controls: the languages a passage can be marked up as,
+  # and the one this user writes in, which is what the controls start on.
+  def setup_editor_language_gon
+    gon.content_languages = Glowfic::Locales.content_options.map { |name, code| { title: name, code: code } }
+    gon.writing_language = current_user&.writing_language || Glowfic::Locales::DEFAULT
+  end
+
   def set_timezone(&)
     return yield unless logged_in?
     return yield unless current_user.timezone
     Time.use_zone(current_user.timezone, &)
+  end
+
+  # Picks the interface language for this request: an explicit ?locale= (so a link can
+  # be shared in a given language), then the logged-in user's setting, then whatever the
+  # browser asks for, then English. Only languages the interface is actually translated
+  # into are considered.
+  def set_locale(&)
+    I18n.with_locale(requested_locale, &)
+  end
+
+  def requested_locale
+    candidates = [params[:locale], current_user&.ui_locale, *accepted_locales]
+    candidates.find { |candidate| supported_locale?(candidate) } || Glowfic::Locales::DEFAULT
+  end
+
+  def supported_locale?(candidate)
+    return false if candidate.blank?
+    Glowfic::Locales.ui_codes.include?(candidate.to_s)
+  end
+
+  # Accept-Language, best-quality first. Region subtags are dropped ("es-MX" counts as a
+  # request for "es"), since the interface is translated per language, not per region.
+  def accepted_locales
+    header = request.env['HTTP_ACCEPT_LANGUAGE']
+    return [] if header.blank?
+
+    ranked = header.split(',').each_with_index.filter_map do |part, index|
+      tag, quality = part.split(';q=')
+      tag = Glowfic::Locales.base_code(tag.to_s.strip)
+      # A tag with no ;q= has quality 1; index breaks ties so equal-quality tags keep
+      # the order the browser listed them in (sort_by isn't stable).
+      [tag, quality.nil? ? 1.0 : quality.to_f, index] if tag
+    end
+    ranked.sort_by { |_tag, quality, index| [-quality, index] }.map(&:first)
   end
 
   def require_glowfic_domain

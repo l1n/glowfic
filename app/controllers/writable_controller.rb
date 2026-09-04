@@ -169,6 +169,7 @@ class WritableController < ApplicationController
     gon.editor_class = 'layout_' + current_user.layout if current_user.layout
     gon.tinymce_css_path = helpers.stylesheet_path('tinymce')
     gon.no_icon_path = view_context.image_path('icons/no-icon.png')
+    setup_editor_language_gon
   end
 
   def og_data_for_post(post, page: 1, total_pages:, per_page: 25)

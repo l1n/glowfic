@@ -3,14 +3,14 @@
   &raquo;
   = link_to @tag.type.pluralize.titlecase, tags_path(view: @tag.type)
   &raquo;
-  %b= @tag.name
+  %b= localized_tag_name(@tag)
 
 %div
   %table.left-info-box.tag-info-box
     %thead
       %tr
         %th.info-box-header
-          %span.character-name #{@tag.type.titlecase}: #{@tag.name}
+          %span.character-name #{@tag.type.titlecase}: #{localized_tag_name(@tag)}
     %tbody
       %tr
         %td.centered{class: cycle('even', 'odd')}

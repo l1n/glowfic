@@ -383,6 +383,36 @@ RSpec.describe UsersController do
       expect(flash[:error][:message]).to eq('Changes could not be saved because of the following problems:')
     end
 
+    it "saves the language settings" do
+      user = create(:user)
+      login_as(user)
+
+      put :update, params: { id: user.id, user: { locale: 'es', content_language: 'ja' } }
+
+      expect(user.reload.locale).to eq('es')
+      expect(user.content_language).to eq('ja')
+    end
+
+    it "rejects an unknown language" do
+      user = create(:user, locale: 'es')
+      login_as(user)
+
+      put :update, params: { id: user.id, user: { locale: 'klingon' } }
+
+      expect(response).to render_template(:edit)
+      expect(user.reload.locale).to eq('es')
+    end
+
+    it "clears the language settings when they are blanked out" do
+      user = create(:user, locale: 'es', content_language: 'ja')
+      login_as(user)
+
+      put :update, params: { id: user.id, user: { locale: '', content_language: '' } }
+
+      expect(user.reload.locale).to be_nil
+      expect(user.content_language).to be_nil
+    end
+
     it "does not update another user" do
       user1 = create(:user)
       user2 = create(:user)

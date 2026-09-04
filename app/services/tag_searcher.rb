@@ -10,6 +10,9 @@ class TagSearcher < Object
     @qs = @qs.where('name ILIKE ?', "%#{tag_name}%") if tag_name.present?
     @qs = @qs.where(type: tag_type) if tag_type.present?
     @qs = @qs.includes(:user) if tag_type == 'Setting'
+    # The index renders every tag's name in the reader's language, so preload the
+    # translations rather than querying once per row.
+    @qs = @qs.includes(:tag_translations)
     @qs = @qs.where.not(type: 'GalleryGroup') unless tag_type == 'GalleryGroup'
     @qs.with_character_counts.paginate(page: page)
   end

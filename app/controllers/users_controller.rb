@@ -86,6 +86,7 @@ class UsersController < ApplicationController
     use_javascript('users/profile_edit')
     gon.editor_class = 'layout_' + current_user.layout if current_user.layout
     gon.tinymce_css_path = helpers.stylesheet_path('tinymce')
+    setup_editor_language_gon
     @page_title = 'Edit Author Profile'
   end
 
@@ -274,6 +275,8 @@ class UsersController < ApplicationController
       :show_user_in_switcher,
       :default_hide_edit_delete_buttons,
       :default_hide_add_bookmark_button,
+      :locale,
+      :content_language,
     )
   end
 

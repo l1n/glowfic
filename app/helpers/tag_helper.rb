@@ -7,6 +7,39 @@ module TagHelper
     tag_path(tag, url_params)
   end
 
+  # A tag's name in the reader's interface language when it has been translated into it,
+  # falling back to the tag's canonical name. Text that isn't in the page's own language
+  # is wrapped in <span lang="…">, so screen readers pronounce it correctly and browsers
+  # hyphenate it with the right rules; text that already matches is left as bare text
+  # rather than being wrapped in a span that says nothing.
+  def localized_tag_name(record)
+    localized_span(record.localized_name)
+  end
+
+  def localized_tag_link(record, **opts)
+    link_to(localized_tag_name(record), tag_path(record), **opts)
+  end
+
+  def localized_tag_text(record)
+    record.localized_name.text.to_s
+  end
+
+  def localized_span(localized)
+    text = localized.text.to_s
+    return ''.html_safe if text.blank?
+    attributes = localized_attrs(localized)
+    return text if attributes.empty?
+    tag.span(text, **attributes)
+  end
+
+  # lang/dir for a block of localized text, or nothing at all when the text is already in
+  # the language the page is being rendered in — an English page doesn't need every string
+  # on it stamped lang="en".
+  def localized_attrs(localized)
+    return {} if Glowfic::Locales.base_code(localized.locale) == Glowfic::Locales.base_code(I18n.locale)
+    { lang: localized.locale, dir: (localized.rtl? ? 'rtl' : nil) }.compact
+  end
+
   def tag_select(obj, form, assoc, opts={})
     attr_name = assoc.to_s.singularize + "_ids"
     preview_collection = instance_variable_get(:"@#{assoc}")

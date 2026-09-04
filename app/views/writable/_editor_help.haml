@@ -70,6 +70,17 @@
       or a
       %code="<br>"
       tag.
+    %p
+      To mark a passage as being in another language, wrap it in a span with a
+      %code lang
+      attribute:
+      %code="<span lang=\"es\">Buenos días</span>"
+      \. Screen readers then pronounce it with the right voice, and browsers hyphenate and spellcheck it with the right rules.
+      The
+      %strong Language
+      control above the editor does this to the selected text for you, starting from the writing language set in your
+      = link_to 'account settings', edit_user_path(current_user)
+      \. The Rich Text editor has the same thing in its toolbar.
     #markup-allowed-tags
       %strong Allowed tags:
       %ul.inline-list

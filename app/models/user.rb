@@ -53,6 +53,7 @@ class User < ApplicationRecord
   validates :moiety, format: { with: /\A([0-9A-F]{3}){0,2}\z/i }, length: { maximum: 255 }
   validates :moiety_name, length: { maximum: 255 }
   validates :profile_editor_mode, inclusion: { in: ['html', 'rtf', 'md'] }, allow_nil: true
+  validates :locale, :content_language, inclusion: { in: Glowfic::Locales::CODES }, allow_nil: true
   validates :password, :password_confirmation, presence: { if: :validate_password? }
   validate :username_not_reserved
 
@@ -69,6 +70,20 @@ class User < ApplicationRecord
   def authenticate(password)
     return crypted == crypted_password(password) if salt_uuid.present?
     crypted == old_crypted_password(password)
+  end
+
+  # The interface language to actually use. Only languages the interface has really
+  # been translated into count, so retiring a locale/*.po doesn't strand the users who
+  # had picked it — they fall back to the browser/default chain instead.
+  def ui_locale
+    return nil if locale.blank?
+    locale if Glowfic::Locales.ui_codes.include?(locale)
+  end
+
+  # The language this user writes in. Seeds the editor's language buttons and the
+  # default row in the tag translation editor.
+  def writing_language
+    content_language.presence || Glowfic::Locales::DEFAULT
   end
 
   def gon_attributes

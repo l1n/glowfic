@@ -1,0 +1,21 @@
+-# locals: ( tf:, describable: false )
+
+.tag-translation
+  %div
+    .sub= tf.label :locale, 'Language'
+    .tag-translation-field
+      = tf.select :locale, Glowfic::Locales.content_options, { include_blank: '— Choose Language —' }, { class: 'tag-translation-locale' }
+  %div
+    .sub= tf.label :name, 'Name'
+    .tag-translation-field
+      = tf.text_field :name, placeholder: 'Tag Name', lang: tf.object.locale, dir: (tf.object.rtl? ? 'rtl' : nil)
+  - if describable
+    %div
+      .sub.vtop= tf.label :description, 'Description'
+      .tag-translation-field
+        = tf.text_area :description, placeholder: 'Description', cols: 35, lang: tf.object.locale, dir: (tf.object.rtl? ? 'rtl' : nil)
+  %div
+    .sub &nbsp;
+    .checkbox-field.tag-translation-field
+      = tf.check_box :_destroy, class: 'tag-translation-destroy'
+      = tf.label :_destroy, 'Remove this translation when saving'

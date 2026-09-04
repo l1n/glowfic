@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_04_000000) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_04_000100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -435,6 +435,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_04_000000) do
     t.index ["tagged_id"], name: "index_tag_tags_on_tagged_id"
   end
 
+  create_table "tag_translations", force: :cascade do |t|
+    t.integer "tag_id", null: false
+    t.string "locale", null: false
+    t.citext "name", null: false
+    t.text "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["name"], name: "index_tag_translations_on_name"
+    t.index ["tag_id", "locale"], name: "index_tag_translations_on_tag_id_and_locale", unique: true
+    t.index ["tag_id"], name: "index_tag_translations_on_tag_id"
+  end
+
   create_table "tags", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.citext "name", null: false
@@ -443,6 +455,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_04_000000) do
     t.string "type"
     t.text "description"
     t.boolean "owned", default: false
+    t.string "locale"
     t.index ["name"], name: "index_tags_on_name"
     t.index ["type"], name: "index_tags_on_type"
   end
@@ -504,6 +517,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_04_000000) do
     t.boolean "default_hide_edit_delete_buttons", default: false
     t.boolean "default_hide_add_bookmark_button", default: false
     t.boolean "moiety_colors_unread", default: false
+    t.string "locale"
+    t.string "content_language"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
   end

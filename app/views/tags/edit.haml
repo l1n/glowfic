@@ -3,7 +3,7 @@
   &raquo;
   = link_to @tag.type.pluralize.titlecase, tags_path(view: @tag.type)
   &raquo;
-  = link_to @tag.name, tag_path(@tag)
+  = localized_tag_link(@tag)
   &raquo;
   %b Edit
 

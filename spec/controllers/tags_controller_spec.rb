@@ -392,6 +392,81 @@ RSpec.describe TagsController do
       expect(flash[:error][:message]).to eq("Setting could not be updated because of the following problems:")
     end
 
+    it "adds translations" do
+      tag = create(:label)
+      login_as(create(:admin_user))
+
+      put :update, params: {
+        id: tag.id,
+        tag: { tag_translations_attributes: { '0' => { locale: 'es', name: 'Etiqueta' } } },
+      }
+
+      expect(response).to redirect_to(tag_url(tag))
+      expect(tag.reload.tag_translations.map { |t| [t.locale, t.name] }).to eq([['es', 'Etiqueta']])
+    end
+
+    it "edits an existing translation" do
+      tag = create(:label)
+      translation = create(:tag_translation, tag: tag, locale: 'es', name: 'Antiguo')
+      login_as(create(:admin_user))
+
+      put :update, params: {
+        id: tag.id,
+        tag: { tag_translations_attributes: { '0' => { id: translation.id, locale: 'es', name: 'Nuevo' } } },
+      }
+
+      expect(translation.reload.name).to eq('Nuevo')
+    end
+
+    it "removes a translation marked for destruction" do
+      tag = create(:label)
+      translation = create(:tag_translation, tag: tag, locale: 'es')
+      login_as(create(:admin_user))
+
+      put :update, params: {
+        id: tag.id,
+        tag: { tag_translations_attributes: { '0' => { id: translation.id, _destroy: '1' } } },
+      }
+
+      expect(tag.reload.tag_translations).to be_empty
+    end
+
+    it "ignores a blank translation row" do
+      tag = create(:label)
+      login_as(create(:admin_user))
+
+      put :update, params: {
+        id: tag.id,
+        tag: { tag_translations_attributes: { '0' => { locale: '', name: '' } } },
+      }
+
+      expect(response).to redirect_to(tag_url(tag))
+      expect(tag.reload.tag_translations).to be_empty
+    end
+
+    it "reports an unusable translation instead of saving it" do
+      tag = create(:label)
+      login_as(create(:admin_user))
+
+      put :update, params: {
+        id: tag.id,
+        tag: { tag_translations_attributes: { '0' => { locale: 'klingon', name: 'tlhIngan' } } },
+      }
+
+      expect(response.status).to eq(200)
+      expect(flash[:error][:message]).to eq("Label could not be updated because of the following problems:")
+      expect(tag.reload.tag_translations).to be_empty
+    end
+
+    it "saves the language the tag itself is written in" do
+      tag = create(:label)
+      login_as(create(:admin_user))
+
+      put :update, params: { id: tag.id, tag: { locale: 'ja' } }
+
+      expect(tag.reload.locale).to eq('ja')
+    end
+
     it "allows admin to update the tag" do
       tag = create(:label)
       name = tag.name + 'Edited'

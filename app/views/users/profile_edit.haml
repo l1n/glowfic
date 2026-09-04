@@ -21,6 +21,7 @@
               %br
               %br
               = f.hidden_field :profile_editor_mode, id: 'profile_editor_mode'
+              = render 'writable/language_bar', extra_class: 'no-margin-left'
               #post-form-wrapper.no-margin-left
                 = f.text_area :profile, class: 'tinymce'
               = render 'writable/editor_help', editor_location: 'profile'

@@ -1,6 +1,6 @@
 -# locals: ()
 
 - content_for :posts_title do
-  Posts Tagged: #{@tag.name}
+  Posts Tagged: #{localized_tag_name(@tag)}
 
 = render 'posts/list', posts: @posts, table_class: 'tag-right-content-box'

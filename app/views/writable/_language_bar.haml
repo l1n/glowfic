@@ -1,0 +1,10 @@
+-# locals: ( extra_class: nil )
+
+#editor-language-bar{class: ['hidden', extra_class].compact}
+  %label{for: 'editor-language'} Language:
+  -# Options are filled in from gon by setupLanguageBar, so the list lives in one place.
+  %select#editor-language
+  %button.button#editor-language-wrap{type: 'button', title: 'Wrap the selected text in a span with this language'} Wrap selection
+  .details
+    Marks a passage as being in another language, so screen readers pronounce it correctly and browsers hyphenate it properly.
+    The Rich Text editor has the same thing in its toolbar.

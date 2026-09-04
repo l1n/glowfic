@@ -78,6 +78,20 @@ module ApplicationHelper
     options_for_select(layouts, default)
   end
 
+  # The languages the interface has been translated into. "Automatic" leaves the choice
+  # to the browser's Accept-Language, which is what a user who has never touched this
+  # setting gets.
+  def locale_options(default=nil)
+    languages = Glowfic::Locales.ui_options.to_h { |name, code| [name, code] }
+    options_for_select({ _('Automatic (browser setting)') => '' }.merge(languages), default.to_s)
+  end
+
+  # Every language content can be tagged as, not just the ones the interface speaks.
+  def content_language_options(default=nil)
+    languages = Glowfic::Locales.content_options.to_h { |name, code| [name, code] }
+    options_for_select({ _('Unset') => '' }.merge(languages), default.to_s)
+  end
+
   def time_display_options(default=nil)
     time_thing = Time.new(2016, 12, 25, 21, 34, 56).utc # Example time: "2016-12-25 21:34:56" (for unambiguous display purposes)
     time_display_list = [

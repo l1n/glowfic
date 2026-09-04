@@ -1,6 +1,51 @@
 RSpec.describe User do
   include ActiveJob::TestHelper
 
+  describe "languages" do
+    it "accepts a known interface language" do
+      expect(build(:user, locale: 'es')).to be_valid
+    end
+
+    it "rejects an unknown interface language" do
+      user = build(:user, locale: 'klingon')
+      expect(user).not_to be_valid
+      expect(user.errors[:locale]).to be_present
+    end
+
+    it "rejects an unknown writing language" do
+      expect(build(:user, content_language: 'klingon')).not_to be_valid
+    end
+
+    it "allows both to be unset" do
+      expect(build(:user, locale: nil, content_language: nil)).to be_valid
+    end
+
+    describe "#ui_locale" do
+      it "is the user's language when the interface speaks it" do
+        expect(build(:user, locale: 'es').ui_locale).to eq('es')
+      end
+
+      it "is nil when unset" do
+        expect(build(:user, locale: nil).ui_locale).to be_nil
+      end
+
+      it "is nil for a language the interface no longer speaks" do
+        allow(Glowfic::Locales).to receive(:ui_codes).and_return(['en'])
+        expect(build(:user, locale: 'es').ui_locale).to be_nil
+      end
+    end
+
+    describe "#writing_language" do
+      it "is the user's writing language when set" do
+        expect(build(:user, content_language: 'ja').writing_language).to eq('ja')
+      end
+
+      it "falls back to the site default when unset" do
+        expect(build(:user, content_language: nil).writing_language).to eq('en')
+      end
+    end
+  end
+
   describe "password encryption" do
     it "should support nil salt_uuid" do
       user = create(:user)

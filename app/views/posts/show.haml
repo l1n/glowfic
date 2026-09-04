@@ -27,7 +27,7 @@
           This post has the following content warnings:
           %ul
             - @post_warnings.each do |warning|
-              %li= link_to warning.name, tag_path(warning)
+              %li= localized_tag_link(warning)
 
         - if @author_warnings.present?
           - if @post_warnings.present?
@@ -43,7 +43,7 @@
                   = link_to author.username, user_path(author)
                   %ul
                     - warnings.each do |warning|
-                      %li= link_to warning.tag.name, tag_path(warning.tag)
+                      %li= localized_tag_link(warning.tag)
       .clear
 
 .content-header

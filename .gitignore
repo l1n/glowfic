@@ -45,3 +45,6 @@ backstop/reports/*
 /.gems
 /.envrc
 dump.rdb
+
+# installed locally by the eslint step in .github/workflows/reviewdog.yml
+node_modules/

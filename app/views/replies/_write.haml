@@ -23,6 +23,7 @@
     = hidden_field_tag :allow_dupe, @allow_dupe
     - if params[:per_page]
       = hidden_field_tag :per_page, params[:per_page]
+    = render 'writable/language_bar'
     #post-form-wrapper
       = f.text_area :content, class: 'tinymce'
       - unless current_user.id == reply.user_id

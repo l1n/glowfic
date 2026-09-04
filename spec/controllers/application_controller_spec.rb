@@ -1,7 +1,7 @@
 RSpec.describe ApplicationController do
   controller do
     def index
-      render json: { zone: Time.zone.name }
+      render json: { zone: Time.zone.name, locale: I18n.locale }
     end
 
     def create
@@ -21,6 +21,73 @@ RSpec.describe ApplicationController do
       else
         flash[:success] = "Object removed."
       end
+    end
+  end
+
+  describe "#set_locale" do
+    def locale_for(headers: {}, params: {})
+      request.headers.merge!(headers)
+      get :index, params: params
+      response.parsed_body['locale']
+    end
+
+    it "defaults to English when nothing asks for anything else" do
+      expect(locale_for).to eq('en')
+    end
+
+    it "uses the language the browser asks for" do
+      expect(locale_for(headers: { 'HTTP_ACCEPT_LANGUAGE' => 'es' })).to eq('es')
+    end
+
+    it "ignores the region the browser asks for" do
+      expect(locale_for(headers: { 'HTTP_ACCEPT_LANGUAGE' => 'es-MX' })).to eq('es')
+    end
+
+    it "respects the browser's quality values" do
+      expect(locale_for(headers: { 'HTTP_ACCEPT_LANGUAGE' => 'de;q=0.8,es;q=0.9' })).to eq('es')
+    end
+
+    it "prefers a language with no quality value over an explicitly lower one" do
+      expect(locale_for(headers: { 'HTTP_ACCEPT_LANGUAGE' => 'de;q=0.8,es' })).to eq('es')
+    end
+
+    it "skips languages the interface hasn't been translated into" do
+      expect(locale_for(headers: { 'HTTP_ACCEPT_LANGUAGE' => 'de,es' })).to eq('es')
+    end
+
+    it "falls back to English when the browser asks for nothing available" do
+      expect(locale_for(headers: { 'HTTP_ACCEPT_LANGUAGE' => 'de,fr' })).to eq('en')
+    end
+
+    it "uses the logged-in user's setting" do
+      login_as(create(:user, locale: 'es'))
+      expect(locale_for).to eq('es')
+    end
+
+    it "prefers the user's setting over the browser's" do
+      login_as(create(:user, locale: 'es'))
+      expect(locale_for(headers: { 'HTTP_ACCEPT_LANGUAGE' => 'de' })).to eq('es')
+    end
+
+    it "falls back for a user whose language is no longer translated" do
+      login_as(create(:user, locale: 'es'))
+      allow(Glowfic::Locales).to receive(:ui_codes).and_return(['en'])
+      expect(locale_for).to eq('en')
+    end
+
+    it "lets an explicit locale param win, so a link can be shared in one language" do
+      login_as(create(:user, locale: 'en'))
+      expect(locale_for(params: { locale: 'es' })).to eq('es')
+    end
+
+    it "ignores an unusable locale param" do
+      expect(locale_for(params: { locale: 'nonsense' })).to eq('en')
+    end
+
+    it "puts the locale back after the request" do
+      before = I18n.locale
+      locale_for(headers: { 'HTTP_ACCEPT_LANGUAGE' => 'es' })
+      expect(I18n.locale).to eq(before)
     end
   end
 

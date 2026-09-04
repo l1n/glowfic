@@ -33,7 +33,7 @@
     - @tags.each do |tag|
       - klass = cycle('even', 'odd')
       %tr
-        %td{class: klass}= link_to tag.name, tag_path(tag)
+        %td{class: klass}= localized_tag_link(tag)
         - unless @view.present?
           %td{class: klass}= link_to tag.type.titlecase, tags_path(view: tag.type)
         - if @view == 'Setting'
@@ -50,7 +50,7 @@
             = link_to edit_tag_path(tag) do
               = image_tag "icons/pencil.png", alt: 'Edit'
           - if tag.deletable_by?(current_user)
-            = link_to delete_path(tag), method: :delete, data: { confirm: "Are you sure you want to delete #{tag.name}?" } do
+            = link_to delete_path(tag), method: :delete, data: { confirm: "Are you sure you want to delete #{localized_tag_text(tag)}?" } do
               = image_tag "icons/cross.png", alt: 'Delete'
             &nbsp;
     - if @tags.empty?

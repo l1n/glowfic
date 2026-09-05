@@ -19,7 +19,7 @@
               = @tag.user.username
             - else
               %em= @tag.user.deleted? ? 'deleted user' : @tag.user.username
-    - description = @tag.localized_description
+    - description = localized_tag_description(@tag)
     - if description.text.present?
       %tr
         %th.sub.centered.width-150.vtop= _("Description")

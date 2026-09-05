@@ -78,6 +78,24 @@ module ApplicationHelper
     options_for_select(layouts, default)
   end
 
+  # lang (and, for right-to-left languages, dir) for the <html> element. Built as a hash
+  # so a left-to-right page gets no dir attribute at all rather than an empty one.
+  def html_language_attrs
+    attrs = { lang: I18n.locale }
+    attrs[:dir] = 'rtl' if Glowfic::Locales.rtl?(I18n.locale)
+    attrs
+  end
+
+  # The languages to show content in, best first: the reader's preferences when they have
+  # set any, always ending with the language the page itself is in so there is a fallback.
+  # Tag names resolve against this. `try` because mailer and bare helper contexts have no
+  # current_user; they just get the page language.
+  def reading_languages
+    reader = try(:current_user)
+    return reader.reading_languages(I18n.locale) if reader
+    [I18n.locale.to_s]
+  end
+
   # Interpolates into a translated string whose values are markup — a link, an icon, a
   # name wrapped in <span lang>. Plain `format` returns an ordinary String, so the markup
   # in it would be escaped on the way into the page; SafeBuffer#% escapes the values that

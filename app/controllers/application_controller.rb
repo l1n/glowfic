@@ -220,6 +220,7 @@ class ApplicationController < ActionController::Base
   def setup_editor_language_gon
     gon.content_languages = Glowfic::Locales.content_options.map { |name, code| { title: name, code: code } }
     gon.writing_language = current_user&.writing_language || Glowfic::Locales::DEFAULT
+    gon.preferred_languages = current_user&.preferred_languages || []
   end
 
   def set_timezone(&)

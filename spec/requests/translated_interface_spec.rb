@@ -34,6 +34,22 @@ RSpec.describe "Translated interface" do
     expect(response.body).to include('Ambientación')
   end
 
+  it "follows the reader's preferences for both the interface and the tag names" do
+    tag = create(:setting, name: 'Amber', locale: 'en')
+    create(:tag_translation, tag: tag, locale: 'pt', name: 'Âmbar')
+    create(:tag_translation, tag: tag, locale: 'es', name: 'Ámbar')
+    reader = create(:user, preferred_languages: ['pt', 'es'])
+
+    login(reader)
+    get tag_path(tag)
+
+    # the interface has no Portuguese, so it falls through to the reader's second choice…
+    expect(response.body).to include('<html lang="es">')
+    expect(response.body).to include('Ambientación')
+    # …while the tag name, which does exist in Portuguese, follows their first, and says so
+    expect(response.body).to include('<span lang="pt">Âmbar</span>')
+  end
+
   it "marks a tag name that isn't in the reader's language with the language it is in" do
     tag = create(:setting, name: 'こはく', locale: 'ja')
 

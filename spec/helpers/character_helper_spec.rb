@@ -51,6 +51,32 @@ RSpec.describe CharacterHelper do
       end
     end
 
+    it "walks the reader's preferred languages in order" do
+      character1.update!(setting_ids: [setting1.id])
+      create(:tag_translation, tag: setting1, locale: 'es', name: 'Ámbar')
+      create(:tag_translation, tag: setting1, locale: 'pt', name: 'Âmbar')
+      reader = build(:user, preferred_languages: ['de', 'pt', 'es'])
+      without_partial_double_verification do
+        allow(helper).to receive(:current_user).and_return(reader)
+      end
+      association = Character.where(id: [character1.id])
+
+      expect(helper.settings_info(association)).to eq({ character1.id => [[setting1.id, 'Âmbar', 'pt']] })
+    end
+
+    it "keeps a setting's own name when the reader prefers that language over its translations" do
+      character1.update!(setting_ids: [setting1.id])
+      setting1.update!(locale: 'en')
+      create(:tag_translation, tag: setting1, locale: 'es', name: 'Ámbar')
+      reader = build(:user, preferred_languages: ['en', 'es'])
+      without_partial_double_verification do
+        allow(helper).to receive(:current_user).and_return(reader)
+      end
+      association = Character.where(id: [character1.id])
+
+      expect(helper.settings_info(association)).to eq({ character1.id => [[setting1.id, setting1.name, 'en']] })
+    end
+
     it "reports a setting's own language when it has no translation for the reader" do
       japanese = create(:setting, user: user, name: 'こはく', locale: 'ja')
       character1.update!(setting_ids: [japanese.id])

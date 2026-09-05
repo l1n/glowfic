@@ -81,6 +81,32 @@ RSpec.describe Tag do
         create(:tag_translation, tag: tag, locale: 'pt', name: 'Âmbar')
         expect(tag.reload.localized_name('pt-BR').text).to eq('Âmbar')
       end
+
+      context "with a chain of preferred languages" do
+        before(:each) do
+          create(:tag_translation, tag: tag, locale: 'es', name: 'Ámbar')
+          create(:tag_translation, tag: tag, locale: 'pt', name: 'Âmbar')
+          tag.reload
+        end
+
+        it "uses the first language in the chain that has a translation" do
+          expect(tag.localized_name(['de', 'pt', 'es']).text).to eq('Âmbar')
+        end
+
+        it "prefers an earlier language over a later one" do
+          expect(tag.localized_name(['es', 'pt']).text).to eq('Ámbar')
+        end
+
+        it "stops at the tag's own language rather than using a lower-ranked translation" do
+          localized = tag.localized_name(['de', 'en', 'es'])
+          expect(localized.text).to eq('Amber')
+          expect(localized.locale).to eq('en')
+        end
+
+        it "falls back to the canonical name when nothing in the chain matches" do
+          expect(tag.localized_name(['de', 'fr']).text).to eq('Amber')
+        end
+      end
     end
 
     describe "#localized_description" do

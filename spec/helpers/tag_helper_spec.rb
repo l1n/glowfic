@@ -23,6 +23,16 @@ RSpec.describe TagHelper do
       expect(helper.localized_tag_name(hebrew)).to eq('<span lang="he" dir="rtl">ענבר</span>')
     end
 
+    it "resolves the name against the reader's preferred languages" do
+      create(:tag_translation, tag: tag, locale: 'es', name: 'Ámbar')
+      create(:tag_translation, tag: tag, locale: 'pt', name: 'Âmbar')
+      reader = build(:user, preferred_languages: ['pt', 'es'])
+      without_partial_double_verification do
+        allow(helper).to receive(:current_user).and_return(reader)
+      end
+      expect(helper.localized_tag_name(tag.reload)).to eq('<span lang="pt">Âmbar</span>')
+    end
+
     it "escapes the name it wraps" do
       sneaky = create(:setting, name: '<script>', locale: 'ja')
       expect(helper.localized_tag_name(sneaky)).to eq('<span lang="ja">&lt;script&gt;</span>')

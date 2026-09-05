@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: glowfic 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-04 18:42+0000\n"
-"PO-Revision-Date: 2026-09-04 18:42+0000\n"
+"POT-Creation-Date: 2026-09-05 04:55+0000\n"
+"PO-Revision-Date: 2026-09-05 04:55+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1003,6 +1003,9 @@ msgstr ""
 msgid "In Progress"
 msgstr ""
 
+msgid "In order of preference: pick the one you'd rather read first. Tag names and, with the interface language on Automatic, the site itself are shown in the first of these that has a translation."
+msgstr ""
+
 msgid "Inactive »"
 msgstr ""
 
@@ -1084,6 +1087,9 @@ msgid "Language"
 msgstr ""
 
 msgid "Language:"
+msgstr ""
+
+msgid "Languages you read"
 msgstr ""
 
 msgid "Last"

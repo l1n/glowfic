@@ -37,6 +37,11 @@
         = f.select :locale, locale_options(current_user.locale)
         .details= _("Which language to show the site's own text in. Translations are contributed by volunteers, so not every language is available yet.")
     %div
+      .sub= f.label :preferred_languages, _("Languages you read")
+      %div{class: cycle('even', 'odd')}
+        = f.select :preferred_languages, Glowfic::Locales.content_options, {}, { multiple: true, id: 'user_preferred_languages' }
+        .details= _("In order of preference: pick the one you'd rather read first. Tag names and, with the interface language on Automatic, the site itself are shown in the first of these that has a translation.")
+    %div
       .sub= f.label :content_language, _("Writing language")
       %div{class: cycle('even', 'odd')}
         = f.select :content_language, content_language_options(current_user.content_language)

@@ -40,17 +40,17 @@ function tinyMCEConfig(selector) {
   };
 }
 
-// The languages offered by the editor's language controls, with the writer's own
-// language first: it's the one they reach for most, and the rest stay alphabetical.
+// The languages offered by the editor's language controls: the writer's own language
+// first, then the ones they've said they prefer in their order, then the rest
+// alphabetically. Languages further down the list are the ones they reach for least.
 function contentLanguages() {
   const languages = (gon.content_languages || []).slice();
-  const preferred = gon.writing_language;
-  return languages.sort(function(a, b) {
-    if (a.code === b.code) { return 0; }
-    if (a.code === preferred) { return -1; }
-    if (b.code === preferred) { return 1; }
-    return 0;
-  });
+  const ranked = [gon.writing_language].concat(gon.preferred_languages || []);
+  const rank = function(language) {
+    const index = ranked.indexOf(language.code);
+    return index === -1 ? ranked.length : index;
+  };
+  return languages.sort(function(a, b) { return rank(a) - rank(b); });
 }
 
 function setupEditorHelpBox() {

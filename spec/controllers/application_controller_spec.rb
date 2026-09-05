@@ -64,6 +64,16 @@ RSpec.describe ApplicationController do
       expect(locale_for).to eq('es')
     end
 
+    it "uses the first of the user's preferred languages that is translated" do
+      login_as(create(:user, locale: nil, preferred_languages: ['de', 'es']))
+      expect(locale_for).to eq('es')
+    end
+
+    it "prefers the user's explicit interface language over their preferences" do
+      login_as(create(:user, locale: 'en', preferred_languages: ['es']))
+      expect(locale_for).to eq('en')
+    end
+
     it "prefers the user's setting over the browser's" do
       login_as(create(:user, locale: 'es'))
       expect(locale_for(headers: { 'HTTP_ACCEPT_LANGUAGE' => 'de' })).to eq('es')

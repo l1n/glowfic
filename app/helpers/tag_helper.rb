@@ -13,7 +13,11 @@ module TagHelper
   # hyphenate it with the right rules; text that already matches is left as bare text
   # rather than being wrapped in a span that says nothing.
   def localized_tag_name(record)
-    localized_span(record.localized_name)
+    localized_span(record.localized_name(reading_languages))
+  end
+
+  def localized_tag_description(record)
+    record.localized_description(reading_languages)
   end
 
   def localized_tag_link(record, **opts)

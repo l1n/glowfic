@@ -277,6 +277,7 @@ class UsersController < ApplicationController
       :default_hide_add_bookmark_button,
       :locale,
       :content_language,
+      preferred_languages: [],
     )
   end
 

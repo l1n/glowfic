@@ -393,6 +393,24 @@ RSpec.describe UsersController do
       expect(user.content_language).to eq('ja')
     end
 
+    it "saves the preferred languages in the order given" do
+      user = create(:user)
+      login_as(user)
+
+      put :update, params: { id: user.id, user: { preferred_languages: ['', 'pt', 'es'] } }
+
+      expect(user.reload.preferred_languages).to eq(['pt', 'es'])
+    end
+
+    it "clears the preferred languages when none are picked" do
+      user = create(:user, preferred_languages: ['es'])
+      login_as(user)
+
+      put :update, params: { id: user.id, user: { preferred_languages: [''] } }
+
+      expect(user.reload.preferred_languages).to eq([])
+    end
+
     it "rejects an unknown language" do
       user = create(:user, locale: 'es')
       login_as(user)

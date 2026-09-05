@@ -1,5 +1,5 @@
 !!!
-%html{lang: I18n.locale, dir: (Glowfic::Locales.rtl?(I18n.locale) ? 'rtl' : nil)}
+%html{html_language_attrs}
   %head
     %title= (Rails.env.development? ? 'DEV: ' : '') + (@page_title ? @page_title + " | Glowfic Constellation" : "Glowfic Constellation")
 

@@ -40,8 +40,61 @@ RSpec.describe User do
         expect(build(:user, content_language: 'ja').writing_language).to eq('ja')
       end
 
-      it "falls back to the site default when unset" do
+      it "falls back to the first preferred language" do
+        expect(build(:user, content_language: nil, preferred_languages: ['pt', 'es']).writing_language).to eq('pt')
+      end
+
+      it "falls back to the site default when nothing is set" do
         expect(build(:user, content_language: nil).writing_language).to eq('en')
+      end
+    end
+
+    describe "preferred languages" do
+      it "drops blanks and duplicates on save" do
+        user = create(:user, preferred_languages: ['', 'es', 'es', nil, 'pt'])
+        expect(user.reload.preferred_languages).to eq(['es', 'pt'])
+      end
+
+      it "rejects a language the site doesn't know" do
+        user = build(:user, preferred_languages: ['es', 'klingon'])
+        expect(user).not_to be_valid
+        expect(user.errors[:preferred_languages].first).to include('klingon')
+      end
+
+      it "is empty by default" do
+        expect(create(:user).preferred_languages).to eq([])
+      end
+
+      describe "#ui_locale" do
+        it "uses the first preferred language the interface is translated into" do
+          allow(Glowfic::Locales).to receive(:ui_codes).and_return(['en', 'es'])
+          expect(build(:user, locale: nil, preferred_languages: ['de', 'es', 'en']).ui_locale).to eq('es')
+        end
+
+        it "lets an explicit interface language win over the preferences" do
+          expect(build(:user, locale: 'en', preferred_languages: ['es']).ui_locale).to eq('en')
+        end
+
+        it "is nil when no preference is translated" do
+          allow(Glowfic::Locales).to receive(:ui_codes).and_return(['en'])
+          expect(build(:user, locale: nil, preferred_languages: ['de', 'fr']).ui_locale).to be_nil
+        end
+      end
+
+      describe "#reading_languages" do
+        it "is the preferences followed by the page language" do
+          user = build(:user, preferred_languages: ['pt', 'es'])
+          expect(user.reading_languages(:en)).to eq(['pt', 'es', 'en'])
+        end
+
+        it "does not repeat the page language when it is already preferred" do
+          user = build(:user, preferred_languages: ['es', 'en'])
+          expect(user.reading_languages(:es)).to eq(['es', 'en'])
+        end
+
+        it "is just the page language for a user with no preferences" do
+          expect(build(:user).reading_languages(:en)).to eq(['en'])
+        end
       end
     end
   end

@@ -1000,6 +1000,9 @@ msgstr ""
 msgid "In Progress"
 msgstr ""
 
+msgid "In order of preference: pick the one you'd rather read first. Tag names and, with the interface language on Automatic, the site itself are shown in the first of these that has a translation."
+msgstr "En orden de preferencia: elige primero el que prefieras leer. Los nombres de las etiquetas y, con el idioma de la interfaz en Automático, el propio sitio se muestran en el primero de estos que tenga traducción."
+
 msgid "Inactive »"
 msgstr ""
 
@@ -1082,6 +1085,9 @@ msgstr "Idioma"
 
 msgid "Language:"
 msgstr "Idioma:"
+
+msgid "Languages you read"
+msgstr "Idiomas que lees"
 
 msgid "Last"
 msgstr ""

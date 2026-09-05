@@ -79,25 +79,33 @@ class Tag < ApplicationRecord
     locale.presence || Glowfic::Locales::DEFAULT
   end
 
-  def localized_name(target=I18n.locale)
-    translation = translation_for(target)
+  # `targets` is one language or an ordered list of them (a reader's preferences, best
+  # first); the first with a translation wins.
+  def localized_name(targets=I18n.locale)
+    translation = translation_for(targets)
     return Localized.new(name, source_locale) if translation.nil?
     Localized.new(translation.name, translation.locale)
   end
 
-  def localized_description(target=I18n.locale)
-    translation = translation_for(target)
+  def localized_description(targets=I18n.locale)
+    translation = translation_for(targets)
     return Localized.new(description, source_locale) if translation.nil? || translation.description.blank?
     Localized.new(translation.description, translation.locale)
   end
 
-  # Prefers an exact match ("pt-BR") over the bare language ("pt"), so a region-specific
-  # translation wins for readers who asked for that region.
-  def translation_for(target)
-    codes = [target.to_s.presence, Glowfic::Locales.base_code(target)].compact.uniq
-    return nil if codes.empty? || codes.include?(source_locale)
+  # Walks the targets in order. For each, an exact match ("pt-BR") beats the bare language
+  # ("pt"), so a region-specific translation wins for readers who asked for that region.
+  # Reaching a target the tag is already written in stops the search: the canonical text
+  # is that reader's preference, and no lower-ranked translation should displace it.
+  def translation_for(targets)
     by_locale = tag_translations.index_by(&:locale)
-    codes.filter_map { |code| by_locale[code] }.first
+    Array(targets).each do |target|
+      codes = [target.to_s.presence, Glowfic::Locales.base_code(target)].compact.uniq
+      return nil if codes.include?(source_locale)
+      found = codes.filter_map { |code| by_locale[code] }.first
+      return found if found
+    end
+    nil
   end
 
   def translated_locales

@@ -117,7 +117,10 @@ Marking up *writing* — a line of Spanish dialogue in an English post — is a 
 feature and needs no translation files.
 
 - Each user has a **writing language** in account settings, which the editor's language
-  controls start from.
+  controls start from, and an ordered list of **languages they read**. Tag names are shown
+  in the first of those with a translation; the editor's language menu lists them in that
+  order; and with the interface language on Automatic, the site itself is shown in the
+  first of them that has a `.po` file.
 - The Rich Text editor has a **Language** menu in its toolbar; the HTML and Markdown
   editors have a **Language / Wrap selection** bar above the text area. Both wrap the
   selected text in `<span lang="…">`.

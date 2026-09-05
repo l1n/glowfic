@@ -54,10 +54,11 @@ class User < ApplicationRecord
   validates :moiety_name, length: { maximum: 255 }
   validates :profile_editor_mode, inclusion: { in: ['html', 'rtf', 'md'] }, allow_nil: true
   validates :locale, :content_language, inclusion: { in: Glowfic::Locales::CODES }, allow_nil: true
+  validate :preferred_languages_known
   validates :password, :password_confirmation, presence: { if: :validate_password? }
   validate :username_not_reserved
 
-  before_validation :encrypt_password, :strip_spaces
+  before_validation :encrypt_password, :strip_spaces, :normalize_preferred_languages
   after_update :update_flat_posts
   after_save :clear_password
 
@@ -67,23 +68,47 @@ class User < ApplicationRecord
 
   nilify_blanks
 
+  private
+
+  # Rails sends "" for an emptied multi-select, and a user can pick a language twice by
+  # accident; neither should be stored.
+  def normalize_preferred_languages
+    self.preferred_languages = Array(preferred_languages).compact_blank.map(&:to_s).uniq
+  end
+
+  def preferred_languages_known
+    unknown = preferred_languages - Glowfic::Locales::CODES
+    return if unknown.empty?
+    errors.add(:preferred_languages, "is not a language the site knows: #{unknown.join(', ')}")
+  end
+
+  public
+
   def authenticate(password)
     return crypted == crypted_password(password) if salt_uuid.present?
     crypted == old_crypted_password(password)
   end
 
-  # The interface language to actually use. Only languages the interface has really
-  # been translated into count, so retiring a locale/*.po doesn't strand the users who
-  # had picked it — they fall back to the browser/default chain instead.
+  # The interface language to actually use: an explicit choice first, otherwise the first
+  # preferred language the interface has been translated into. Only languages with a
+  # translation count, so retiring a locale/*.po doesn't strand the users who had picked
+  # it — they fall back to the browser/default chain instead. Nil means "no opinion".
   def ui_locale
-    return nil if locale.blank?
-    locale if Glowfic::Locales.ui_codes.include?(locale)
+    candidates = [locale, *preferred_languages].compact_blank
+    candidates.find { |code| Glowfic::Locales.ui_codes.include?(code) }
   end
 
   # The language this user writes in. Seeds the editor's language buttons and the
   # default row in the tag translation editor.
   def writing_language
-    content_language.presence || Glowfic::Locales::DEFAULT
+    content_language.presence || preferred_languages.first.presence || Glowfic::Locales::DEFAULT
+  end
+
+  # The languages this user would rather read, best first, ending with the language the
+  # page is in so there is always something to fall back to. This is what tag names are
+  # resolved against: the first language in the chain that has a translation wins.
+  def reading_languages(page_locale=I18n.locale)
+    (preferred_languages + [page_locale.to_s]).compact_blank.uniq
   end
 
   def gon_attributes

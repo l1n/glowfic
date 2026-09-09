@@ -1,15 +1,15 @@
 - content_for :breadcrumbs do
-  = link_to "Continuities", continuities_path
+  = link_to _("Continuities"), continuities_path
   &raquo;
   = link_to @board_section.board.name, continuity_path(@board_section.board)
   &raquo;
   = link_to @board_section.name, board_section_path(@board_section)
   &raquo;
-  %b Edit
+  %b= _("Edit")
 
 = form_for @board_section, url: board_section_path(@board_section), method: :put do |f|
   .form-table#section-editor
-    .editor-title Edit #{@board_section.name}
+    .editor-title= format(_("Edit %{name}"), name: @board_section.name)
     = render 'editor', f: f
 
 - if @posts.present?
@@ -18,20 +18,20 @@
   - reset_cycle
   #reorder-posts-table
     .content-header
-      Organize Section Posts
+      = _("Organize Section Posts")
       .loading.float-right.hidden= loading_tag
       .saveerror.float-right.hidden
-        = image_tag "icons/exclamation.png", title: 'Error', class: 'vmid', alt: '!'
-        Error, please refresh
+        = image_tag "icons/exclamation.png", title: _("Error"), class: 'vmid', alt: '!'
+        = _("Error, please refresh")
       .saveconf.float-right.hidden
-        = image_tag "icons/accept.png", title: 'Saved', class: 'vmid', alt: ''
-        Saved
+        = image_tag "icons/accept.png", title: _("Saved"), class: 'vmid', alt: ''
+        = _("Saved")
     %ul.sortable.table-list
       - @posts.each do |post|
         %li.section-ordered{class: cycle('even', 'odd'), data: { id: post.id, type: post.class.to_s, order: post.section_order }}
           .section-ordered-handle
-            = image_tag "icons/arrow_double.png", title: 'Reorder', class: 'disabled-arrow', alt: '↕'
+            = image_tag "icons/arrow_double.png", title: _("Reorder"), class: 'disabled-arrow', alt: '↕'
           = link_to post.subject, post_path(post)
           .float-right
-            = image_tag "icons/arrow_up.png", class: "section-up disabled-arrow", alt: 'Move Up'
-            = image_tag "icons/arrow_down.png", class: "section-down disabled-arrow", alt: 'Move Down'
+            = image_tag "icons/arrow_up.png", class: "section-up disabled-arrow", alt: _("Move Up")
+            = image_tag "icons/arrow_down.png", class: "section-down disabled-arrow", alt: _("Move Down")

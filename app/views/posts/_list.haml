@@ -19,14 +19,14 @@
         %td.continuity-spacer{colspan: col_count}
     %tr
       %th.sub.width-15
-      %th.sub Thread
+      %th.sub= _("Thread")
       - unless hide_continuity
-        %th.sub Continuity
-      %th.sub Authors
-      %th.sub Replies
+        %th.sub= _("Continuity")
+      %th.sub= _("Authors")
+      %th.sub= _("Replies")
       - if show_unread_count
-        %th.sub Unread
-      %th.sub Last Updated
+        %th.sub= _("Unread")
+      %th.sub= _("Last Updated")
       - if check_box_name
         %th.sub.check-all-box
           - unless posts.empty?
@@ -35,7 +35,7 @@
     = render partial: 'posts/list_item', collection: posts, as: :post, locals: post_args
     - if posts.empty?
       %tr
-        %td.centered.padding-10.no-posts{ class: cycle('even', 'odd'), colspan: col_count } — No posts yet —
+        %td.centered.padding-10.no-posts{ class: cycle('even', 'odd'), colspan: col_count }= _("— No posts yet —")
   - if posts.methods.include?(:total_pages) && posts.total_pages > 1
     %tfoot
       %tr

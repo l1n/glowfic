@@ -25,7 +25,9 @@ gem 'bootstrap', '~> 5.3' # pin until major version is handled
 gem 'connection_pool', '~> 2.0' # pin until version 3.x is supported by Rails (https://github.com/glowfic-constellation/glowfic/pull/2616)
 gem 'dartsass-sprockets'
 gem 'exception_notification'
+gem 'fast_gettext', '~> 4.1'
 gem 'geocoder'
+gem 'gettext_i18n_rails', '~> 2.2'
 gem 'gon', '~> 6.6'
 gem 'haml-rails'
 gem 'httparty'
@@ -65,6 +67,8 @@ end
 
 group :development do
   gem "brakeman", '~> 8.0.5', require: false
+  # provides the `rake gettext:find` / `gettext:pack` tooling used to maintain locale/*.po
+  gem 'gettext', '~> 3.5', require: false
   gem 'haml_lint', '~> 0.74.0', require: false
   gem 'listen'
   gem 'memory_profiler'

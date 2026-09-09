@@ -3,5 +3,5 @@
   .post-subheader= sanitize_simple_link_text(@post.description)
 = render 'replies/single', reply: @written, hide_footer: true
 %br
-.content-header Edit previewed post
+.content-header= _("Edit previewed post")
 = render 'write', post: @post

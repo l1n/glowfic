@@ -6,36 +6,35 @@
   %thead
     %tr
       %th.table-title{colspan: 7}
-        Daily Report -
-        = @day.strftime("%b %d, %Y")
+        = format(_("Daily Report - %{day}"), day: @day.strftime("%b %d, %Y"))
         - if @day == Time.zone.today
-          %em (Incomplete)
+          %em= _("(Incomplete)")
           - if logged_in?
             = link_to output_user_path(current_user), class: 'view-button-link' do
               .view-button
                 = image_tag 'icons/book_open.png', class: 'list-view', alt: ''
-                Your Output Today
+                = _("Your Output Today")
         - if @new_today
           = link_to url_for(day: @day), class: 'view-button-link' do
             .view-button
               = image_tag "icons/list.png", class: 'list-view', alt: ''
-              All Today
+              = _("All Today")
         - else
           = link_to url_for(day: @day, new_today: true), class: 'view-button-link' do
             .view-button
-              = image_tag "icons/new.png", class: 'list-view', alt: 'New', title: 'New Today'
-              Only New Today
+              = image_tag "icons/new.png", class: 'list-view', alt: _("New"), title: _("New Today")
+              = _("Only New Today")
     %tr
       %th.sub{colspan: 7}= render 'date_nav'
     - if @posts.present?
       %tr
         %th.subber.width-15
-        %th.subber= link_to 'Thread', url_for(day: params[:day], sort: 'subject')
-        %th.subber= link_to 'Continuity', url_for(day: params[:day], sort: 'continuity')
-        %th.subber Authors
-        %th.subber.width-70 Replies
-        %th.subber.width-70 Today
-        %th.subber.width-70= link_to 'Updated', url_for(day: params[:day], sort: 'updated')
+        %th.subber= link_to _("Thread"), url_for(day: params[:day], sort: 'subject')
+        %th.subber= link_to _("Continuity"), url_for(day: params[:day], sort: 'continuity')
+        %th.subber= _("Authors")
+        %th.subber.width-70= _("Replies")
+        %th.subber.width-70= _("Today")
+        %th.subber.width-70= link_to _("Updated"), url_for(day: params[:day], sort: 'updated')
   - if @posts.present?
     %tbody
       - @posts.each do |post|
@@ -44,19 +43,19 @@
           - klass << 'post-ignored' if ignored?(post)
           %td.vtop.post-completed{class: klass.dup.push(post.complete? ? 'post-complete' : 'post-incomplete')}
             - if post.complete?
-              = image_tag "icons/book.png", class: 'vmid', title: "Thread Complete", alt: 'Complete'
+              = image_tag "icons/book.png", class: 'vmid', title: _("Thread Complete"), alt: _("Complete")
             - elsif post.on_hiatus?
-              = image_tag "icons/hourglass.png", class: 'vmid', title: "Thread On Hiatus", alt: 'Hiatused'
+              = image_tag "icons/hourglass.png", class: 'vmid', title: _("Thread On Hiatus"), alt: _("Hiatused")
             - elsif post.abandoned?
-              = image_tag "icons/book_grey.png", class: 'vmid', title: "Thread Abandoned", alt: 'Abandoned'
+              = image_tag "icons/book_grey.png", class: 'vmid', title: _("Thread Abandoned"), alt: _("Abandoned")
             - if !current_user.try(:hide_warnings) && post.has_content_warnings?
-              = image_tag "icons/exclamation.png", class: 'vmid', title: "Content Warning: " + post.content_warnings.pluck(:name).join(', '), alt: 'Has Warnings'
+              = image_tag "icons/exclamation.png", class: 'vmid', title: _("Content Warning: ") + post.content_warnings.pluck(:name).join(', '), alt: _("Has Warnings")
             - if post.created_at.beginning_of_day == @day.beginning_of_day
-              = image_tag "icons/new.png", class: 'vmid', title: 'New Today', alt: 'New'
+              = image_tag "icons/new.png", class: 'vmid', title: _("New Today"), alt: _("New")
           %td.post-subject{class: klass}
             - if has_unread?(post)
               = link_to unread_path(post) do
-                = image_tag unread_img, class: 'vmid mobile-target', title: 'First Unread'
+                = image_tag unread_img, class: 'vmid mobile-target', title: _("First Unread")
             - if never_read?(post)
               %b= link_to post.subject, post_path(post)
             - else
@@ -74,4 +73,4 @@
         %td{colspan: 7}= render 'posts/paginator', paginated: @posts
   - else
     %tr
-      %td.centered.even{colspan: 7} — No posts yet —
+      %td.centered.even{colspan: 7}= _("— No posts yet —")

@@ -1,7 +1,7 @@
 -# locals: ( post:, subtitle: nil )
 
 - content_for :breadcrumbs do
-  = link_to "Continuities", continuities_path
+  = link_to _("Continuities"), continuities_path
   &raquo;
   = link_to post.board.name, continuity_path(post.board)
   - if post.section

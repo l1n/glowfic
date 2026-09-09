@@ -1,13 +1,13 @@
 - if @user.present?
   - content_for :breadcrumbs do
     - if @user.id == current_user.try(:id)
-      = link_to "You", user_path(current_user)
+      = link_to _("You"), user_path(current_user)
       &raquo;
-      %b Your Continuities
+      %b= _("Your Continuities")
     - else
       = user_link(@user)
       &raquo;
-      %b #{@user.username}'s Continuities
+      %b= format(_("%{username}'s Continuities"), username: @user.username)
   = render 'users/warnings', user: @user
 
 %span.time-loaded= pretty_time(DateTime.now.in_time_zone)
@@ -19,22 +19,22 @@
         = @page_title
         - if logged_in? && (@user.nil? || @user.id == current_user.id)
           = link_to new_continuity_path do
-            .link-box.action-new + New Continuity
+            .link-box.action-new= _("+ New Continuity")
     %tr
       %th.subber.padding-10{colspan: 3}
         = form_tag search_continuities_path, method: :get do
-          = label_tag :name, 'Search by name:'
+          = label_tag :name, _("Search by name:")
           = text_field_tag :name, params[:name], style: 'margin: 0px 5px;', id: :name
-          = submit_tag "Search", class: 'button'
+          = submit_tag _("Search"), class: 'button'
     %tr
-      %th.sub Name
-      %th.sub Authors
-      %th.sub Last Updated
+      %th.sub= _("Name")
+      %th.sub= _("Authors")
+      %th.sub= _("Last Updated")
   %tbody
     = render partial: 'list_item', collection: @boards, as: :board
     - if @boards.empty?
       %tr
-        %td.centered.padding-10.no-posts{ class: cycle('even', 'odd'), colspan: 3 } — No continuities yet —
+        %td.centered.padding-10.no-posts{ class: cycle('even', 'odd'), colspan: 3 }= _("— No continuities yet —")
   - if @boards.methods.include?(:total_pages) && @boards.total_pages > 1
     %tfoot
       %tr
@@ -44,5 +44,5 @@
     %tr
       %td.continuity-spacer
     %tr
-      %th.sub{colspan: 3} Cameo Continuities
+      %th.sub{colspan: 3}= _("Cameo Continuities")
     = render partial: 'list_item', collection: @cameo_boards, as: :board

@@ -2,7 +2,7 @@
 
 - content_for :breadcrumbs do
   %b
-    Search:
+    = _("Search:")
     = link_to_unless_current "Posts", search_posts_path
     |
     = link_to_unless_current "Replies", search_replies_path

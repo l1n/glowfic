@@ -1,11 +1,11 @@
 - content_for :breadcrumbs do
-  = link_to 'Blocks', blocks_path
+  = link_to _("Blocks"), blocks_path
   &raquo;
-  Block on #{@block.blocked_user.username}
+  = format(_("Block on %{username}"), username: @block.blocked_user.username)
   &raquo;
-  %b Edit
+  %b= _("Edit")
 
 = form_for @block, url: block_path(@block), method: :put do |f|
   .form-table
-    .editor-title Edit Block
+    .editor-title= _("Edit Block")
     = render 'editor', f: f, blocked_user: @block.blocked_user

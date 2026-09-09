@@ -1,14 +1,14 @@
 - content_for :breadcrumbs do
-  = link_to "Characters", user_characters_path(current_user)
+  = link_to _("Characters"), user_characters_path(current_user)
   - if @character.template
     &raquo;
     = link_to @character.template.name, template_path(@character.template)
   &raquo;
   = link_to @character.name, @character
   &raquo;
-  = link_to 'Edit', edit_character_path(@character)
+  = link_to _("Edit"), edit_character_path(@character)
   &raquo;
-  %b Edit Alias
+  %b= _("Edit Alias")
 
 = form_for @alias, url: character_alias_path(@character, @alias), method: :put do |f|
   .form-table#alias-editor

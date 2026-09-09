@@ -1,5 +1,5 @@
 - content_for :breadcrumbs do
-  = link_to "Indexes", indexes_path
+  = link_to _("Indexes"), indexes_path
   &raquo;
   = link_to @index_post.index.name, @index_post.index
   &raquo;
@@ -7,20 +7,20 @@
 
 = form_for @index_post do |f|
   .form-table#index-post-editor
-    .editor-title Edit Post In Index
+    .editor-title= _("Edit Post In Index")
     %div
-      .sub Index
+      .sub= _("Index")
       .even
         = link_to @index_post.index.name, @index_post.index
     - if @index_post.index_section.present?
       %div
-        .sub Index Section
+        .sub= _("Index Section")
         .odd
           = link_to @index_post.index_section.name, @index_post.index_section
     %div
-      .sub Post
+      .sub= _("Post")
       .even= link_to @index_post.post.subject, post_path(@index_post.post)
     %div
       .sub.vtop= f.label :description
       .odd= f.text_area :description
-    .form-table-ender= submit_tag "Save", class: 'button'
+    .form-table-ender= submit_tag _("Save"), class: 'button'

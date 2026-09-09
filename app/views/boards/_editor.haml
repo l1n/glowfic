@@ -2,29 +2,29 @@
 
 %div
   .sub= f.label :name
-  .even= f.text_field :name, placeholder: "Continuity Name"
+  .even= f.text_field :name, placeholder: _("Continuity Name")
 %div
-  .sub Creator
+  .sub= _("Creator")
   .odd= @board.creator.username
 %div
-  .sub= f.label :coauthor_ids, 'Coauthors'
+  .sub= f.label :coauthor_ids, _("Coauthors")
   .even
     = f.collection_select(:coauthor_ids, @coauthors, :id, :username, { selected: @board.coauthors.pluck(:user_id) }, { multiple: true })
 %div
-  .sub= f.label :cameo_ids, 'Cameos'
+  .sub= f.label :cameo_ids, _("Cameos")
   .odd
     = f.collection_select(:cameo_ids, @cameos, :id, :username, { selected: @board.cameos.pluck(:user_id) }, { multiple: true })
 %div
-  .sub= f.label :authors_locked, 'Locked?'
+  .sub= f.label :authors_locked, _("Locked?")
   .even.checkbox-field
     = f.check_box :authors_locked, checked: @board.authors_locked
-    = f.label :authors_locked, 'Only allow authors to create new posts in this continuity'
+    = f.label :authors_locked, _("Only allow authors to create new posts in this continuity")
 %div
-  .sub= f.label :mega, 'Mega?'
+  .sub= f.label :mega, _("Mega?")
   .even.checkbox-field
     = f.check_box :mega, checked: @board.mega
-    = f.label :mega, 'Mark this as a large continuity with many authors'
+    = f.label :mega, _("Mark this as a large continuity with many authors")
 %div
-  .sub.vtop Description
+  .sub.vtop= _("Description")
   .odd= f.text_area :description
-.form-table-ender= submit_tag "Save", class: 'button'
+.form-table-ender= submit_tag _("Save"), class: 'button'

@@ -5,9 +5,9 @@
   .form-table
     .editor-title
       - if @message.thread_id.present?
-        Reply to Thread
+        = _("Reply to Thread")
       - else
-        Compose New Message
+        = _("Compose New Message")
     %div
       .sub.padding-10.width-150= f.label :recipient_id
       .even.padding-10
@@ -18,10 +18,10 @@
     - unless @message.thread_id.present?
       %div
         .sub.padding-10= f.label :subject
-        .odd.padding-10= f.text_field :subject, placeholder: 'Subject'
+        .odd.padding-10= f.text_field :subject, placeholder: _("Subject")
     #message-row
       .sub.padding-10.vtop= f.label :message
       .even.padding-10= f.text_area :message
     .form-table-ender
-      = f.submit "Send", class: 'button'
-      = f.submit "Preview", class: 'button', name: 'button_preview'
+      = f.submit _("Send"), class: 'button'
+      = f.submit _("Preview"), class: 'button', name: 'button_preview'

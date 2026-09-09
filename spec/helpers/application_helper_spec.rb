@@ -1,4 +1,19 @@
 RSpec.describe ApplicationHelper do
+  describe "#safe_format" do
+    it "keeps interpolated markup intact" do
+      link = helper.link_to('guide', '/guide')
+      expect(helper.safe_format("See the %{link} now", link: link)).to eq('See the <a href="/guide">guide</a> now')
+    end
+
+    it "escapes interpolated text that isn't already safe" do
+      expect(helper.safe_format("Hi %{name}", name: "<script>")).to eq('Hi &lt;script&gt;')
+    end
+
+    it "returns something the view will not escape again" do
+      expect(helper.safe_format("x %{y}", y: 'z')).to be_html_safe
+    end
+  end
+
   describe "#breakable_text" do
     it "leaves blank strings intact" do
       expect(helper.send(:breakable_text, nil)).to eq(nil)

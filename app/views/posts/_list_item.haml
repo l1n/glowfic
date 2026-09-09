@@ -4,23 +4,23 @@
   - replies_count = post.reply_count
   %td.post-completed.vtop{class: [klass, (post.complete? ? 'post-complete' : 'post-incomplete')]}
     - if post.complete?
-      = image_tag "icons/book.png", class: 'vmid', title: "Thread Complete", alt: 'Complete'
+      = image_tag "icons/book.png", class: 'vmid', title: _("Thread Complete"), alt: _("Complete")
     - elsif post.on_hiatus?
-      = image_tag "icons/hourglass.png", class: 'vmid', title: "Thread On Hiatus", alt: 'Hiatused'
+      = image_tag "icons/hourglass.png", class: 'vmid', title: _("Thread On Hiatus"), alt: _("Hiatused")
     - elsif post.abandoned?
-      = image_tag "icons/book_grey.png", class: 'vmid', title: "Thread Abandoned", alt: 'Abandoned'
+      = image_tag "icons/book_grey.png", class: 'vmid', title: _("Thread Abandoned"), alt: _("Abandoned")
     - unless post.privacy_public?
       = privacy_icon(post.privacy.to_sym, dark_layout: current_user&.layout_darkmode?)
     - if !current_user.try(:hide_warnings) && post.has_content_warnings?
-      = image_tag "icons/exclamation.png", class: 'vmid', title: "Content Warning: " + post.content_warnings.pluck(:name).join(', '), alt: 'Has Warnings'
+      = image_tag "icons/exclamation.png", class: 'vmid', title: _("Content Warning: ") + post.content_warnings.pluck(:name).join(', '), alt: _("Has Warnings")
   %td.post-subject.vtop{class: klass}
     - if logged_in?
       - if unread_post?(post, unread_ids) || (@show_unread && !opened_post?(post, opened_ids))
         = link_to unread_path(post) do
-          = image_tag unread_img, class: 'vmid mobile-target', title: 'First Unread', alt: 'First Unread'
+          = image_tag unread_img, class: 'vmid mobile-target', title: _("First Unread"), alt: _("First Unread")
       - elsif @show_unread
         = link_to unread_path(post) do
-          = image_tag lastlink_img, class: 'vmid mobile-target', title: 'First Unread', alt: 'Jump To End'
+          = image_tag lastlink_img, class: 'vmid mobile-target', title: _("First Unread"), alt: _("Jump To End")
     - if logged_in? && @opened_ids.present? && @opened_ids.exclude?(post.id)
       %b= link_to post.subject, post_path(post), title: strip_tags(post.description)
     - else
@@ -56,9 +56,8 @@
       - else
         \-
   %td.post-time.vtop{class: klass}
-    = pretty_time(post.tagged_at)
-    by
-    = user_mem_link(post.last_user_id, post.last_user_name, post.last_user_deleted?)
+    - last_user = user_mem_link(post.last_user_id, post.last_user_name, post.last_user_deleted?)
+    = safe_format(_("%{time} by %{user}"), time: pretty_time(post.tagged_at), user: last_user)
   - if check_box_name
     %td.post-check-box{class: klass}= check_box_tag check_box_name, post.id, false, class: 'checkbox check-all-item', id: nil
   - if check_box_padding
@@ -68,7 +67,7 @@
       - if index.editable_by?(current_user)
         = link_to edit_index_post_path(post.index_post_id) do
           = image_tag "icons/pencil.png"
-        = link_to index_post_path(post.index_post_id), method: :delete, data: { confirm: "Are you sure you want to remove #{post.subject} from this index?" } do
+        = link_to index_post_path(post.index_post_id), method: :delete, data: { confirm: format(_("Are you sure you want to remove %{subject} from this index?"), subject: post.subject) } do
           = image_tag "icons/cross.png"
         &nbsp;
 - if post.respond_to?(:index_description)

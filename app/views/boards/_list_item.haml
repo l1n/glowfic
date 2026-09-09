@@ -8,5 +8,5 @@
       - writers = board.writers.reject(&:deleted?).sort_by { |a| a.username.downcase }
       = safe_join(writers.map { |u| user_link(u) }, ', ')
     - else
-      Anyone
+      = _("Anyone")
   %td.padding-10.board-time{class: klass}= pretty_time(board.tagged_at)

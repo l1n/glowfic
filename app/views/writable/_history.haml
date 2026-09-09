@@ -1,6 +1,6 @@
 -# locals: ( audited: )
 
-.content-header Edit History (Oldest to Newest)
+.content-header= _("Edit History (Oldest to Newest)")
 %table
   %tbody
     - audits = audited.audits.paginate(page: page)
@@ -14,57 +14,55 @@
       - reset_cycle
       %tr.bg.spacer{style: 'height:20px;'}
       %tr
-        %th.table-title{colspan: 2} Version: #{audit.version}
+        %th.table-title{colspan: 2}= format(_("Version: %{version}"), version: audit.version)
       - if audit.comment.present?
         %tr
           %td.post-subheader{colspan: 2}
-            = image_tag 'icons/shield.png', class: 'vmid', alt: '', title: 'Moderator edit'
-            Moderator note from
-            = succeed ' - ' do
-              = user_link(audit.user)
+            = image_tag 'icons/shield.png', class: 'vmid', alt: '', title: _("Moderator edit")
+            = safe_format(_("Moderator note from %{user} - "), user: user_link(audit.user))
             = surround '"' do
               = audit.comment
       %tr
-        %th.sub.history-header Fields Changed
+        %th.sub.history-header= _("Fields Changed")
         %td{class: cycle('even', 'odd')}
           - if audit.version == 1
-            (Original)
+            = _("(Original)")
           - elsif audit.action == 'destroy'
-            = image_tag 'icons/cross.png', alt: 'X', class: 'vmid'
-            Deleted
+            = image_tag 'icons/cross.png', alt: _("X"), class: 'vmid'
+            = _("Deleted")
           - elsif audit.action == 'create'
-            Restored
+            = _("Restored")
           - else
             = audit.audited_changes.keys.map(&:humanize).join(', ').capitalize
       %tr
-        %th.sub Updated
+        %th.sub= _("Updated")
         %td{class: cycle('even', 'odd')}= pretty_time(audit.created_at)
       - if audit.action == 'update' && audit.audited_changes.key?('board_id')
         %tr
-          %th.sub Continuity
+          %th.sub= _("Continuity")
           %td{class: cycle('even', 'odd')}
-            Changed from
+            = _("Changed from")
             - if (board = Board.find_by(id: audit.audited_changes['board_id'][0]))
               %b= link_to board.name, continuity_path(board)
             - else
-              %b [Deleted]
-            to
+              %b= _("[Deleted]")
+            = _("to")
             - if cur.board
               %b= link_to cur.board.name, continuity_path(cur.board)
             - else
-              %b [Deleted]
+              %b= _("[Deleted]")
       - if audit.action == 'update' && audit.audited_changes.key?('privacy')
         %tr
-          %th.sub Privacy
+          %th.sub= _("Privacy")
           %td{colspan: 3, class: cycle('even', 'odd')}
             - dark_layout = current_user&.layout_darkmode?
-            Changed from
+            = _("Changed from")
             %b= privacy_state(Post.privacies.key(audit.audited_changes['privacy'][0]), dark_layout: dark_layout)
-            to
+            = _("to")
             %b= privacy_state(cur.privacy, dark_layout: dark_layout)
       - if audit.action != 'destroy' && (audit.action == 'create' || audit.audited_changes.keys.intersect?(%w(character_alias_id character_id content description icon_id subject)))
         %tr
-          %th.sub.vtop Content
+          %th.sub.vtop= _("Content")
           %td{class: cycle('even', 'odd')}
             - if audited.is_a?(Post)
               .content-header= cur.subject

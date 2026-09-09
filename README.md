@@ -111,6 +111,15 @@ And finally, run any database migrations that might have been added in the meant
 
 You should now be able to execute the server, as before but now with the latest updates.
 
+### Translating
+
+The interface is translated with gettext, and translations are plain `.po` files under `locale/` — contributing a language means adding or editing one file.
+
+*   `bin-docker/rake gettext:add_language[es]` starts a new language
+*   `bin-docker/rake gettext:find` regenerates `locale/glowfic.pot` and merges new strings into every existing translation
+
+See [doc/TRANSLATING.md](doc/TRANSLATING.md) for the full guide, both for translators and for developers adding new strings.
+
 ### Validation tools
 
 We use the following tools to make sure our code is clean and standards-ctompliant:

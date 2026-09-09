@@ -1,13 +1,13 @@
 #homepage-content.even
-  Welcome to the Glowfic Constellation. Admire the tiny, tiny words.
+  = _("Welcome to the Glowfic Constellation. Admire the tiny, tiny words.")
+
+  -# one sentence, one msgid: the link has to move freely within it when translated
+  - guide_url = 'https://docs.google.com/document/d/1_4Z2zdRKaSwZPm3S0X14DYoo7w46U_MZ4En6oOediNQ/edit'
+  %p= format(_("There is a (work in progress) community %{link}."), link: link_to(_("guide to Glowfic"), guide_url))
 
   %p
-    There is a (work in progress) community
-    = link_to 'guide to Glowfic.', 'https://docs.google.com/document/d/1_4Z2zdRKaSwZPm3S0X14DYoo7w46U_MZ4En6oOediNQ/edit'
-
-  %p
-    Join our community on:
+    = _("Join our community on:")
   %ul
     - if (discord_link = ENV.fetch('DISCORD_LINK_GLOWFIC', nil))
-      %li= link_to "Our community social Discord", discord_link, target: '_blank', rel: 'noopener'
-    %li= link_to "Our website feedback Discord", Glowfic::DISCORD_LINK_CONSTELLATION, target: '_blank', rel: 'noopener'
+      %li= link_to _("Our community social Discord"), discord_link, target: '_blank', rel: 'noopener'
+    %li= link_to _("Our website feedback Discord"), Glowfic::DISCORD_LINK_CONSTELLATION, target: '_blank', rel: 'noopener'

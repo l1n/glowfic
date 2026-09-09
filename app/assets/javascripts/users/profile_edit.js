@@ -1,5 +1,5 @@
 //= require writable
-/* global createTagSelect, setupEditorHelpBox, toggleEditor, setupTinyMCE */
+/* global createTagSelect, setupEditorHelpBox, setupLanguageBar, toggleEditor, setupTinyMCE */
 
 createTagSelect("ContentWarning", "content_warning", "user");
 
@@ -16,4 +16,5 @@ function setupWritableEditor() {
   $('#rtf, #html, #md').click(function() { toggleEditor(this, 'profile_editor_mode', ['user_profile']); });
 
   setupEditorHelpBox();
+  setupLanguageBar('#user_profile');
 }

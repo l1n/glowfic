@@ -3,8 +3,8 @@
 - content_for :flashes do
   .flash.error
     = image_tag "icons/exclamation.png".freeze, class: 'vmid'.freeze
-    Warning: full blocking is not yet implemented, and will function the same as simply blocking posts.
-    Additionally, any threads not locked to their authors will not be covered by post blocking.
+    = _("Warning: full blocking is not yet implemented, and will function the same as simply blocking posts.")
+    = _("Additionally, any threads not locked to their authors will not be covered by post blocking.")
 
 %table
   %thead
@@ -12,12 +12,12 @@
       %th.table-title{colspan: 5}
         = @page_title
         = link_to new_block_path do
-          .link-box.action-new + Block User
+          .link-box.action-new= _("+ Block User")
     %tr
-      %th.sub Blocked User
-      %th.sub Blocked Interaction
-      %th.sub Hidden (Theirs)
-      %th.sub Hidden (Yours)
+      %th.sub= _("Blocked User")
+      %th.sub= _("Blocked Interaction")
+      %th.sub= _("Hidden (Theirs)")
+      %th.sub= _("Hidden (Yours)")
       %th.sub
   %tbody
     - @blocks.ordered.each do |block|
@@ -28,24 +28,24 @@
         %td.padding-5{class: klass}= block.block_interactions? ? 'Yes' : 'No'
         %td.padding-5{class: klass}
           - if block.hide_them_all?
-            All
+            = _("All")
           - elsif block.hide_them_posts?
-            Posts
+            = _("Posts")
           - else
-            None
+            = _("None")
         %td.padding-5{class: klass}
           - if block.hide_me_all?
-            All
+            = _("All")
           - elsif block.hide_me_posts?
-            Posts
+            = _("Posts")
           - else
-            None
+            = _("None")
         %td.width-70.right-align{class: klass}
           = link_to edit_block_path(block) do
-            = image_tag "icons/pencil.png", alt: 'Edit'
-          = link_to block_path(block), method: :delete, data: { confirm: "Are you sure you want to unblock #{block.blocked_user.username}?" } do
-            = image_tag "icons/cross.png", alt: 'Delete'
+            = image_tag "icons/pencil.png", alt: _("Edit")
+          = link_to block_path(block), method: :delete, data: { confirm: format(_("Are you sure you want to unblock %{username}?"), username: block.blocked_user.username) } do
+            = image_tag "icons/cross.png", alt: _("Delete")
           &nbsp;
     - if @blocks.empty?
       %tr
-        %td.centered.padding-10.no-posts{ class: cycle('even', 'odd'), colspan: 5 } — No blocks yet —
+        %td.centered.padding-10.no-posts{ class: cycle('even', 'odd'), colspan: 5 }= _("— No blocks yet —")

@@ -1,14 +1,14 @@
 - content_for :breadcrumbs do
-  = link_to "You", user_path(current_user)
+  = link_to _("You"), user_path(current_user)
   &raquo;
-  = link_to "Your Characters", user_characters_path(current_user)
+  = link_to _("Your Characters"), user_characters_path(current_user)
   &raquo;
-  %b Create New
+  %b= _("Create New")
 = form_for @character, url: characters_path, method: :post do |f|
   = f.hidden_field :default_icon_id
   .character-form
     .form-table#character-editor
-      .editor-title New Character
+      .editor-title= _("New Character")
       = render 'editor', f: f
 
   = render 'icon_selector'

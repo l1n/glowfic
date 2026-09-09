@@ -105,7 +105,8 @@ class TagsController < ApplicationController
   end
 
   def build_editor
-    return unless @tag.is_a?(Setting)
+    # Every tag type gets the editor JS now, since the translation rows are common to all
+    # of them; the setting-specific parts of it check for their own fields before running.
     use_javascript('tags/edit')
   end
 
@@ -131,8 +132,8 @@ class TagsController < ApplicationController
   end
 
   def permitted_params
-    permitted = [:type, :description, :owned]
-    permitted.insert(0, :name, :user_id) if current_user.admin? || @tag.user == current_user
+    permitted = [:type, :description, :owned, { tag_translations_attributes: [:id, :locale, :name, :description, :_destroy] }]
+    permitted.insert(0, :name, :user_id, :locale) if current_user.admin? || @tag.user == current_user
     params.fetch(:tag, {}).permit(permitted)
   end
 end

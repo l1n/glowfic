@@ -1,7 +1,7 @@
 -# locals: ( f: )
 
 %div
-  .sub= f.label :board_id, 'Continuity'
+  .sub= f.label :board_id, _("Continuity")
   .odd
     - if @board_section.posts.present?
       = @board_section.board.name
@@ -9,8 +9,8 @@
       = f.select :board_id, options_from_collection_for_select(allowed_boards(@board_section, current_user), :id, :name, @board_section.board_id), {}, class: 'chosen-select'
 %div
   .sub= f.label :name
-  .even= f.text_field :name, placeholder: "Section Name"
+  .even= f.text_field :name, placeholder: _("Section Name")
 %div
   .sub.vtop= f.label :description
   .odd= f.text_area :description
-.form-table-ender= submit_tag "Save", class: 'button'
+.form-table-ender= submit_tag _("Save"), class: 'button'

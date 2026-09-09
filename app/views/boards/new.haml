@@ -1,11 +1,11 @@
 - content_for :breadcrumbs do
-  = link_to "You", user_path(current_user)
+  = link_to _("You"), user_path(current_user)
   &raquo;
-  = link_to "Your Continuities", user_boards_path(current_user)
+  = link_to _("Your Continuities"), user_boards_path(current_user)
   &raquo;
-  %b Create New
+  %b= _("Create New")
 
 = form_for @board, url: continuities_path, method: :post do |f|
   .form-table
-    .editor-title Create Continuity
+    .editor-title= _("Create Continuity")
     = render 'editor', f: f

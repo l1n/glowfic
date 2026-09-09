@@ -1,6 +1,6 @@
 //= require posts/edit_notes
 //= require writable
-/* global gon, resizeScreenname, createTagSelect, createSelect2, setupEditorHelpBox, toggleEditor, setupTinyMCE */
+/* global gon, resizeScreenname, createTagSelect, createSelect2, setupEditorHelpBox, setupLanguageBar, toggleEditor, setupTinyMCE */
 
 let shownIcons = [];
 let iconSelectBox;
@@ -132,6 +132,7 @@ function setupWritableEditor() {
 
   $('#rtf, #html, #md').click(function() { toggleEditor(this, 'editor_mode', ['post_content', 'reply_content']); });
   setupEditorHelpBox();
+  setupLanguageBar('#post_content, #reply_content');
 
   $("#swap-character").click(function() {
     $('#character-selector').toggle();

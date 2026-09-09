@@ -9,11 +9,15 @@ class Tag < ApplicationRecord
   has_many :characters, through: :character_tags, dependent: :destroy
   has_many :gallery_tags, dependent: :destroy, inverse_of: :tag
   has_many :galleries, through: :gallery_tags, dependent: :destroy
+  has_many :tag_translations, -> { ordered }, dependent: :destroy, inverse_of: :tag
 
   TYPES = %w(Setting Label ContentWarning GalleryGroup)
 
   validates :name, :type, presence: true
   validates :name, uniqueness: { scope: :type }
+  validates :locale, inclusion: { in: Glowfic::Locales::CODES }, allow_nil: true
+
+  accepts_nested_attributes_for :tag_translations, allow_destroy: true, reject_if: :blank_translation?
 
   scope :ordered_by_type, -> { order(type: :desc, name: :asc) }
 
@@ -60,6 +64,54 @@ class Tag < ApplicationRecord
     tag_json
   end
 
+  # Name and description in the requested language, falling back to the canonical
+  # copy stored on the tag itself. The language the text is *actually* in comes back
+  # alongside it, so callers can mark it up with lang="" when it isn't the one the
+  # reader asked for. A tag with no translations behaves exactly as it always has.
+  Localized = Struct.new(:text, :locale) do
+    def rtl?
+      Glowfic::Locales.rtl?(locale)
+    end
+  end
+
+  # The language the canonical name/description are written in.
+  def source_locale
+    locale.presence || Glowfic::Locales::DEFAULT
+  end
+
+  # `targets` is one language or an ordered list of them (a reader's preferences, best
+  # first); the first with a translation wins.
+  def localized_name(targets=I18n.locale)
+    translation = translation_for(targets)
+    return Localized.new(name, source_locale) if translation.nil?
+    Localized.new(translation.name, translation.locale)
+  end
+
+  def localized_description(targets=I18n.locale)
+    translation = translation_for(targets)
+    return Localized.new(description, source_locale) if translation.nil? || translation.description.blank?
+    Localized.new(translation.description, translation.locale)
+  end
+
+  # Walks the targets in order. For each, an exact match ("pt-BR") beats the bare language
+  # ("pt"), so a region-specific translation wins for readers who asked for that region.
+  # Reaching a target the tag is already written in stops the search: the canonical text
+  # is that reader's preference, and no lower-ranked translation should displace it.
+  def translation_for(targets)
+    by_locale = tag_translations.index_by(&:locale)
+    Array(targets).each do |target|
+      codes = [target.to_s.presence, Glowfic::Locales.base_code(target)].compact.uniq
+      return nil if codes.include?(source_locale)
+      found = codes.filter_map { |code| by_locale[code] }.first
+      return found if found
+    end
+    nil
+  end
+
+  def translated_locales
+    tag_translations.map(&:locale)
+  end
+
   def id_for_select
     return id if persisted? # id present on unpersisted records when associated record is invalid
     "_#{name}"
@@ -98,5 +150,12 @@ class Tag < ApplicationRecord
       other_tag.destroy
       # rubocop:enable Rails/SkipsModelValidations
     end
+  end
+
+  private
+
+  def blank_translation?(attributes)
+    attributes = attributes.with_indifferent_access if attributes.respond_to?(:with_indifferent_access)
+    attributes[:locale].blank? || attributes[:name].blank?
   end
 end

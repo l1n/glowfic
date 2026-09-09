@@ -2,13 +2,13 @@
 
 %div
   .sub= f.label :name
-  .even= f.text_field :name, placeholder: "Section Name"
+  .even= f.text_field :name, placeholder: _("Section Name")
 %div
-  .sub Index
+  .sub= _("Index")
   .odd
     = @section.index.name
     = f.hidden_field :index_id
 %div
   .sub.vtop= f.label :description
   .even= f.text_area :description
-.form-table-ender= submit_tag "Save", class: 'button'
+.form-table-ender= submit_tag _("Save"), class: 'button'

@@ -281,6 +281,24 @@ div.post-subheader { width: 100%; }
   background-repeat: no-repeat;
 }
 
+/* The language wrapper controls for the HTML and Markdown editors; the Rich Text editor
+   has the equivalent in its own toolbar, so this is hidden while that one is selected. */
+#editor-language-bar {
+  margin-top: 5px;
+  margin-left: 160px;
+  margin-right: 10px;
+
+  label {
+    min-width: 0;
+    margin-left: 0;
+    margin-right: 5px;
+  }
+
+  select { margin-right: 5px; }
+
+  .details { margin-top: 2px; }
+}
+
 #post-editor { position: relative; }
 
 #post_form {

@@ -1,0 +1,2313 @@
+# Spanish translation of the Glowfic Constellation interface.
+# Copyright (C) the Glowfic Constellation contributors.
+# This file is distributed under the same license as the glowfic package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: glowfic\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2026-09-04 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "# of Icons"
+msgstr ""
+
+msgid "%d of %d"
+msgstr ""
+
+msgid "%{count} %{time_count}"
+msgstr ""
+
+msgid "%{subject} | Glowfic Constellation"
+msgstr ""
+
+msgid "%{subject}."
+msgstr ""
+
+msgid "%{subject}. See it here:"
+msgstr ""
+
+msgid "%{time} by %{user}"
+msgstr "%{time} por %{user}"
+
+msgid "%{type}: %{tag}"
+msgstr "%{type}: %{tag}"
+
+msgid "%{username}'s Characters"
+msgstr ""
+
+msgid "%{username}'s Continuities"
+msgstr ""
+
+msgid "%{username}'s Galleries"
+msgstr ""
+
+msgid "(%{count} Galleries)"
+msgstr ""
+
+msgid "(%{num_in_thread})"
+msgstr ""
+
+msgid "(If you don't know what this is, please leave it blank!)"
+msgstr ""
+
+msgid "(Incomplete)"
+msgstr ""
+
+msgid "(NPC)"
+msgstr ""
+
+msgid "(Optional: describe the thread's setting and major players, e.g. A Bell and Vorkosigans in Chronicle)"
+msgstr ""
+
+msgid "(Original)"
+msgstr ""
+
+msgid "(Unnamed)"
+msgstr ""
+
+msgid "(You haven't written a note yet!)"
+msgstr ""
+
+msgid "(Your profile is empty.)"
+msgstr ""
+
+msgid "(deleted user)"
+msgstr ""
+
+msgid "(invited)"
+msgstr ""
+
+msgid "*If none are selected, replaces all uses*"
+msgstr ""
+
+msgid "*This does NOT replace icons*"
+msgstr ""
+
+msgid "+ Add Icons"
+msgstr ""
+
+msgid "+ Add Post to Index"
+msgstr ""
+
+msgid "+ Add Post to Section"
+msgstr ""
+
+msgid "+ Block User"
+msgstr ""
+
+msgid "+ Join Thread"
+msgstr ""
+
+msgid "+ New Alias"
+msgstr ""
+
+msgid "+ New Character"
+msgstr ""
+
+msgid "+ New Continuity"
+msgstr ""
+
+msgid "+ New Gallery"
+msgstr ""
+
+msgid "+ New Index"
+msgstr ""
+
+msgid "+ New Instance"
+msgstr ""
+
+msgid "+ New News Post"
+msgstr ""
+
+msgid "+ New Post"
+msgstr ""
+
+msgid "+ New Section"
+msgstr ""
+
+msgid "+ New Template"
+msgstr ""
+
+msgid "+ Show First Post"
+msgstr ""
+
+msgid "+ Write Message"
+msgstr ""
+
+msgid "- Remove selected icons from gallery"
+msgstr ""
+
+msgid "... and %{per_page} more ..."
+msgstr ""
+
+msgid "Abandoned"
+msgstr ""
+
+msgid "Account"
+msgstr "Cuenta"
+
+msgid "Acronym"
+msgstr ""
+
+msgid "Add Bookmark"
+msgstr ""
+
+msgid "Add Existing"
+msgstr "Añadir existente"
+
+msgid "Add Existing Icons to Gallery: %{name}"
+msgstr ""
+
+msgid "Add Existing Icons »"
+msgstr ""
+
+msgid "Add Icons"
+msgstr ""
+
+msgid "Add Icons to Gallery"
+msgstr ""
+
+msgid "Add More Replies"
+msgstr ""
+
+msgid "Add New"
+msgstr "Añadir nuevo"
+
+msgid "Add New Icons"
+msgstr ""
+
+msgid "Add New Icons to Gallery: %{Galleryless}"
+msgstr ""
+
+msgid "Add New Icons »"
+msgstr ""
+
+msgid "Add Post"
+msgstr ""
+
+msgid "Add Post to Index"
+msgstr ""
+
+msgid "Add Row"
+msgstr ""
+
+msgid "Add translation"
+msgstr "Añadir traducción"
+
+msgid "Adding multiple replies"
+msgstr ""
+
+msgid "Adding..."
+msgstr "Añadiendo..."
+
+msgid "Additionally, any threads not locked to their authors will not be covered by post blocking."
+msgstr ""
+
+msgid "Admin Tools"
+msgstr ""
+
+msgid "Alias"
+msgstr "Alias"
+
+msgid "Aliases"
+msgstr "Alias"
+
+msgid "Aliases and Pseudonyms"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "All Characters"
+msgstr ""
+
+msgid "All Posts"
+msgstr ""
+
+msgid "All Threads With Replies Owed Disabled"
+msgstr ""
+
+msgid "All Threads »"
+msgstr ""
+
+msgid "All Today"
+msgstr ""
+
+msgid "All search terms were too common for full-text search (%{words}). Falling back to exact string matching."
+msgstr ""
+
+msgid "Allowed attributes (by tag):"
+msgstr "Atributos permitidos (por etiqueta):"
+
+msgid "Allowed tags:"
+msgstr "Etiquetas permitidas:"
+
+msgid "Alternatively, you can use the keyword dropdown box to select an icon."
+msgstr ""
+
+msgid "An author you favorited has joined a post"
+msgstr ""
+
+msgid "An author you favorited has written a new post"
+msgstr ""
+
+msgid "Any Constellation user"
+msgstr ""
+
+msgid "Anyone"
+msgstr ""
+
+msgid "Are you sure you want to delete %{char_name}?"
+msgstr ""
+
+msgid "Are you sure you want to delete %{name}?"
+msgstr ""
+
+msgid "Are you sure you want to delete %{tag}?"
+msgstr "¿Seguro que quieres eliminar %{tag}?"
+
+msgid "Are you sure you want to delete these messages?"
+msgstr ""
+
+msgid "Are you sure you want to delete these notifications?"
+msgstr ""
+
+msgid "Are you sure you want to delete this alias?"
+msgstr ""
+
+msgid "Are you sure you want to delete this character?"
+msgstr ""
+
+msgid "Are you sure you want to delete this continuity?"
+msgstr ""
+
+msgid "Are you sure you want to delete this gallery? (This will not delete the icons.)"
+msgstr ""
+
+msgid "Are you sure you want to delete this icon?"
+msgstr ""
+
+msgid "Are you sure you want to delete this index?"
+msgstr ""
+
+msgid "Are you sure you want to delete this section?"
+msgstr ""
+
+msgid "Are you sure you want to delete this tag?"
+msgstr "¿Seguro que quieres eliminar esta etiqueta?"
+
+msgid "Are you sure you want to delete this template?"
+msgstr ""
+
+msgid "Are you sure you want to duplicate this character?"
+msgstr ""
+
+msgid "Are you sure you want to mark your reading position here?"
+msgstr ""
+
+msgid "Are you sure you want to remove %{subject} from this index?"
+msgstr ""
+
+msgid "Are you sure you want to unblock %{username}?"
+msgstr ""
+
+msgid "Are you sure you wish to delete this %{class}?"
+msgstr ""
+
+msgid "Are you sure you wish to delete this news post?"
+msgstr ""
+
+msgid "Are you sure? These icons will be gone from the site!"
+msgstr ""
+
+msgid "Are you sure? You will not see content warnings again until you restart your browser!"
+msgstr ""
+
+msgid "Audience"
+msgstr ""
+
+msgid "Author"
+msgstr "Autor"
+
+msgid "Author Profile"
+msgstr ""
+
+msgid "Author profile"
+msgstr ""
+
+msgid "Author warnings"
+msgstr ""
+
+msgid "Authors"
+msgstr "Autores"
+
+msgid "Automatic (browser setting)"
+msgstr "Automático (según el navegador)"
+
+msgid "Avatar"
+msgstr "Avatar"
+
+msgid "Back to Top"
+msgstr ""
+
+msgid "Beware:"
+msgstr ""
+
+msgid "Block User"
+msgstr ""
+
+msgid "Block on %{username}"
+msgstr ""
+
+msgid "Blocked Interaction"
+msgstr ""
+
+msgid "Blocked User"
+msgstr ""
+
+msgid "Blocks"
+msgstr "Bloqueos"
+
+msgid "Bookmark Name"
+msgstr ""
+
+msgid "Bookmarks"
+msgstr "Marcadores"
+
+msgid "Cameo Continuities"
+msgstr ""
+
+msgid "Cameos"
+msgstr ""
+
+msgid "Captcha"
+msgstr ""
+
+msgid "Change Password"
+msgstr ""
+
+msgid "Changed from"
+msgstr ""
+
+msgid "Character"
+msgstr ""
+
+msgid "Character Group:"
+msgstr ""
+
+msgid "Character Ids"
+msgstr ""
+
+msgid "Character Name"
+msgstr ""
+
+msgid "Character Quick Switcher"
+msgstr ""
+
+msgid "Character Relocate"
+msgstr ""
+
+msgid "Character Relocator"
+msgstr ""
+
+msgid "Character Tools"
+msgstr ""
+
+msgid "Characters"
+msgstr "Personajes"
+
+msgid "Characters Tagged: %{tag}"
+msgstr "Personajes etiquetados: %{tag}"
+
+msgid "Choose Alias"
+msgstr ""
+
+msgid "Choose Character"
+msgstr ""
+
+msgid "Choose NPC"
+msgstr ""
+
+msgid "Choose New Password »"
+msgstr ""
+
+msgid "Click icons to select, then press Add Icons to Gallery at the bottom."
+msgstr ""
+
+msgid "Click to collapse"
+msgstr ""
+
+msgid "Clicking these boxes allows you to switch back between them more easily, or to your default user account."
+msgstr ""
+
+msgid "Cluster"
+msgstr ""
+
+msgid "Coauthors"
+msgstr ""
+
+msgid "Comma-separated list"
+msgstr ""
+
+msgid "Complete"
+msgstr ""
+
+msgid "Completed"
+msgstr ""
+
+msgid "Completed Only"
+msgstr ""
+
+msgid "Completed Posts"
+msgstr ""
+
+msgid "Compose New Message"
+msgstr ""
+
+msgid "Condensed"
+msgstr ""
+
+msgid "Confirm"
+msgstr "Confirmar"
+
+msgid "Confirm Password"
+msgstr ""
+
+msgid "Contact Us"
+msgstr "Contáctanos"
+
+msgid "Content"
+msgstr ""
+
+msgctxt "tag type"
+msgid "Content Warning"
+msgstr "Advertencia de contenido"
+
+msgid "Content Warning: "
+msgstr ""
+
+msgctxt "tag type"
+msgid "Content Warnings"
+msgstr "Advertencias de contenido"
+
+msgid "Content Warnings"
+msgstr ""
+
+msgid "Content Warnings:"
+msgstr ""
+
+msgid "Continuities"
+msgstr "Continuidades"
+
+msgid "Continuity"
+msgstr "Continuidad"
+
+msgid "Continuity Name"
+msgstr ""
+
+msgid "Continuity section:"
+msgstr ""
+
+msgid "Continuity:"
+msgstr ""
+
+msgid "Contribute"
+msgstr "Contribuir"
+
+msgid "Contribute to the Constellation"
+msgstr ""
+
+msgid "Copy All"
+msgstr ""
+
+msgid "Copy Bookmark"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "Create %{name} Section"
+msgstr ""
+
+msgid "Create Continuity"
+msgstr ""
+
+msgid "Create Index"
+msgstr ""
+
+msgid "Create New"
+msgstr "Crear nuevo"
+
+msgid "Create New Template"
+msgstr ""
+
+msgid "Create News Post"
+msgstr ""
+
+msgid "Create a new post"
+msgstr ""
+
+msgid "Creator"
+msgstr ""
+
+msgid "Credit"
+msgstr ""
+
+msgid "Current"
+msgstr ""
+
+msgid "Current authors:"
+msgstr ""
+
+msgid "DMCA"
+msgstr ""
+
+msgid "Daily Report"
+msgstr "Informe diario"
+
+msgid "Daily Report - %{day}"
+msgstr ""
+
+msgid "Date Joined"
+msgstr "Fecha de registro"
+
+msgid "Default view"
+msgstr ""
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Delete %{type}"
+msgstr "Eliminar %{type}"
+
+msgid "Delete Character"
+msgstr ""
+
+msgid "Delete Draft"
+msgstr ""
+
+msgid "Delete Gallery"
+msgstr ""
+
+msgid "Delete History"
+msgstr ""
+
+msgid "Delete Icon"
+msgstr ""
+
+msgid "Delete Row"
+msgstr ""
+
+msgid "Delete draft?"
+msgstr ""
+
+msgid "Deleted"
+msgstr ""
+
+msgid "Deleted Replies"
+msgstr ""
+
+msgid "Deleting..."
+msgstr "Eliminando..."
+
+msgid "Description"
+msgstr "Descripción"
+
+msgid "Description:"
+msgstr ""
+
+msgid "Disable Split UI"
+msgstr ""
+
+msgid "Discard Changes"
+msgstr ""
+
+msgid "Discard Replies"
+msgstr ""
+
+msgid "Discard all replies added?"
+msgstr ""
+
+msgid "Discarding..."
+msgstr ""
+
+msgid "Dismiss"
+msgstr "Descartar"
+
+msgid "Dismiss all content warnings"
+msgstr ""
+
+msgid "Dismiss for this post"
+msgstr ""
+
+msgid "Display opened threads only"
+msgstr ""
+
+msgid "Do not display in character selector"
+msgstr ""
+
+msgid "Do not display member characters in character selector"
+msgstr ""
+
+msgid "Do not group characters page"
+msgstr ""
+
+msgid "Donate via Paypal"
+msgstr ""
+
+msgid "Drafting..."
+msgstr ""
+
+msgid "Dreamwidth URL"
+msgstr ""
+
+msgid "Duplicate Character"
+msgstr ""
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Edit %{name}"
+msgstr ""
+
+msgid "Edit %{type}"
+msgstr "Editar %{type}"
+
+msgid "Edit Alias"
+msgstr ""
+
+msgid "Edit Block"
+msgstr ""
+
+msgid "Edit Character"
+msgstr ""
+
+msgid "Edit Continuity"
+msgstr ""
+
+msgid "Edit Gallery"
+msgstr ""
+
+msgid "Edit History (Oldest to Newest)"
+msgstr ""
+
+msgid "Edit Icon"
+msgstr ""
+
+msgid "Edit Icons"
+msgstr ""
+
+msgid "Edit Index"
+msgstr ""
+
+msgid "Edit Index Section"
+msgstr ""
+
+msgid "Edit News Post"
+msgstr ""
+
+msgid "Edit Post"
+msgstr ""
+
+msgid "Edit Post In Index"
+msgstr ""
+
+msgid "Edit Profile"
+msgstr ""
+
+msgid "Edit Template"
+msgstr ""
+
+msgid "Edit post"
+msgstr ""
+
+msgid "Edit previewed post"
+msgstr ""
+
+msgid "Edit profile"
+msgstr ""
+
+msgid "Edit reply"
+msgstr ""
+
+msgid "Editing reply and adding more"
+msgstr ""
+
+msgid "Editors"
+msgstr ""
+
+msgid "Email about new tags"
+msgstr ""
+
+msgid "Email address"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Error, please refresh"
+msgstr ""
+
+msgid "Error, please try again"
+msgstr ""
+
+msgid "Exact"
+msgstr ""
+
+msgid "Exact string match"
+msgstr ""
+
+msgid "Exclude"
+msgstr ""
+
+msgid "Exclude Continuity"
+msgstr ""
+
+msgid "Exit Split Post mode"
+msgstr ""
+
+msgid "Expand"
+msgstr ""
+
+msgid "Explain reason for moderation here"
+msgstr ""
+
+msgid "Facecast"
+msgstr ""
+
+msgid "Facecasts"
+msgstr ""
+
+msgid "Favorite"
+msgstr ""
+
+msgid "Favorite Type"
+msgstr ""
+
+msgid "Favorites"
+msgstr "Favoritos"
+
+msgid "Fields Changed"
+msgstr ""
+
+msgid "First"
+msgstr ""
+
+msgid "First Unread"
+msgstr ""
+
+msgid "First unread marker"
+msgstr ""
+
+msgid "Flat Post Regenerator"
+msgstr ""
+
+msgid "Following context"
+msgstr ""
+
+msgid "Force Regenerate?"
+msgstr ""
+
+msgid "Forgot Password?"
+msgstr "¿Olvidaste tu contraseña?"
+
+msgid "From:"
+msgstr "De:"
+
+msgid "Galleries"
+msgstr "Galerías"
+
+msgid "Galleries Tagged: %{tag}"
+msgstr "Galerías etiquetadas: %{tag}"
+
+msgctxt "tag type"
+msgid "Gallery Group"
+msgstr "Grupo de galerías"
+
+msgctxt "tag type"
+msgid "Gallery Groups"
+msgstr "Grupos de galerías"
+
+msgid "Gallery Groups"
+msgstr ""
+
+msgid "Gallery Name"
+msgstr ""
+
+msgid "Galleryless Icons"
+msgstr ""
+
+msgid "Galleryless icons"
+msgstr ""
+
+msgid "General editor help"
+msgstr ""
+
+msgid "Generated: %{updated_at}"
+msgstr ""
+
+msgid "Glowfic Constellation home"
+msgstr "Inicio de Glowfic Constellation"
+
+msgid "Go to previous position"
+msgstr ""
+
+msgid "Group"
+msgstr ""
+
+msgid "Group characters page by template"
+msgstr ""
+
+msgid "Group the icon picker by gallery"
+msgstr ""
+
+msgid "Group: %{name}"
+msgstr ""
+
+msgid "Grouped »"
+msgstr ""
+
+msgid "Groups"
+msgstr ""
+
+msgid "Groups:"
+msgstr ""
+
+msgid "HTML"
+msgstr "HTML"
+
+msgid "HTML editor"
+msgstr "Editor HTML"
+
+msgid "Has Warnings"
+msgstr ""
+
+msgid "Here Ends This Thread"
+msgstr ""
+
+msgid "Hex code"
+msgstr ""
+
+msgid "Hiatused"
+msgstr ""
+
+msgid "Hiatused Threads You Owe Replies In"
+msgstr ""
+
+msgid "Hidden (Theirs)"
+msgstr ""
+
+msgid "Hidden (Yours)"
+msgstr ""
+
+msgid "Hidden from Unread"
+msgstr ""
+
+msgid "Hidden »"
+msgstr ""
+
+msgid "Hide"
+msgstr ""
+
+msgid "Hide \"Add Bookmark\" button"
+msgstr ""
+
+msgid "Hide \"Edit\" and \"Delete\" buttons"
+msgstr ""
+
+msgid "Hide Reply Buttons"
+msgstr ""
+
+msgid "Hide Retired"
+msgstr ""
+
+msgid "Hide content warnings"
+msgstr ""
+
+msgid "Hide from Unread"
+msgstr ""
+
+msgid "Hide hiatused threads"
+msgstr ""
+
+msgid "Hide hidden posts from recently updated and other post lists"
+msgstr ""
+
+msgid "Hide ignored posts"
+msgstr ""
+
+msgid "Hide retired characters"
+msgstr ""
+
+msgid "Hide screennames and icons"
+msgstr ""
+
+msgid "Hide unread notice"
+msgstr ""
+
+msgid "Hide yourself"
+msgstr ""
+
+msgid "History"
+msgstr ""
+
+msgid "History of Deleted Replies"
+msgstr ""
+
+msgid "I have read and agree to the %{tos} and the %{privacy}"
+msgstr ""
+
+msgid "Icon"
+msgstr ""
+
+msgid "Icons"
+msgstr ""
+
+msgid "Id of reply for new top post"
+msgstr ""
+
+msgid "If the character you select has aliases attached, you can use the 'Choose Alias' symbol on the character's name bar to swap between those and the character's default name."
+msgstr ""
+
+msgid "If you then submit the editor and reply to the thread, you will then be listed as one of its authors."
+msgstr ""
+
+msgid "If you use an unpermitted tag, it will not show when you save your profile."
+msgstr ""
+
+msgid "If you use an unpermitted tag, it will not show when you use the preview button or save your reply."
+msgstr ""
+
+msgid "Ignored"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Import a post"
+msgstr ""
+
+msgid "Import »"
+msgstr ""
+
+msgid "In Progress"
+msgstr ""
+
+msgid "In order of preference: pick the one you'd rather read first. Tag names and, with the interface language on Automatic, the site itself are shown in the first of these that has a translation."
+msgstr "En orden de preferencia: elige primero el que prefieras leer. Los nombres de las etiquetas y, con el idioma de la interfaz en Automático, el propio sitio se muestran en el primero de estos que tenga traducción."
+
+msgid "Inactive »"
+msgstr ""
+
+msgid "Inbox"
+msgstr "Bandeja de entrada"
+
+msgid "Include Flatposts Regenerated Since Post Last Tagged"
+msgstr ""
+
+msgid "Index"
+msgstr ""
+
+msgid "Index Name"
+msgstr ""
+
+msgid "Index Section"
+msgstr ""
+
+msgid "Indexes"
+msgstr ""
+
+msgid "Info"
+msgstr "Información"
+
+msgid "Interactions"
+msgstr ""
+
+msgid "Interface language"
+msgstr "Idioma de la interfaz"
+
+msgid "Invite coauthors:"
+msgstr ""
+
+msgid "It also permits more control over the formatting of your text if you know HTML or CSS."
+msgstr ""
+
+msgid "It also provides a toolbar for more formatting options, most of which are also accessible using standard keyboard shortcuts."
+msgstr ""
+
+msgid "It does not, however, support multiple inline breaks very well, unless they are manually specified. For long vertical spaces typical in some glowfic posts, you'll need to switch to another editor for now!"
+msgstr ""
+
+msgid "It will also wrap blocks of text split by an empty line in paragraphs, unless any of the text contains a %{p} or a %{br} tag."
+msgstr ""
+
+msgid "Join our community on:"
+msgstr ""
+
+msgid "Join us"
+msgstr ""
+
+msgid "Joining a thread"
+msgstr ""
+
+msgid "Jump To End"
+msgstr ""
+
+msgid "Just me"
+msgstr ""
+
+msgid "Keyword"
+msgstr ""
+
+msgctxt "tag type"
+msgid "Label"
+msgstr "Etiqueta"
+
+msgctxt "tag type"
+msgid "Labels"
+msgstr "Etiquetas"
+
+msgid "Labels"
+msgstr ""
+
+msgid "Labels:"
+msgstr ""
+
+msgid "Language"
+msgstr "Idioma"
+
+msgid "Language:"
+msgstr "Idioma:"
+
+msgid "Languages you read"
+msgstr "Idiomas que lees"
+
+msgid "Last"
+msgstr ""
+
+msgid "Last Regenerated Before"
+msgstr ""
+
+msgid "Last Updated"
+msgstr ""
+
+msgid "List"
+msgstr ""
+
+msgid "Loading..."
+msgstr "Cargando..."
+
+msgid "Lock Authors"
+msgstr ""
+
+msgid "Lock post to authors?"
+msgstr ""
+
+msgid "Locked?"
+msgstr ""
+
+msgid "Log in"
+msgstr "Iniciar sesión"
+
+msgid "Log out"
+msgstr "Cerrar sesión"
+
+msgid "Login"
+msgstr "Iniciar sesión"
+
+msgid "Make Avatar"
+msgstr ""
+
+msgid "Make a Patreon pledge"
+msgstr ""
+
+msgid "Make all bookmarks public"
+msgstr ""
+
+msgid "Manage"
+msgstr ""
+
+msgid "Manage Block"
+msgstr ""
+
+msgid "Mark Abandoned"
+msgstr ""
+
+msgid "Mark Complete"
+msgstr ""
+
+msgid "Mark Entire Continuity"
+msgstr ""
+
+msgid "Mark In Progress"
+msgstr ""
+
+msgid "Mark On Hiatus"
+msgstr ""
+
+msgid "Mark Read"
+msgstr ""
+
+msgid "Mark Unread"
+msgstr ""
+
+msgid "Mark Unread Here"
+msgstr ""
+
+msgid "Mark read here"
+msgstr ""
+
+msgid "Mark this as a large continuity with many authors"
+msgstr ""
+
+msgid "Markdown"
+msgstr "Markdown"
+
+msgid "Markdown editor"
+msgstr "Editor Markdown"
+
+msgid "Marks a passage as being in another language, so screen readers pronounce it correctly and browsers hyphenate it properly."
+msgstr "Marca un pasaje como escrito en otro idioma, para que los lectores de pantalla lo pronuncien correctamente y los navegadores lo dividan bien en sílabas."
+
+msgid "Mega?"
+msgstr ""
+
+msgid "Metadata"
+msgstr ""
+
+msgid "Metadata:"
+msgstr ""
+
+msgid "Moderator Note"
+msgstr ""
+
+msgid "Moderator edit"
+msgstr ""
+
+msgid "Moderator note"
+msgstr ""
+
+msgid "Moderator note from %{user} - "
+msgstr ""
+
+msgid "Moiety"
+msgstr "Moiety"
+
+msgid "Moiety hex"
+msgstr ""
+
+msgid "Moiety name"
+msgstr ""
+
+msgid "Monthly Report"
+msgstr ""
+
+msgid "Most Recently Updated Threads"
+msgstr ""
+
+msgid "Most threads"
+msgstr ""
+
+msgid "Move Down"
+msgstr ""
+
+msgid "Move Up"
+msgstr ""
+
+msgid "NPC"
+msgstr ""
+
+msgid "NPC?"
+msgstr ""
+
+msgid "NPCs"
+msgstr ""
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "Name (case-insensitive)"
+msgstr "Nombre (sin distinguir mayúsculas)"
+
+msgid "New"
+msgstr ""
+
+msgid "New Alias"
+msgstr ""
+
+msgid "New Character"
+msgstr ""
+
+msgid "New Gallery"
+msgstr ""
+
+msgid "New Message"
+msgstr ""
+
+msgid "New Password"
+msgstr ""
+
+msgid "New Reply"
+msgstr ""
+
+msgid "New Section"
+msgstr ""
+
+msgid "New Subject"
+msgstr ""
+
+msgid "New Template"
+msgstr ""
+
+msgid "New Today"
+msgstr ""
+
+msgid "New User"
+msgstr ""
+
+msgid "New User Id"
+msgstr ""
+
+msgid "New message from %{sender}: %{subject}"
+msgstr ""
+
+msgid "New reply in %{post}"
+msgstr "Nueva respuesta en %{post}"
+
+msgid "New reply in the thread %{subject}"
+msgstr ""
+
+msgid "Newer"
+msgstr ""
+
+msgid "Newest"
+msgstr ""
+
+msgid "News"
+msgstr "Novedades"
+
+msgid "Next Post »"
+msgstr ""
+
+msgid "Nickname"
+msgstr ""
+
+msgid "No Character"
+msgstr ""
+
+msgid "No Icon"
+msgstr ""
+
+msgid "No Template"
+msgstr "Sin plantilla"
+
+msgid "No icon"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Note that just clicking the \"Join Thread\" expander will not cause you to join the thread, but will show the editor."
+msgstr ""
+
+msgid "Notes"
+msgstr ""
+
+msgid "Notes written here are visible only to you. They will be displayed by the New Reply form."
+msgstr ""
+
+msgid "Notification"
+msgstr ""
+
+msgid "Notifications"
+msgstr "Notificaciones"
+
+msgid "Notify when a favorited author makes a new post"
+msgstr ""
+
+msgid "Old"
+msgstr ""
+
+msgid "Old Password"
+msgstr ""
+
+msgid "Older"
+msgstr ""
+
+msgid "Oldest"
+msgstr ""
+
+msgid "On Hiatus"
+msgstr ""
+
+msgid "Once you have used a character in a thread, they can then be found under the info box by their default icon (or the first letters of their name, if no default icon is set)."
+msgstr ""
+
+msgid "Only New Today"
+msgstr ""
+
+msgid "Only allow authors to create new posts in this continuity"
+msgstr ""
+
+msgid "Only allow current or invited authors to reply to this post"
+msgstr ""
+
+msgid "Opened"
+msgstr ""
+
+msgid "Opened Threads »"
+msgstr ""
+
+msgid "Optional: Select Post(s)"
+msgstr ""
+
+msgid "Or copy and paste this link into your browser:"
+msgstr ""
+
+msgid "Organize Continuity Sections"
+msgstr ""
+
+msgid "Organize Index Sections"
+msgstr ""
+
+msgid "Organize Section Posts"
+msgstr ""
+
+msgid "Organize Unsectioned Posts"
+msgstr ""
+
+msgid "Original language"
+msgstr "Idioma original"
+
+msgid "Original post"
+msgstr ""
+
+msgid "Our community social Discord"
+msgstr ""
+
+msgid "Our website feedback Discord"
+msgstr ""
+
+msgid "Outbox"
+msgstr ""
+
+msgid "Outbox »"
+msgstr ""
+
+msgid "Outline when jumping to unread"
+msgstr ""
+
+msgid "Owned?"
+msgstr "¿Con propietario?"
+
+msgid "Owner"
+msgstr "Propietario"
+
+msgid "Paging"
+msgstr ""
+
+msgid "Paragraphs are inserted using the Return key."
+msgstr ""
+
+msgid "Password"
+msgstr "Contraseña"
+
+msgid "Password Reset"
+msgstr "Restablecer contraseña"
+
+msgid "Password Reset Link"
+msgstr "Enlace para restablecer la contraseña"
+
+msgid "Permalink"
+msgstr ""
+
+msgid "Pick default icon (optional):"
+msgstr ""
+
+msgid "Please enter five times two plus four as a number (e.g. 3 not three)"
+msgstr ""
+
+msgid "Please instead paste without formatting (usually available on right-click) and re-format with bold, italics, underline (etc.) as necessary, to avoid breaking the display of the text for users on other layouts."
+msgstr ""
+
+msgid "Please set your avatar directly from the desired icon's page."
+msgstr ""
+
+msgid "Post"
+msgstr "Publicar"
+
+msgid "Post All"
+msgstr ""
+
+msgid "Post Importer"
+msgstr ""
+
+msgid "Post Previewed"
+msgstr ""
+
+msgid "Post Tools"
+msgstr ""
+
+msgid "Post import failed"
+msgstr ""
+
+msgid "Post import succeeded"
+msgstr ""
+
+msgid "Post last updated: %{tagged_at}"
+msgstr ""
+
+msgid "Posted"
+msgstr "Publicado"
+
+msgid "Posted on %{time} by %{user}"
+msgstr "Publicado el %{time} por %{user}"
+
+msgid "Posts"
+msgstr "Publicaciones"
+
+msgid "Posts Containing Icon"
+msgstr ""
+
+msgid "Posts In"
+msgstr ""
+
+msgid "Posts Per Page:"
+msgstr ""
+
+msgid "Posts Tagged: %{tag}"
+msgstr "Publicaciones etiquetadas: %{tag}"
+
+msgid "Posts with Template Instances"
+msgstr ""
+
+msgid "Preceding context"
+msgstr ""
+
+msgid "Press OK to confirm logout"
+msgstr "Pulsa Aceptar para confirmar el cierre de sesión"
+
+msgid "Prevent them from interacting with you?"
+msgstr ""
+
+msgid "Prevent them from seeing your:"
+msgstr ""
+
+msgid "Prevent you from seeing their:"
+msgstr ""
+
+msgid "Preview"
+msgstr "Vista previa"
+
+msgid "Preview Current"
+msgstr ""
+
+msgid "Previewing"
+msgstr ""
+
+msgid "Previewing..."
+msgstr "Generando vista previa..."
+
+msgid "Privacy"
+msgstr ""
+
+msgid "Privacy Policy"
+msgstr "Política de privacidad"
+
+msgid "Privacy:"
+msgstr ""
+
+msgid "Quick switcher"
+msgstr ""
+
+msgid "RTF editor"
+msgstr "Editor RTF"
+
+msgid "Readers see the name in their own interface language when one exists, and the original otherwise."
+msgstr "Los lectores ven el nombre en el idioma de su interfaz cuando existe, y el original en caso contrario."
+
+msgid "Received"
+msgstr ""
+
+msgid "Recent Threads"
+msgstr ""
+
+msgid "Recently Updated"
+msgstr "Actualizado recientemente"
+
+msgid "Recipient"
+msgstr ""
+
+msgid "Regenerate"
+msgstr ""
+
+msgid "Regenerate Flat Posts"
+msgstr ""
+
+msgid "Regenerate Flatposts"
+msgstr ""
+
+msgid "Regenerating..."
+msgstr ""
+
+msgid "Relocate Characters"
+msgstr ""
+
+msgid "Remember Me"
+msgstr "Recordarme"
+
+msgid "Remove Bookmark"
+msgstr ""
+
+msgid "Remove from Gallery"
+msgstr ""
+
+msgid "Remove from Replies Owed"
+msgstr ""
+
+msgid "Remove from character page and show in separate dropdown when writing"
+msgstr ""
+
+msgid "Remove this translation when saving"
+msgstr "Eliminar esta traducción al guardar"
+
+msgid "Rename Bookmark"
+msgstr ""
+
+msgid "Reorder"
+msgstr ""
+
+msgid "Replace"
+msgstr "Reemplazar"
+
+msgid "Replace All Uses of %{class}"
+msgstr ""
+
+msgid "Replace Character"
+msgstr ""
+
+msgid "Replace Icon"
+msgstr ""
+
+msgid "Replies"
+msgstr ""
+
+msgid "Replies Owed"
+msgstr "Respuestas pendientes"
+
+msgid "Reply"
+msgstr ""
+
+msgid "Reply Id"
+msgstr ""
+
+msgid "Reply defaults"
+msgstr ""
+
+msgid "Reply deleted %{created_at} by %{user}"
+msgstr ""
+
+msgid "Reply to Thread"
+msgstr ""
+
+msgid "Request Password Reset"
+msgstr ""
+
+msgid "Reset Password"
+msgstr ""
+
+msgid "Restore"
+msgstr ""
+
+msgid "Restored"
+msgstr ""
+
+msgid "Retired?"
+msgstr ""
+
+msgid "Rich Text"
+msgstr "Texto enriquecido"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Save All"
+msgstr ""
+
+msgid "Save Draft"
+msgstr ""
+
+msgid "Save Previewed"
+msgstr ""
+
+msgid "Saved"
+msgstr ""
+
+msgid "Saving..."
+msgstr "Guardando..."
+
+msgid "Screen Name"
+msgstr ""
+
+msgid "Screen readers then pronounce it with the right voice, and browsers hyphenate and spellcheck it with the right rules."
+msgstr "Así los lectores de pantalla lo pronuncian con la voz correcta, y los navegadores lo dividen en sílabas y lo corrigen con las reglas correctas."
+
+msgid "Screenname"
+msgstr ""
+
+msgid "Search"
+msgstr "Buscar"
+
+msgid "Search Bookmarks"
+msgstr ""
+
+msgid "Search Characters"
+msgstr ""
+
+msgid "Search Continuities"
+msgstr ""
+
+msgid "Search Post"
+msgstr ""
+
+msgid "Search Posts"
+msgstr ""
+
+msgid "Search Replies"
+msgstr ""
+
+msgid "Search Users"
+msgstr ""
+
+msgid "Search by name:"
+msgstr ""
+
+msgid "Search by username:"
+msgstr ""
+
+msgid "Search for a tag:"
+msgstr "Buscar una etiqueta:"
+
+msgid "Search for acronym"
+msgstr ""
+
+msgid "Search:"
+msgstr ""
+
+msgid "Searching for name in:"
+msgstr ""
+
+msgid "Secret"
+msgstr ""
+
+msgid "Secret (optional)"
+msgstr ""
+
+msgid "Secret word - ask around the community"
+msgstr ""
+
+msgid "Section Name"
+msgstr ""
+
+msgid "See History"
+msgstr ""
+
+msgid "See it here:"
+msgstr ""
+
+msgid "Select NPC or type to create"
+msgstr ""
+
+msgid "Select all icons"
+msgstr ""
+
+msgid "Send"
+msgstr "Enviar"
+
+msgid "Send Message"
+msgstr ""
+
+msgid "Sender"
+msgstr ""
+
+msgid "Sent"
+msgstr "Enviado"
+
+msgid "Sent %{created_at}"
+msgstr ""
+
+msgctxt "tag type"
+msgid "Setting"
+msgstr "Ambientación"
+
+msgid "Setting"
+msgstr ""
+
+msgid "Setting:"
+msgstr ""
+
+msgctxt "tag type"
+msgid "Settings"
+msgstr "Ambientaciones"
+
+msgid "Settings"
+msgstr "Configuración"
+
+msgid "Settings Tagged: %{tag}"
+msgstr "Ambientaciones etiquetadas: %{tag}"
+
+msgid "Show"
+msgstr ""
+
+msgid "Show Hidden Reply Buttons"
+msgstr ""
+
+msgid "Show Menu"
+msgstr ""
+
+msgid "Show in Replies Owed"
+msgstr ""
+
+msgid "Show in Unread"
+msgstr ""
+
+msgid "Show moiety colors on author names"
+msgstr ""
+
+msgid "Show user character"
+msgstr ""
+
+msgid "Sign In"
+msgstr "Iniciar sesión"
+
+msgid "Sign Up"
+msgstr "Registrarse"
+
+msgid "Sign up"
+msgstr "Registrarse"
+
+msgid "Single linebreaks can be inserted by also holding the Shift key when you press the Return key."
+msgstr ""
+
+msgid "Site"
+msgstr ""
+
+msgid "Site News"
+msgstr ""
+
+msgid "Some search terms were too common for full-text search and were ignored: %{words}. Use \"Exact string match\" to search for the full phrase."
+msgstr ""
+
+msgid "Sort"
+msgstr ""
+
+msgid "Split"
+msgstr ""
+
+msgid "Split Post"
+msgstr ""
+
+msgid "Split Post Here"
+msgstr ""
+
+msgid "Split icon picker"
+msgstr ""
+
+msgid "Splitting %{post} at reply id # %{reply_id}. New Post:"
+msgstr ""
+
+msgid "Splitting..."
+msgstr ""
+
+msgid "Stats"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Subject"
+msgstr "Asunto"
+
+msgid "Subject:"
+msgstr ""
+
+msgid "Submit a pull request"
+msgstr ""
+
+msgid "Subsection"
+msgstr ""
+
+msgid "Tag Name"
+msgstr "Nombre de la etiqueta"
+
+msgid "Tag belongs to owner"
+msgstr "La etiqueta pertenece al propietario"
+
+msgid "Tags"
+msgstr "Etiquetas"
+
+msgid "Template"
+msgstr "Plantilla"
+
+msgid "Template Cluster Name"
+msgstr ""
+
+msgid "Template Name"
+msgstr ""
+
+msgid "Template Nickname"
+msgstr ""
+
+msgid "Template:"
+msgstr ""
+
+msgid "Template: %{name}"
+msgstr ""
+
+msgid "Terms"
+msgstr ""
+
+msgid "Terms of Service"
+msgstr "Términos del servicio"
+
+msgid "The %{control} control above the editor does this to the selected text for you, starting from the writing language set in your %{settings}."
+msgstr ""
+
+msgid "The HTML editor doesn't offer you the same functionality that the RTF editor does, but allows a simpler interface."
+msgstr ""
+
+msgid "The HTML tags permitted are listed below."
+msgstr ""
+
+msgid "The RTF editor (powered by TinyMCE) allows you to type text while showing you approximately how it will be displayed on the page."
+msgstr ""
+
+msgid "The Rich Text editor has the same thing in its toolbar."
+msgstr "El editor de texto enriquecido tiene lo mismo en su barra de herramientas."
+
+msgid "The bottom bar is your username, and pressing the 'Choose Character' symbol in this bar allows you to swap to a character, or to your default user account."
+msgstr ""
+
+msgid "The icon can be clicked to open a display of the galleries attached to the character."
+msgstr ""
+
+msgid "The info box"
+msgstr ""
+
+msgid "The language the name and description above are written in."
+msgstr "El idioma en el que están escritos el nombre y la descripción de arriba."
+
+msgid "The language you usually write in. The editor's language buttons default to this, so marking up a passage in another language is one click."
+msgstr "El idioma en el que sueles escribir. Los botones de idioma del editor parten de este, así que marcar un pasaje en otro idioma es un solo clic."
+
+msgid "The left panel (or upper panel, on mobile) offers information about the character you're posting with."
+msgstr ""
+
+msgid "The markdown editor provides a step between the html and rtf editors. A guide to markdown syntax can be found %{link}, and it also supports inline html."
+msgstr ""
+
+msgid "The name above is the tag's canonical name; add a row here for each language it also has a name in."
+msgstr "El nombre de arriba es el nombre canónico de la etiqueta; añade una fila aquí por cada idioma en el que también tenga nombre."
+
+msgid "The reply currently in the editor will not be posted. Continue?"
+msgstr ""
+
+msgid "The site will automatically insert linebreak tags into the HTML when you use a manual linebreak in the editor."
+msgstr ""
+
+msgid "The user account can be hidden from this list in your account settings, and the number of characters shown here is limited to the ten most recent in the thread."
+msgstr ""
+
+msgid "There is a (work in progress) community %{link}."
+msgstr ""
+
+msgid "This"
+msgstr ""
+
+msgid "This Thread Has Been Permanently Abandoned"
+msgstr ""
+
+msgid "This Thread Is On Hiatus"
+msgstr ""
+
+msgid "This author has set some general content warnings which might apply to their posts even when not otherwise warned."
+msgstr ""
+
+msgid "This post has the following content warnings:"
+msgstr ""
+
+msgid "This post's authors %{also}have general content warnings that might apply to the current post."
+msgstr ""
+
+msgid "This setting is not marked as owned"
+msgstr "Esta ambientación no está marcada como propia"
+
+msgid "Thread"
+msgstr ""
+
+msgid "Thread Abandoned"
+msgstr ""
+
+msgid "Thread Complete"
+msgstr ""
+
+msgid "Thread On Hiatus"
+msgstr ""
+
+msgid "Threaded?"
+msgstr ""
+
+msgid "Threads You Owe Replies In"
+msgstr ""
+
+msgid "Time Begun"
+msgstr ""
+
+msgid "Time Last Updated"
+msgstr ""
+
+msgid "Time zone"
+msgstr "Zona horaria"
+
+msgid "Times Used"
+msgstr ""
+
+msgid "To join a thread, press the \"Join Thread\" expander, then write a reply and submit it."
+msgstr ""
+
+msgid "To mark a passage as being in another language, wrap it in a span with a %{attribute} attribute: %{example}."
+msgstr ""
+
+msgid "To:"
+msgstr "Para:"
+
+msgid "Today"
+msgstr ""
+
+msgid "Total:"
+msgstr "Total:"
+
+msgid "Transfer Templates"
+msgstr ""
+
+msgid "Transferring the following characters from %{username} to %{new_user_username}"
+msgstr ""
+
+msgid "Translations"
+msgstr "Traducciones"
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "URL"
+msgstr ""
+
+msgid "Under Construction"
+msgstr ""
+
+msgid "Unfavorite"
+msgstr ""
+
+msgid "Ungroup"
+msgstr ""
+
+msgid "Ungrouped Characters"
+msgstr ""
+
+msgid "Ungrouped »"
+msgstr ""
+
+msgid "Unhide"
+msgstr ""
+
+msgid "Unlock Authors"
+msgstr ""
+
+msgid "Unread"
+msgstr "No leídos"
+
+msgid "Unread »"
+msgstr ""
+
+msgid "Unseen Replies"
+msgstr ""
+
+msgid "Unset"
+msgstr "Sin definir"
+
+msgid "Unsorted icons without a gallery will appear here. They can still be individually assigned to a character with no galleries."
+msgstr ""
+
+msgid "Updated"
+msgstr "Actualizado"
+
+msgid "Upgrade Account"
+msgstr ""
+
+msgid "Upload Files"
+msgstr ""
+
+msgid "Uploaded"
+msgstr ""
+
+msgid "Uploaded to site"
+msgstr ""
+
+msgid "User"
+msgstr "Usuario"
+
+msgid "User characters"
+msgstr ""
+
+msgid "Username"
+msgstr "Nombre de usuario"
+
+msgid "Users"
+msgstr "Usuarios"
+
+msgid "Users With Content Warning: %{tag}"
+msgstr "Usuarios con la advertencia de contenido: %{tag}"
+
+msgid "Version: %{version}"
+msgstr ""
+
+msgid "View Bookmarks"
+msgstr ""
+
+msgid "View Flat HTML"
+msgstr ""
+
+msgid "View Metadata"
+msgstr ""
+
+msgid "Warning: full blocking is not yet implemented, and will function the same as simply blocking posts."
+msgstr ""
+
+msgid "Warnings"
+msgstr ""
+
+msgid "Welcome to the Glowfic Constellation. Admire the tiny, tiny words."
+msgstr ""
+
+msgid "What would you like to do with your unsaved changes?"
+msgstr ""
+
+msgid "Which language to show the site's own text in. Translations are contributed by volunteers, so not every language is available yet."
+msgstr "En qué idioma mostrar el texto propio del sitio. Las traducciones las aportan voluntarios, así que todavía no están disponibles todos los idiomas."
+
+msgid "With Templates"
+msgstr ""
+
+msgid "Word Count"
+msgstr ""
+
+msgid "Wrap selection"
+msgstr "Envolver la selección"
+
+msgid "Write something!"
+msgstr ""
+
+msgid "Writer"
+msgstr ""
+
+msgid "Writing language"
+msgstr "Idioma de escritura"
+
+msgid "X"
+msgstr ""
+
+msgid "You"
+msgstr ""
+
+msgid "You are in Split Post mode. Please click the scissors icon on the reply you wish to make the start of the new post."
+msgstr ""
+
+msgid "You can safely reload the page and you will not have joined the thread."
+msgstr ""
+
+msgid "You can then click one of these icons to select it."
+msgstr ""
+
+msgid "Your %{obj_name}"
+msgstr ""
+
+msgid "Your Author Notes"
+msgstr ""
+
+msgid "Your Characters"
+msgstr ""
+
+msgid "Your Continuities"
+msgstr ""
+
+msgid "Your Daily Output: %{total} words"
+msgstr ""
+
+msgid "Your Favorites"
+msgstr ""
+
+msgid "Your Galleries"
+msgstr ""
+
+msgid "Your Output Today"
+msgstr ""
+
+msgid "Your account's password has been reset."
+msgstr ""
+
+msgid "Your account's password has been reset. Follow this link to choose a new password:"
+msgstr ""
+
+msgid "Your reading position on this thread is earlier than this page, so it has not been updated."
+msgstr ""
+
+msgid "[Deleted]"
+msgstr ""
+
+msgid "[Galleryless]"
+msgstr ""
+
+msgid "account settings"
+msgstr ""
+
+msgid "are not"
+msgstr ""
+
+msgid "does not"
+msgstr ""
+
+msgid "guide to Glowfic"
+msgstr ""
+
+msgid "here"
+msgstr ""
+
+msgid "intended to be open to the public, so please ensure you only join threads where that's allowed."
+msgstr ""
+
+msgid "necessarily correspond to continuities that have \"Anyone\" as their listed authors."
+msgstr ""
+
+msgid "to"
+msgstr ""
+
+msgid "when pasting content into the editor, such as from another reply or from another website, you may accidentally transfer font or background formatting properties."
+msgstr ""
+
+msgid "x Delete"
+msgstr ""
+
+msgid "x Delete Gallery"
+msgstr ""
+
+msgid "x Delete Template"
+msgstr ""
+
+msgid "x Delete selected icons permanently"
+msgstr ""
+
+msgid "« Inbox"
+msgstr ""
+
+msgid "« Previous Day"
+msgstr ""
+
+msgid "« Previous Post"
+msgstr ""
+
+msgid "» Next Day"
+msgstr ""
+
+msgid "— Any Alias —"
+msgstr ""
+
+msgid "— Choose Author —"
+msgstr "— Elige un autor —"
+
+msgid "— Choose Character —"
+msgstr "— Elige un personaje —"
+
+msgid "— Choose Continuity —"
+msgstr "— Elige una continuidad —"
+
+msgid "— Choose Language —"
+msgstr "— Elige un idioma —"
+
+msgid "— Choose Post —"
+msgstr ""
+
+msgid "— Choose Section —"
+msgstr ""
+
+msgid "— Choose Setting —"
+msgstr ""
+
+msgid "— Choose Template —"
+msgstr "— Elige una plantilla —"
+
+msgid "— Choose Type —"
+msgstr "— Elige un tipo —"
+
+msgid "— Choose User —"
+msgstr "— Elige un usuario —"
+
+msgid "— No alias —"
+msgstr ""
+
+msgid "— No aliases yet —"
+msgstr ""
+
+msgid "— No blocks yet —"
+msgstr ""
+
+msgid "— No characters yet —"
+msgstr "— Todavía no hay personajes —"
+
+msgid "— No continuities hidden —"
+msgstr ""
+
+msgid "— No continuities yet —"
+msgstr ""
+
+msgid "— No favorites yet —"
+msgstr ""
+
+msgid "— No galleries yet —"
+msgstr "— Todavía no hay galerías —"
+
+msgid "— No icons yet —"
+msgstr ""
+
+msgid "— No items yet —"
+msgstr ""
+
+msgid "— No matching tags —"
+msgstr "— No hay etiquetas coincidentes —"
+
+msgid "— No messages yet —"
+msgstr "— Todavía no hay mensajes —"
+
+msgid "— No posts hidden —"
+msgstr ""
+
+msgid "— No posts yet —"
+msgstr ""
+
+msgid "— Nothing written today —"
+msgstr ""
+
+msgid "— Site default —"
+msgstr "— Predeterminado del sitio —"
+
+msgid "↳ Name"
+msgstr ""
+
+msgid "↳ Who can view this post? "
+msgstr ""

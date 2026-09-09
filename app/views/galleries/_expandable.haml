@@ -13,17 +13,17 @@
   %td.width-150.centered.gallery-icon-count{class: klass}= gallery.icon_count
   %td.width-70.gallery-buttons{class: klass}
     - if gallery.user_id == current_user.try(:id)
-      = link_to add_gallery_path(gallery), title: "Add Icons", class: 'gallery-add' do
-        = image_tag "icons/add.png", alt: 'Add Icons'
-      = link_to edit_gallery_path(gallery), title: "Edit Gallery", class: 'gallery-edit' do
-        = image_tag "icons/pencil.png", alt: 'Edit'
-      = link_to gallery_path(gallery), title: "Delete Gallery", method: :delete, data: { confirm: "Are you sure you want to delete #{gallery.name}?" }, class: 'gallery-delete' do
-        = image_tag "icons/cross.png", alt: 'Delete'
+      = link_to add_gallery_path(gallery), title: _("Add Icons"), class: 'gallery-add' do
+        = image_tag "icons/add.png", alt: _("Add Icons")
+      = link_to edit_gallery_path(gallery), title: _("Edit Gallery"), class: 'gallery-edit' do
+        = image_tag "icons/pencil.png", alt: _("Edit")
+      = link_to gallery_path(gallery), title: _("Delete Gallery"), method: :delete, data: { confirm: format(_("Are you sure you want to delete %{name}?"), name: gallery.name) }, class: 'gallery-delete' do
+        = image_tag "icons/cross.png", alt: _("Delete")
   %td.centered.width-70{class: klass}
     .gallery-box.vmid{id: "minmax-#{gallery.id}", style: 'display: inline-block;', data: { id: gallery.id }}
       .view-button{style: 'padding: 5px 7px;'}
-        = image_tag "icons/bullet_arrow_down.png", class: 'vmid down-arrow', alt: 'Show'
-        = image_tag "icons/bullet_arrow_up.png", class: 'vmid hidden up-arrow', alt: 'Hide'
+        = image_tag "icons/bullet_arrow_down.png", class: 'vmid down-arrow', alt: _("Show")
+        = image_tag "icons/bullet_arrow_up.png", class: 'vmid hidden up-arrow', alt: _("Hide")
 %tr
   %td.padding-5.hidden{class: klass, id: "icons-#{gallery.id}", colspan: 4}
     = form_tag delete_multiple_icons_path, method: :delete do
@@ -35,5 +35,5 @@
             = hidden_field_tag :return_to, 'index', id: nil
           - else
             = hidden_field_tag :return_tag, tag.id, id: nil
-          = submit_tag "- Remove selected icons from gallery", name: 'gallery_delete'
-          = submit_tag "x Delete selected icons permanently", data: { confirm: "Are you sure? These icons will be gone from the site!" }
+          = submit_tag _("- Remove selected icons from gallery"), name: 'gallery_delete'
+          = submit_tag _("x Delete selected icons permanently"), data: { confirm: _("Are you sure? These icons will be gone from the site!") }

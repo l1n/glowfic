@@ -1,22 +1,22 @@
 - content_for :breadcrumbs do
-  = link_to "Continuities", continuities_path
+  = link_to _("Continuities"), continuities_path
   &raquo;
   = link_to @board.name, continuity_path(@board)
   &raquo;
-  %b Edit
+  %b= _("Edit")
 
 = form_for @board, url: continuity_path(@board), method: :put do |f|
   .form-table
-    .editor-title Edit Continuity
+    .editor-title= _("Edit Continuity")
     = render 'editor', f: f
 
 %br
 %br
 
 - content_for :reorder_title do
-  Organize Continuity Sections
+  = _("Organize Continuity Sections")
   = link_to new_board_section_path params: { board_id: @board.id } do
-    .link-box.action-new + New Section
+    .link-box.action-new= _("+ New Section")
 = render 'reorder_sections', sections: @board_sections
 
 - if @board.ordered?

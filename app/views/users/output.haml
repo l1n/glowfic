@@ -1,7 +1,7 @@
 .content-header
-  Your Daily Output: #{@total} words
+  = format(_("Your Daily Output: %{total} words"), total: @total)
   = link_to '#' do
-    %button.float-right#select-output Copy All
+    %button.float-right#select-output= _("Copy All")
 .sub= render 'reports/date_nav'
 .even#copy-output
   - @posts.each do |content, editor_mode|
@@ -9,4 +9,4 @@
   - @replies.each do |content, editor_mode|
     %p= sanitize_written_content(content, editor_mode)
   - if @posts.empty? && @replies.empty?
-    .centered — Nothing written today —
+    .centered= _("— Nothing written today —")

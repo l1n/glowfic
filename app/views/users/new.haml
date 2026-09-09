@@ -1,55 +1,55 @@
 = form_for @user, url: users_path, method: :post do |f|
   .form-table#signup
-    .editor-title Sign Up
+    .editor-title= _("Sign Up")
     #signup-username
       .sub.vtop= f.label :username
       .even
-        = f.text_field :username, placeholder: "Username", autofocus: true, autocomplete: "username", minlength: User::MIN_USERNAME_LEN, maxlength: User::MAX_USERNAME_LEN, required: true
+        = f.text_field :username, placeholder: _("Username"), autofocus: true, autocomplete: "username", minlength: User::MIN_USERNAME_LEN, maxlength: User::MAX_USERNAME_LEN, required: true
         .user-alert.hidden
           = image_tag 'icons/exclamation.png', alt: '!', title: ''
           %span.msg
     #signup-email
       .sub.vtop= f.label :email
       .odd
-        = f.text_field :email, placeholder: "Email address", autocomplete: "email", type: "email", required: true
+        = f.text_field :email, placeholder: _("Email address"), autocomplete: "email", type: "email", required: true
         .user-alert.hidden
           = image_tag 'icons/exclamation.png', alt: '!', title: ''
           %span.msg
     #signup-password
       .sub.vtop= f.label :password
       .even
-        = f.password_field :password, placeholder: "Password", autocomplete: "new-password", minlength: User::MIN_PASSWORD_LEN, required: true
+        = f.password_field :password, placeholder: _("Password"), autocomplete: "new-password", minlength: User::MIN_PASSWORD_LEN, required: true
         .user-alert.hidden
           = image_tag 'icons/exclamation.png', alt: '!', title: ''
           %span.msg
     #signup-password-confirmation
-      .sub.vtop= f.label :password_confirmation, 'Confirm'
+      .sub.vtop= f.label :password_confirmation, _("Confirm")
       .odd
-        = f.password_field :password_confirmation, placeholder: "Confirm Password", autocomplete: "new-password", minlength: User::MIN_PASSWORD_LEN, required: true
+        = f.password_field :password_confirmation, placeholder: _("Confirm Password"), autocomplete: "new-password", minlength: User::MIN_PASSWORD_LEN, required: true
         .user-alert.hidden
           = image_tag 'icons/exclamation.png', alt: '!', title: ''
           %span.msg
     - unless ENV.fetch("UPGRADES_LOCKED", nil).present?
       #signup-secret
-        .sub.vtop= f.label :secret, "Secret (optional)"
+        .sub.vtop= f.label :secret, _("Secret (optional)")
         .even
-          = text_field_tag :secret, params[:secret], placeholder: "Secret"
-          %span.details (If you don't know what this is, please leave it blank!)
+          = text_field_tag :secret, params[:secret], placeholder: _("Secret")
+          %span.details= _("(If you don't know what this is, please leave it blank!)")
     #signup-captcha
-      .sub.vtop Captcha
+      .sub.vtop= _("Captcha")
       .odd
-        = text_field_tag :addition, params[:addition], placeholder: "Please enter five times two plus four as a number (e.g. 3 not three)"
+        = text_field_tag :addition, params[:addition], placeholder: _("Please enter five times two plus four as a number (e.g. 3 not three)")
     #signup-terms
-      .sub.vtop Terms
+      .sub.vtop= _("Terms")
       .odd
         .checkbox-field
           = check_box_tag :tos, true, params[:tos].present?
           = label_tag :tos do
-            I have read and agree to the
-            = link_to 'Terms of Service', tos_path
-            and the
-            = link_to 'Privacy Policy', privacy_path
+            -# one sentence, one msgid: both links have to be free to move within it
+            - tos_link = link_to(_("Terms of Service"), tos_path)
+            - privacy_link = link_to(_("Privacy Policy"), privacy_path)
+            = safe_format(_("I have read and agree to the %{tos} and the %{privacy}"), tos: tos_link, privacy: privacy_link)
         .user-alert.hidden
           = image_tag 'icons/exclamation.png', alt: '!', title: ''
           %span.msg
-    .form-table-ender= submit_tag "Sign Up", class: 'button'
+    .form-table-ender= submit_tag _("Sign Up"), class: 'button'

@@ -78,6 +78,47 @@ module ApplicationHelper
     options_for_select(layouts, default)
   end
 
+  # lang (and, for right-to-left languages, dir) for the <html> element. Built as a hash
+  # so a left-to-right page gets no dir attribute at all rather than an empty one.
+  def html_language_attrs
+    attrs = { lang: I18n.locale }
+    attrs[:dir] = 'rtl' if Glowfic::Locales.rtl?(I18n.locale)
+    attrs
+  end
+
+  # The languages to show content in, best first: the reader's preferences when they have
+  # set any, always ending with the language the page itself is in so there is a fallback.
+  # Tag names resolve against this. `try` because mailer and bare helper contexts have no
+  # current_user; they just get the page language.
+  def reading_languages
+    reader = try(:current_user)
+    return reader.reading_languages(I18n.locale) if reader
+    [I18n.locale.to_s]
+  end
+
+  # Interpolates into a translated string whose values are markup — a link, an icon, a
+  # name wrapped in <span lang>. Plain `format` returns an ordinary String, so the markup
+  # in it would be escaped on the way into the page; SafeBuffer#% escapes the values that
+  # aren't already safe and keeps the result safe. The text itself comes from the repo's
+  # own .po files, so it is trusted the same way the template around it is.
+  def safe_format(text, **values)
+    text.html_safe % values
+  end
+
+  # The languages the interface has been translated into. "Automatic" leaves the choice
+  # to the browser's Accept-Language, which is what a user who has never touched this
+  # setting gets.
+  def locale_options(default=nil)
+    languages = Glowfic::Locales.ui_options.to_h { |name, code| [name, code] }
+    options_for_select({ _('Automatic (browser setting)') => '' }.merge(languages), default.to_s)
+  end
+
+  # Every language content can be tagged as, not just the ones the interface speaks.
+  def content_language_options(default=nil)
+    languages = Glowfic::Locales.content_options.to_h { |name, code| [name, code] }
+    options_for_select({ _('Unset') => '' }.merge(languages), default.to_s)
+  end
+
   def time_display_options(default=nil)
     time_thing = Time.new(2016, 12, 25, 21, 34, 56).utc # Example time: "2016-12-25 21:34:56" (for unambiguous display purposes)
     time_display_list = [

@@ -5,16 +5,13 @@
   .padding-10
     .post-edit-box
       = link_to news_path(news), rel: 'alternate'.freeze do
-        = image_tag "icons/link.png".freeze, title: 'Permalink'.freeze, alt: 'Permalink'.freeze
+        = image_tag "icons/link.png".freeze, title: _("Permalink").freeze, alt: _("Permalink").freeze
       - if news.editable_by?(current_user)
         = link_to edit_news_path(news) do
-          = image_tag "icons/pencil.png".freeze, title: 'Edit'.freeze, alt: 'Edit'.freeze
+          = image_tag "icons/pencil.png".freeze, title: _("Edit").freeze, alt: _("Edit").freeze
       - if news.deletable_by?(current_user)
-        = link_to news_path(news), method: :delete, data: { confirm: "Are you sure you wish to delete this news post?" } do
-          = image_tag "icons/cross.png".freeze, title: 'Delete'.freeze, alt: 'Delete'.freeze
+        = link_to news_path(news), method: :delete, data: { confirm: _("Are you sure you wish to delete this news post?") } do
+          = image_tag "icons/cross.png".freeze, title: _("Delete").freeze, alt: _("Delete").freeze
     .message-content= sanitize_written_content(news.content)
-  .subber
-    Posted on
-    = pretty_time(news.created_at)
-    by
-    = user_link(news.user)
+  -# one sentence, one msgid: word order around the date and the author has to be free
+  .subber= safe_format(_("Posted on %{time} by %{user}"), time: pretty_time(news.created_at), user: user_link(news.user))

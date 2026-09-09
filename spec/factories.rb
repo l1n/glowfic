@@ -234,6 +234,14 @@ FactoryBot.define do
     end
   end
 
+  factory :tag_translation do
+    tag factory: :label
+    locale { 'es' }
+    sequence :name, ordered_numbers do |n|
+      "Etiqueta#{n}"
+    end
+  end
+
   factory :message do
     sender
     recipient

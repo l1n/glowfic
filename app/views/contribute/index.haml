@@ -1,9 +1,9 @@
 .form-table#contribute
-  .sub Contribute to the Constellation
-  .even= link_to 'Make a Patreon pledge', 'https://patreon.com/user?u=4240260'
-  .odd= link_to 'Donate via Paypal', 'http://paypal.me/aschloss'
-  .even= link_to 'Submit a pull request', 'https://github.com/glowfic-constellation/glowfic'
+  .sub= _("Contribute to the Constellation")
+  .even= link_to _("Make a Patreon pledge"), 'https://patreon.com/user?u=4240260'
+  .odd= link_to _("Donate via Paypal"), 'http://paypal.me/aschloss'
+  .even= link_to _("Submit a pull request"), 'https://github.com/glowfic-constellation/glowfic'
   - if logged_in?
-    .odd= link_to 'Write something!', new_post_path
+    .odd= link_to _("Write something!"), new_post_path
   - else
-    .odd= link_to 'Join us', new_user_path
+    .odd= link_to _("Join us"), new_user_path

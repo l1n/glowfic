@@ -1,11 +1,11 @@
 - content_for :breadcrumbs do
-  = link_to "Indexes", indexes_path
+  = link_to _("Indexes"), indexes_path
   &raquo;
   = link_to @section.index.name, @section.index
   &raquo;
-  %b Edit
+  %b= _("Edit")
 
 = form_for @section, method: :put do |f|
   .form-table#index-section-editor
-    .editor-title Edit Index Section
+    .editor-title= _("Edit Index Section")
     = render 'editor', f: f

@@ -1,9 +1,9 @@
 -# locals: ()
 
 #character-icon-selector
-  %strong Icons
+  %strong= _("Icons")
   %br
-  Pick default icon (optional):
+  = _("Pick default icon (optional):")
   %br
   .character-galleries-simple
     - galleries = @character.galleries.present? ? @character.galleries.ordered : [Struct.new(:id, :name, :icons).new(0, 'Galleryless', @character.user.galleryless_icons || [])]

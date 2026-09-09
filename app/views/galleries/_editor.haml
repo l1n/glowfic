@@ -2,7 +2,7 @@
 
 %div
   .sub= f.label :name
-  %div{class: cycle('even', 'odd')}= f.text_field :name, placeholder: "Gallery Name"
+  %div{class: cycle('even', 'odd')}= f.text_field :name, placeholder: _("Gallery Name")
 %div
-  .sub.vtop= label_tag :gallery_group_ids, 'Groups'
+  .sub.vtop= label_tag :gallery_group_ids, _("Groups")
   .select2-field{class: cycle('even', 'odd')}= tag_select(gallery, f, :gallery_groups)

@@ -50,6 +50,102 @@ RSpec.describe Tag do
     end
   end
 
+  describe "translations" do
+    let(:tag) { create(:setting, name: 'Amber', description: 'A place', locale: 'en') }
+
+    describe "#localized_name" do
+      it "uses a translation in the requested language" do
+        create(:tag_translation, tag: tag, locale: 'es', name: 'Ámbar')
+        localized = tag.reload.localized_name('es')
+        expect(localized.text).to eq('Ámbar')
+        expect(localized.locale).to eq('es')
+      end
+
+      it "falls back to the canonical name when the language has no translation" do
+        create(:tag_translation, tag: tag, locale: 'es', name: 'Ámbar')
+        localized = tag.reload.localized_name('fr')
+        expect(localized.text).to eq('Amber')
+        expect(localized.locale).to eq('en')
+      end
+
+      it "falls back to the canonical name when there are no translations at all" do
+        expect(tag.localized_name('es').text).to eq('Amber')
+      end
+
+      it "ignores translations when the tag is already in the requested language" do
+        create(:tag_translation, tag: tag, locale: 'en', name: 'Ignored')
+        expect(tag.reload.localized_name('en').text).to eq('Amber')
+      end
+
+      it "matches a bare language against a regional request" do
+        create(:tag_translation, tag: tag, locale: 'pt', name: 'Âmbar')
+        expect(tag.reload.localized_name('pt-BR').text).to eq('Âmbar')
+      end
+
+      context "with a chain of preferred languages" do
+        before(:each) do
+          create(:tag_translation, tag: tag, locale: 'es', name: 'Ámbar')
+          create(:tag_translation, tag: tag, locale: 'pt', name: 'Âmbar')
+          tag.reload
+        end
+
+        it "uses the first language in the chain that has a translation" do
+          expect(tag.localized_name(['de', 'pt', 'es']).text).to eq('Âmbar')
+        end
+
+        it "prefers an earlier language over a later one" do
+          expect(tag.localized_name(['es', 'pt']).text).to eq('Ámbar')
+        end
+
+        it "stops at the tag's own language rather than using a lower-ranked translation" do
+          localized = tag.localized_name(['de', 'en', 'es'])
+          expect(localized.text).to eq('Amber')
+          expect(localized.locale).to eq('en')
+        end
+
+        it "falls back to the canonical name when nothing in the chain matches" do
+          expect(tag.localized_name(['de', 'fr']).text).to eq('Amber')
+        end
+      end
+    end
+
+    describe "#localized_description" do
+      it "uses the translated description when there is one" do
+        create(:tag_translation, tag: tag, locale: 'es', name: 'Ámbar', description: 'Un lugar')
+        expect(tag.reload.localized_description('es').text).to eq('Un lugar')
+      end
+
+      it "falls back to the canonical description when the translation has none" do
+        create(:tag_translation, tag: tag, locale: 'es', name: 'Ámbar', description: nil)
+        localized = tag.reload.localized_description('es')
+        expect(localized.text).to eq('A place')
+        expect(localized.locale).to eq('en')
+      end
+    end
+
+    describe "#source_locale" do
+      it "defaults to the site default when unset" do
+        expect(create(:label, locale: nil).source_locale).to eq('en')
+      end
+
+      it "uses the tag's own language when set" do
+        expect(create(:label, locale: 'ja').source_locale).to eq('ja')
+      end
+    end
+
+    describe "nested attributes" do
+      it "ignores rows with no language or name" do
+        tag.update!(tag_translations_attributes: [{ locale: '', name: '' }, { locale: 'es', name: '' }])
+        expect(tag.tag_translations).to be_empty
+      end
+
+      it "rejects an unknown language" do
+        expect { tag.update!(tag_translations_attributes: [{ locale: 'klingon', name: 'tlhIngan' }]) }
+          .to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+  end
+
   describe "#id_for_select" do
     it "uses ID if persisted" do
       tag = create(:label)

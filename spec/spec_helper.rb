@@ -71,6 +71,7 @@ require 'support/spec_feature_helper'
 require 'support/spec_request_helper'
 require 'support/spec_test_helper'
 require 'support/api_test_helper'
+require 'support/env_helper'
 require 'support/posts_controller_shared'
 require 'capybara/rspec'
 
@@ -99,6 +100,7 @@ RSpec.configure do |config|
   end
 
   config.include FactoryBot::Syntax::Methods
+  config.include EnvHelper
   config.include SpecTestHelper, type: :controller
   config.include ApiTestHelper, type: :controller
   config.include SpecRequestHelper, type: :request

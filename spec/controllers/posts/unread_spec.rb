@@ -55,7 +55,7 @@ RSpec.describe PostsController, 'GET unread' do
       expect(assigns(:started)).not_to eq(true)
       expect(assigns(:page_title)).to eq('Unread Threads')
       expect(assigns(:posts)).to be_empty
-      expect(assigns(:hide_quicklinks)).to eq(true)
+      expect(assigns(:hide_quicklinks)).to be_nil
     end
 
     it "succeeds for reader accounts" do
@@ -65,7 +65,7 @@ RSpec.describe PostsController, 'GET unread' do
       expect(assigns(:started)).not_to eq(true)
       expect(assigns(:page_title)).to eq('Unread Threads')
       expect(assigns(:posts)).to be_empty
-      expect(assigns(:hide_quicklinks)).to eq(true)
+      expect(assigns(:hide_quicklinks)).to be_nil
     end
 
     it "shows appropriate posts" do
@@ -76,7 +76,7 @@ RSpec.describe PostsController, 'GET unread' do
       expect(assigns(:started)).not_to eq(true)
       expect(assigns(:page_title)).to eq('Unread Threads')
       expect(assigns(:posts)).to match_array(posts)
-      expect(assigns(:hide_quicklinks)).to eq(true)
+      expect(assigns(:hide_quicklinks)).to be_nil
     end
 
     it "orders posts by tagged_at" do
@@ -167,7 +167,7 @@ RSpec.describe PostsController, 'GET unread' do
       expect(assigns(:started)).to eq(true)
       expect(assigns(:page_title)).to eq('Opened Threads')
       expect(assigns(:posts)).to match_array(posts[1..])
-      expect(assigns(:hide_quicklinks)).to eq(true)
+      expect(assigns(:hide_quicklinks)).to be_nil
     end
   end
 

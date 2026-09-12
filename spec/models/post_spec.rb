@@ -538,7 +538,7 @@ RSpec.describe Post do
       end
 
       it "is not visible with lock on" do
-        allow(ENV).to receive(:[]).with('POSTS_LOCKED_FULL').and_return('yep')
+        stub_env('POSTS_LOCKED_FULL', 'yep')
         expect(post).not_to be_visible_to(nil)
         expect(post).not_to be_visible_to(create(:reader_user))
         expect(post).to be_visible_to(create(:user))
@@ -614,7 +614,7 @@ RSpec.describe Post do
       end
 
       it "is not visible with lock on" do
-        allow(ENV).to receive(:[]).with('POSTS_LOCKED_FULL').and_return('yep')
+        stub_env('POSTS_LOCKED_FULL', 'yep')
         expect(post).not_to be_visible_to(nil)
         expect(post).not_to be_visible_to(create(:reader_user))
         expect(post).to be_visible_to(create(:user))
@@ -646,7 +646,7 @@ RSpec.describe Post do
       end
 
       it "is visible with lock on" do
-        allow(ENV).to receive(:[]).with('POSTS_LOCKED_FULL').and_return('yep')
+        stub_env('POSTS_LOCKED_FULL', 'yep')
         expect(post).not_to be_visible_to(nil)
         expect(post).not_to be_visible_to(create(:reader_user))
         expect(post).to be_visible_to(create(:user))

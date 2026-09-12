@@ -157,7 +157,7 @@ RSpec.describe ApplicationController do
 
     context "locked to full users" do
       before(:each) do
-        allow(ENV).to receive(:[]).with('POSTS_LOCKED_FULL').and_return('yep')
+        stub_env('POSTS_LOCKED_FULL', 'yep')
       end
 
       it "hides all posts from logged out users" do

@@ -10,12 +10,19 @@ RSpec.describe AnonLoadShed do
   let(:downstream) { ->(_env) { [200, {}, ['ok']] } }
   let(:middleware) { AnonLoadShed.new(downstream) }
 
-  def env(wait: nil, user_id: nil, path: '/posts')
-    {
+  # `remembered` is the user id the signed `user_id` cookie verifies to, or nil
+  # where the cookie is absent, forged or otherwise unverifiable — the jar
+  # returns nil for all three, so they are one case from here. Omitting it
+  # leaves no jar on the env at all, which is what a bare Rack env looks like.
+  def env(wait: nil, user_id: nil, path: '/posts', remembered: :no_jar)
+    base = {
       Rack::Timeout::ENV_INFO_KEY => wait && Struct.new(:wait).new(wait),
       'rack.session'              => { user_id: user_id },
       'PATH_INFO'                 => path,
     }
+    return base if remembered == :no_jar
+    jar = instance_double(ActionDispatch::Cookies::CookieJar, signed: { user_id: remembered })
+    base.merge('action_dispatch.cookies' => jar)
   end
 
   it "passes through when there is no wait info (queue depth unknown)" do
@@ -50,5 +57,26 @@ RSpec.describe AnonLoadShed do
   it "never sheds login requests, so logged-out users can still log in under load" do
     status, = middleware.call(env(wait: 30.0, path: '/login'))
     expect(status).to eq(200)
+  end
+
+  # A "remember me" reader arrives with a permanent signed cookie and no
+  # session, because the session cookie has no expiry and dies with the
+  # browser. `check_permanent_user` would restore their session, but it runs in
+  # a controller, i.e. after this middleware — so shedding them here is
+  # unrecoverable by retrying: the shed response never reaches the controller
+  # that would have promoted the cookie.
+  it "passes through a remembered user whose session cookie is gone" do
+    expect(middleware.call(env(wait: 30.0, user_id: nil, remembered: 7))).to eq([200, {}, ['ok']])
+  end
+
+  it "still sheds when the cookie is present but does not verify" do
+    status, = middleware.call(env(wait: 30.0, user_id: nil, remembered: nil))
+    expect(status).to eq(503)
+  end
+
+  it "treats a jar it cannot read as anonymous rather than raising" do
+    broken = env(wait: 30.0).merge('action_dispatch.cookies' => Object.new)
+    status, = middleware.call(broken)
+    expect(status).to eq(503)
   end
 end

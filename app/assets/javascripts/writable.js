@@ -3,9 +3,10 @@
 
 let tinyMCEInit = false;
 
-// Matches values that look like a web address (scheme, "www.", or "domain.tld"),
-// used to warn when a URL is typed/pasted into a link's Title (tooltip) field.
-const TITLE_URL_PATTERN = /^\s*((https?|ftp):\/\/|www\.|[a-z0-9][a-z0-9-]*\.[a-z]{2,}([/?#]|\s|$))/i;
+// The link dialog's Title field only sets a hover tooltip, but people sometimes paste the
+// web address into it by mistake; flag values that look like one (scheme, "www.", "domain.tld").
+const URL_LIKE_PATTERN = /^\s*((https?|ftp):\/\/|www\.|[a-z0-9][a-z0-9-]*\.[a-z]{2,}([/?#]|\s|$))/i;
+const TITLE_URL_MESSAGE = 'This looks like a URL. The Title field only sets a hover tooltip — put the web address in the URL field above.';
 
 function tinyMCEConfig(selector) {
   const height = ($(selector).height() || 150) + 15;
@@ -39,68 +40,39 @@ function tinyMCEConfig(selector) {
     // plugin configs
     // - autoresize
     autoresize_bottom_margin: 5,
-    // warn when a URL is entered into a link's Title field (it only sets a tooltip)
-    setup: setupLinkTitleValidation,
+    setup: setupLinkTitleWarning,
   };
 }
 
-function setupLinkTitleValidation(editor) {
+function setupLinkTitleWarning(editor) {
   editor.on('OpenWindow', function(evt) {
-    const dialog = evt.dialog;
-    if (!dialog || typeof dialog.getData !== 'function') return;
-    if (!isLinkDialogData(dialog.getData())) return;
-    // Let the dialog finish rendering before we reach into its DOM.
-    window.setTimeout(bindLinkTitleWarning, 0);
+    // Only the link dialog has both a URL field and a Title field.
+    const data = evt.dialog.getData ? evt.dialog.getData() : {};
+    if (!('url' in data && 'title' in data)) return;
+    const titleInput = findDialogField('Title');
+    if (titleInput) warnWhenMatching(titleInput, URL_LIKE_PATTERN, TITLE_URL_MESSAGE);
   });
 }
 
-function isLinkDialogData(data) {
-  // The link dialog is the only one exposing both a URL and a Title field.
-  if (!data) return false;
-  return ('url' in data) && ('title' in data);
+// Finds the form control labelled `labelText` in the most recently opened TinyMCE dialog.
+function findDialogField(labelText) {
+  const dialog = Array.from(document.querySelectorAll('.tox-dialog')).pop();
+  const labels = dialog ? Array.from(dialog.querySelectorAll('label')) : [];
+  const label = labels.find(el => el.textContent.trim() === labelText);
+  return label ? label.control : null;
 }
 
-function bindLinkTitleWarning() {
-  const dialogs = document.querySelectorAll('.tox-dialog');
-  const dialogEl = dialogs[dialogs.length - 1];
-  if (!dialogEl) return;
-
-  const titleInput = findDialogTitleInput(dialogEl);
-  if (!titleInput || titleInput.dataset.glowficUrlCheck) return;
-  titleInput.dataset.glowficUrlCheck = '1';
-
-  const warning = buildTitleUrlWarning();
-  titleInput.parentNode.appendChild(warning);
-
-  const check = function() {
-    warning.style.display = TITLE_URL_PATTERN.test(titleInput.value) ? '' : 'none';
-  };
-  titleInput.addEventListener('input', check);
-  check();
-}
-
-function findDialogTitleInput(dialogEl) {
-  let titleInput = null;
-  const groups = dialogEl.querySelectorAll('.tox-form__group');
-  groups.forEach(function(group) {
-    const label = group.querySelector('.tox-label, label');
-    if (label && label.textContent.trim() === 'Title') {
-      titleInput = group.querySelector('input, textarea');
-    }
-  });
-  return titleInput;
-}
-
-function buildTitleUrlWarning() {
+// Shows `message` beneath `input` for as long as its value matches `pattern`.
+function warnWhenMatching(input, pattern, message) {
   const warning = document.createElement('div');
-  warning.className = 'glowfic-title-url-warning';
+  warning.className = 'field-warning';
   warning.setAttribute('role', 'alert');
-  warning.style.color = '#c0392b';
-  warning.style.fontSize = '12px';
-  warning.style.marginTop = '4px';
-  warning.style.display = 'none';
-  warning.textContent = 'This looks like a URL. The Title field only sets a hover tooltip — put the web address in the URL field above.';
-  return warning;
+  warning.textContent = message;
+  input.after(warning);
+
+  const update = () => { warning.hidden = !pattern.test(input.value); };
+  input.addEventListener('input', update);
+  update();
 }
 
 function setupEditorHelpBox() {

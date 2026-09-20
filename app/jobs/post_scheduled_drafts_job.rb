@@ -38,15 +38,14 @@ class PostScheduledDraftsJob < ApplicationJob
   # always release it.
   def with_advisory_lock
     ActiveRecord::Base.connection_pool.with_connection do |connection|
-      unless connection.select_value("SELECT pg_try_advisory_lock(#{ADVISORY_LOCK_KEY})")
+      if connection.select_value("SELECT pg_try_advisory_lock(#{ADVISORY_LOCK_KEY})")
+        begin
+          yield
+        ensure
+          connection.select_value("SELECT pg_advisory_unlock(#{ADVISORY_LOCK_KEY})")
+        end
+      else
         Rails.logger.info("#{self.class} skipped: another tick holds the advisory lock")
-        return
-      end
-
-      begin
-        yield
-      ensure
-        connection.select_value("SELECT pg_advisory_unlock(#{ADVISORY_LOCK_KEY})")
       end
     end
   end

@@ -55,4 +55,39 @@ RSpec.describe PostScheduledDraftsJob do
       expect(draft.reload.scheduled_at).to be_nil
     end
   end
+
+  it "skips the tick when another run already holds the advisory lock" do
+    draft = create(:reply_draft, scheduled_at: 2.days.from_now)
+
+    db = ActiveRecord::Base.connection_db_config.configuration_hash
+    other = PG.connect(host: db[:host], port: db[:port], dbname: db[:database], user: db[:username], password: db[:password])
+    begin
+      held = other.exec("SELECT pg_try_advisory_lock(#{PostScheduledDraftsJob::ADVISORY_LOCK_KEY})").getvalue(0, 0)
+      expect(held).to eq('t') # sanity: the external session grabbed the lock
+
+      Timecop.travel(3.days.from_now) do
+        expect { PostScheduledDraftsJob.perform_now }.not_to change { Reply.count }
+      end
+      expect(draft.reload).to be_scheduled # left queued for the next tick
+    ensure
+      other.exec("SELECT pg_advisory_unlock(#{PostScheduledDraftsJob::ADVISORY_LOCK_KEY})")
+      other.close
+    end
+  end
+
+  it "releases the advisory lock after a normal run so the next tick can acquire it" do
+    create(:reply_draft, scheduled_at: 2.days.from_now)
+    Timecop.travel(3.days.from_now) { PostScheduledDraftsJob.perform_now }
+
+    # a fresh external session can immediately take the lock => it was released
+    db = ActiveRecord::Base.connection_db_config.configuration_hash
+    other = PG.connect(host: db[:host], port: db[:port], dbname: db[:database], user: db[:username], password: db[:password])
+    begin
+      held = other.exec("SELECT pg_try_advisory_lock(#{PostScheduledDraftsJob::ADVISORY_LOCK_KEY})").getvalue(0, 0)
+      expect(held).to eq('t')
+    ensure
+      other.exec("SELECT pg_advisory_unlock(#{PostScheduledDraftsJob::ADVISORY_LOCK_KEY})")
+      other.close
+    end
+  end
 end

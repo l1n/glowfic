@@ -93,7 +93,7 @@ RSpec.describe UsersController do
     end
 
     it "requires valid fields" do
-      allow(ENV).to receive(:[]).with('ACCOUNT_SECRET').and_return('ALLHAILTHECOIN')
+      stub_env('ACCOUNT_SECRET', 'ALLHAILTHECOIN')
       post :create, params: { secret: "ALLHAILTHECOIN", tos: true, addition: '14' }
       expect(response).to render_template(:new)
       expect(flash[:error][:message]).to eq("There was a problem completing your sign up.")
@@ -102,7 +102,7 @@ RSpec.describe UsersController do
     end
 
     it "rejects short passwords" do
-      allow(ENV).to receive(:[]).with('ACCOUNT_SECRET').and_return('ALLHAILTHECOIN')
+      stub_env('ACCOUNT_SECRET', 'ALLHAILTHECOIN')
       user = build(:user).attributes.with_indifferent_access.merge(password: 'short', password_confirmation: 'short')
       post :create, params: { secret: 'ALLHAILTHECOIN', tos: true, addition: '14' }.merge(user: user)
       expect(response).to render_template(:new)
@@ -113,7 +113,7 @@ RSpec.describe UsersController do
     end
 
     it "signs you up" do
-      allow(ENV).to receive(:[]).with('ACCOUNT_SECRET').and_return('ALLHAILTHECOIN')
+      stub_env('ACCOUNT_SECRET', 'ALLHAILTHECOIN')
       pass = 'testpassword'
       user = build(:user).attributes.with_indifferent_access.merge(password: pass, password_confirmation: pass, email: 'testemail@example.com')
 
@@ -132,7 +132,7 @@ RSpec.describe UsersController do
     end
 
     it "creates reader account without secret" do
-      allow(ENV).to receive(:[]).with('ACCOUNT_SECRET').and_return('ALLHAILTHECOIN')
+      stub_env('ACCOUNT_SECRET', 'ALLHAILTHECOIN')
       pass = 'testpassword'
       user = build(:user).attributes.with_indifferent_access.merge(password: pass, password_confirmation: pass, email: 'testemail@example.com')
 
@@ -144,7 +144,7 @@ RSpec.describe UsersController do
     end
 
     it "creates reader account with upgrade lock" do
-      allow(ENV).to receive(:[]).with('ACCOUNT_SECRET').and_return('ALLHAILTHECOIN')
+      stub_env('ACCOUNT_SECRET', 'ALLHAILTHECOIN')
       allow(ENV).to receive(:fetch).with('SIGNUPS_LOCKED', nil).and_return(nil)
       allow(ENV).to receive(:fetch).with('UPGRADES_LOCKED', nil).and_return('yep')
       pass = 'testpassword'
@@ -159,7 +159,7 @@ RSpec.describe UsersController do
     end
 
     it "allows long passwords" do
-      allow(ENV).to receive(:[]).with('ACCOUNT_SECRET').and_return('ALLHAILTHECOIN')
+      stub_env('ACCOUNT_SECRET', 'ALLHAILTHECOIN')
       pass = 'this is a long password to test the password validation feature and to see if it accepts this'
       user = build(:user).attributes.with_indifferent_access.merge(password: pass, password_confirmation: pass)
       expect {
@@ -173,7 +173,7 @@ RSpec.describe UsersController do
     end
 
     it "strips spaces" do
-      allow(ENV).to receive(:[]).with('ACCOUNT_SECRET').and_return('ALLHAILTHECOIN')
+      stub_env('ACCOUNT_SECRET', 'ALLHAILTHECOIN')
       user = build(:user, username: 'withspace ').attributes
       user = user.with_indifferent_access.merge(password: 'password', password_confirmation: 'password')
       post :create, params: { secret: 'ALLHAILTHECOIN', tos: true, addition: '14' }.merge(user: user)
@@ -617,7 +617,7 @@ RSpec.describe UsersController do
     end
 
     it "requires valid secret" do
-      allow(ENV).to receive(:[]).with('ACCOUNT_SECRET').and_return('chocolate')
+      stub_env('ACCOUNT_SECRET', 'chocolate')
       user = create(:user, role_id: Permissible::READONLY)
       login_as(user)
       put :upgrade, params: { id: user.id, secret: 'vanilla' }
@@ -626,7 +626,7 @@ RSpec.describe UsersController do
     end
 
     it "handles update failures" do
-      allow(ENV).to receive(:[]).with('ACCOUNT_SECRET').and_return('chocolate')
+      stub_env('ACCOUNT_SECRET', 'chocolate')
       user = create(:user, role_id: Permissible::READONLY)
 
       allow(User).to receive(:find_by).and_call_original
@@ -641,7 +641,7 @@ RSpec.describe UsersController do
     end
 
     it "works" do
-      allow(ENV).to receive(:[]).with('ACCOUNT_SECRET').and_return('chocolate')
+      stub_env('ACCOUNT_SECRET', 'chocolate')
       user = create(:user, role_id: Permissible::READONLY)
       login_as(user)
       put :upgrade, params: { id: user.id, secret: 'chocolate' }

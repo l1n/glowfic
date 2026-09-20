@@ -18,30 +18,21 @@
 unless ENV.fetch('SKIP_COVERAGE', false) || ENV.fetch('APIPIE_RECORD', false) || RSpec.configuration.files_to_run.count <= 1
   require 'simplecov'
 
-  # skip warning for HAML compiled file length when close enough (within 2 lines difference)
-  # tends to be due to small compilation differences; hopefully a future HAML version improves it
-  # https://github.com/simplecov-ruby/simplecov/blob/v0.22.0/lib/simplecov/source_file.rb#L251
-  module SimpleCov # rubocop:disable Style/ClassAndModuleChildren
-    class SourceFile
-      def coverage_exceeding_source_warn
-        return if filename.end_with?('.haml') && coverage_data['lines'].size <= src.size + 2
-        warn "Warning: coverage data provided by Coverage [#{coverage_data['lines'].size}] exceeds number of lines in #{filename} [#{src.size}]"
-      end
-    end
-  end
+  # simplecov >= 1.0 auto-detects parallel_tests and has the first worker
+  # merge/format/enforce minimum_coverage in-process at exit.
 
   SimpleCov.start 'rails' do
-    add_group("Controllers") { |src| src.filename.include?('app/controllers') and src.filename.exclude?('app/controllers/api') }
-    add_group "Presenters", "app/presenters"
-    add_group "Concerns", "app/concerns"
-    add_group "API", "app/controllers/api"
-    add_group "Services", "app/services"
-    add_group "Exceptions", "app/exceptions"
-    add_group "Views", "app/views"
+    group("Controllers") { |src| src.filename.include?('app/controllers') and src.filename.exclude?('app/controllers/api') }
+    group "Presenters", "app/presenters"
+    group "Concerns", "app/concerns"
+    group "API", "app/controllers/api"
+    group "Services", "app/services"
+    group "Exceptions", "app/exceptions"
+    group "Views", "app/views"
     SimpleCov.groups.delete('Channels')
     changed_files = `git status --untracked=all --porcelain`
     unless changed_files.empty?
-      add_group 'Changed' do |source_file|
+      group 'Changed' do |source_file|
         changed_files.split("\n").detect do |status_and_filename|
           _, filename = status_and_filename.split(' ', 2)
           source_file.filename.ends_with?(filename)
@@ -50,7 +41,7 @@ unless ENV.fetch('SKIP_COVERAGE', false) || ENV.fetch('APIPIE_RECORD', false) ||
     end
     enable_coverage :branch
     minimum_coverage line: 95.2, branch: 88.1
-    enable_coverage_for_eval
+    enable_coverage :eval
   end
 end
 
@@ -60,6 +51,7 @@ require 'support/spec_feature_helper'
 require 'support/spec_request_helper'
 require 'support/spec_test_helper'
 require 'support/api_test_helper'
+require 'support/env_helper'
 require 'support/posts_controller_shared'
 require 'capybara/rspec'
 
@@ -88,6 +80,7 @@ RSpec.configure do |config|
   end
 
   config.include FactoryBot::Syntax::Methods
+  config.include EnvHelper
   config.include SpecTestHelper, type: :controller
   config.include ApiTestHelper, type: :controller
   config.include SpecRequestHelper, type: :request
@@ -159,6 +152,10 @@ RSpec.configure do |config|
     end
     user.destroy!
   end
+
+  # Zero out CSS animations/transitions in feature specs so Capybara never waits
+  # on them to settle — a small reliability win for JS specs.
+  Capybara.disable_animation = true
 
   config.before(:each, type: :system) do
     driven_by :rack_test
@@ -232,7 +229,7 @@ module RSpec::Rails::ViewRendering # rubocop:disable Style/ClassAndModuleChildre
   class EmptyTemplateResolver
     def self.nullify_template_rendering(templates)
       templates.map do |template|
-        ::ActionView::Template.new(
+        ActionView::Template.new(
           "",
           template.identifier + ".no_render", # overwrite path of fake template to avoid collisions
           EmptyTemplateHandler,

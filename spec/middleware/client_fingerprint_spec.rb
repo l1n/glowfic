@@ -99,18 +99,16 @@ RSpec.describe ClientFingerprint do
   describe "Sec-* headers" do
     it "records what a real browser navigation sends" do
       attrs = attributes_for(env(chrome_headers.merge(
-        'HTTP_SEC_FETCH_DEST'     => 'document',
-        'HTTP_SEC_FETCH_MODE'     => 'navigate',
-        'HTTP_SEC_FETCH_SITE'     => 'none',
-        'HTTP_SEC_CH_UA_PLATFORM' => '"Windows"',
-        'HTTP_SEC_CH_UA'          => '"Chromium";v="145"',
+        'HTTP_SEC_FETCH_DEST' => 'document',
+        'HTTP_SEC_FETCH_MODE' => 'navigate',
+        'HTTP_SEC_FETCH_SITE' => 'none',
+        'HTTP_SEC_CH_UA'      => '"Chromium";v="145"',
       )))
       expect(attrs).to include(
-        'sec_fetch_dest'     => 'document',
-        'sec_fetch_mode'     => 'navigate',
-        'sec_fetch_site'     => 'none',
-        'sec_ch_ua_platform' => '"Windows"',
-        'has_sec_ch_ua'      => true,
+        'sec_fetch_dest' => 'document',
+        'sec_fetch_mode' => 'navigate',
+        'sec_fetch_site' => 'none',
+        'sec_ch_ua'      => '"Chromium";v="145"',
       )
     end
 
@@ -119,8 +117,29 @@ RSpec.describe ClientFingerprint do
       expect(attrs).to include(
         'sec_fetch_dest' => '(absent)',
         'sec_fetch_mode' => '(absent)',
-        'has_sec_ch_ua'  => false,
+        'sec_ch_ua'      => '(absent)',
       )
+    end
+  end
+
+  # Every attribute lands on every Transaction event, which is most of what
+  # New Relic ingests, so only the page requests under investigation pay.
+  it "does not fingerprint requests that are not HTML pages" do
+    expect(NewRelic::Agent).not_to receive(:add_custom_attributes)
+    middleware.call(env(chrome_headers.merge('HTTP_ACCEPT' => 'image/avif,image/webp,*/*')))
+  end
+
+  # The shedder's verdict goes on every request, so its rule can be checked
+  # against all traffic and not only against what it saw during saturation.
+  describe "the shedder's verdict" do
+    it "records why a request looks like the scrape" do
+      attrs = attributes_for(env(chrome_headers))
+      expect(attrs).to include('scraper_signal' => 'no_sxg')
+    end
+
+    it "records absent for a request that does not" do
+      attrs = attributes_for(env(chrome_headers.merge('HTTP_USER_AGENT' => 'Mozilla/5.0 (X11; Linux x86_64; rv:129.0) Firefox/129.0')))
+      expect(attrs).to include('scraper_signal' => '(absent)')
     end
   end
 

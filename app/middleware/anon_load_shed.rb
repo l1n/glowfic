@@ -37,6 +37,15 @@ class AnonLoadShed
   # enough that somebody is going to be shed regardless, and it decides who.
   SCRAPER_WAIT_THRESHOLD_SECONDS = 0.5
 
+  # Turns the Fetch Metadata and client-hint checks in `scraper_signal` on or
+  # off. Setting `ANON_SHED_SEC_FETCH=off` falls back to the signed-exchange
+  # test alone, without a deploy (a config change restarts the dynos).
+  SEC_FETCH_TEST = ENV.fetch('ANON_SHED_SEC_FETCH', 'on') != 'off'
+
+  # Chrome has sent `Sec-CH-UA` on every secure request since 89. Older
+  # builds are left to the Fetch Metadata check only.
+  CLIENT_HINTS_SINCE = 90
+
   def initialize(app)
     @app = app
   end
@@ -47,17 +56,18 @@ class AnonLoadShed
   #
   # The queue-wait check leads because it is both the cheapest and by far the
   # most common answer — in steady state nothing is saturated, so this costs
-  # one env lookup and returns. The shape check comes next at two header string
-  # comparisons, and only runs on requests already waiting long enough to be
-  # worth classifying. Identifying the user comes last because it means
+  # one env lookup and returns. The shape check comes next at a handful of
+  # header string comparisons, and only runs on requests already waiting long
+  # enough to be worth classifying. Identifying the user comes last because it means
   # building a cookie jar to verify a signature, which is only worth doing on
   # the rare request we are otherwise about to shed.
   def call(env)
     waited = wait_seconds(env)
     return @app.call(env) if waited.nil? || waited < SCRAPER_WAIT_THRESHOLD_SECONDS
-    return @app.call(env) if waited < WAIT_THRESHOLD_SECONDS && !scraper_shaped?(env)
+    return @app.call(env) if waited < WAIT_THRESHOLD_SECONDS && !self.class.scraper_signal(env)
     return @app.call(env) if login_request?(env)
     return @app.call(env) if logged_in?(env)
+    record_shed(env)
     [
       503,
       { 'Content-Type' => 'text/plain', 'Retry-After' => '30' },
@@ -65,33 +75,80 @@ class AnonLoadShed
     ]
   end
 
-  private
-
-  # Chrome announces `application/signed-exchange;v=b3;q=0.7` on HTML
-  # navigations. Measured across glowfic traffic by Chrome major version, every
-  # genuine release from 120 to 141 sits at 95-100%; the scrape's rotating
-  # forged UA strings sit at 0.0-0.3%, alongside self-declared crawlers. Over
-  # the seven days to 2026-09-09 the pair of conditions split HTML navigations
-  # 9,745,482 scraper-shaped against 2,744,787 real.
+  # Returns why a request looks like the distributed scrape, or nil if it
+  # does not. It is a class method so that `ClientFingerprint` can record the
+  # verdict on every request, not only on those that waited long enough for
+  # this middleware to ask.
   #
-  # Both halves of the test matter. Requiring the Chrome claim is what makes it
-  # safe: Firefox and Safari never send the token either, so testing on Accept
-  # alone would classify every one of their users as a scraper. Requiring the
-  # missing token is what makes it useful, since the UA strings themselves are
-  # forged and are shared with real readers.
+  # The test applies only to HTML navigations from a client that says it is
+  # Chrome (or another Chromium browser, which all carry `Chrome/` in the UA).
+  # Firefox and Safari send none of the headers checked below, so a request
+  # that does not claim Chrome is never classified. Subresources carry a
+  # different Accept and are judged with their page, not apart from it.
   #
-  # Restricting to `text/html` keeps this to navigations. Subresource requests
-  # are not classified here — they carry a different Accept, and a page's
-  # images should not be judged separately from the page.
+  # The signals, in order:
+  #
+  # - `no_sxg`: no `application/signed-exchange` in Accept. Genuine Chrome
+  #   120-141 sent it on 95-100% of navigations; the scrape's forged UAs on
+  #   0.0-0.3%. By 2026-10-01 the scrape had copied a real Chrome Accept
+  #   byte for byte (1.3M of 1.84M requests on one Chrome/145 Mac UA string in
+  #   a week), so this signal alone no longer catches most of it.
+  # - `no_sec_fetch`: no `Sec-Fetch-Mode`. Chromium has sent Fetch Metadata on
+  #   every request since 76. These headers are specified behaviour, so they
+  #   are less likely to change under us than the Accept token was.
+  # - `no_ch_ua`: no `Sec-CH-UA`. Chromium sends this low-entropy client hint
+  #   on every secure request since 89.
+  # - `ch_ua_mismatch`: `Sec-CH-UA` names a Chromium version other than the
+  #   one in the UA. The scrape rotates its UA across many Chrome versions; a
+  #   client that copied one browser's header set keeps that browser's hint.
+  #   Every Chromium browser lists a `"Chromium"` brand whose major version
+  #   matches the `Chrome/` token in its UA.
+  #
+  # Android WebView (`; wv)` in the UA) is held only to the Fetch Metadata
+  # check. Readers arrive in it from in-app browsers, and older WebView builds
+  # did not send client hints.
   #
   # This is a header-level heuristic, which is the most forgeable tier there
-  # is; it informs a threshold rather than a block precisely because it can be
-  # defeated the moment anyone cares to.
-  def scraper_shaped?(env)
+  # is. It sets a threshold rather than a block for that reason: a client
+  # that copies a full, consistent header set gets the reader threshold.
+  def self.scraper_signal(env)
     accept = env['HTTP_ACCEPT']
-    return false unless accept&.start_with?('text/html')
-    return false if accept.include?('signed-exchange')
-    env['HTTP_USER_AGENT'].to_s.include?('Chrome/')
+    return nil unless accept&.start_with?('text/html')
+    user_agent = env['HTTP_USER_AGENT'].to_s
+    major = user_agent[/Chrome\/(\d+)/, 1]
+    return nil unless major
+    return 'no_sxg' unless accept.include?('signed-exchange')
+    return nil unless SEC_FETCH_TEST
+    return 'no_sec_fetch' if env['HTTP_SEC_FETCH_MODE'].blank?
+    return nil if user_agent.include?('; wv)') || major.to_i < CLIENT_HINTS_SINCE
+    client_hint = env['HTTP_SEC_CH_UA']
+    return 'no_ch_ua' if client_hint.blank?
+    return 'ch_ua_mismatch' unless client_hint.include?(%("Chromium";v="#{major}"))
+    nil
+  end
+
+  private
+
+  # A shed request is counted, not traced. During saturation 11-13% of all
+  # requests are shed, and a full Transaction event for each one was a large
+  # share of New Relic ingest while saying nothing a counter does not. The
+  # metric is aggregated in the agent and costs the same at any volume; query
+  # it with
+  #
+  #   SELECT sum(newrelic.timeslice.value) FROM Metric
+  #   WHERE metricTimesliceName LIKE 'Custom/AnonLoadShed/%'
+  #   FACET metricTimesliceName TIMESERIES
+  #
+  # The name says why the request was shed: a scraper signal from
+  # `scraper_signal`, or `reader` for one that waited past the reader
+  # threshold.
+  def record_shed(env)
+    return unless defined?(NewRelic::Agent)
+    NewRelic::Agent.ignore_transaction
+    NewRelic::Agent.increment_metric("Custom/AnonLoadShed/#{self.class.scraper_signal(env) || 'reader'}")
+  rescue StandardError
+    # Telemetry must never turn a shed into a 500.
+    nil
   end
 
   def logged_in?(env)

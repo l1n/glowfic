@@ -14,9 +14,10 @@ require 'digest'
 # library rather than of a string the caller chose, so it survives UA rotation
 # and does not pool real browsers in with the bot.
 #
-# This is observability only. It classifies nothing and blocks nothing; the
-# point is to find out empirically whether the fingerprint separates the
-# scraper cleanly before any rule is written on top of it.
+# This is observability only. It blocks nothing. It does record the verdict
+# of `AnonLoadShed.scraper_signal` as `scraper_signal` on every request, so
+# the shedder's rule can be checked against all traffic, not only against the
+# requests it was asked about during saturation.
 #
 # == Equivalent to JA4H, not identical
 #
@@ -68,10 +69,10 @@ class ClientFingerprint
   # written against a spec'd behaviour later, instead of against the
   # incidental `signed-exchange` Accept token that first surfaced the scraper.
   SEC_HEADERS = {
-    'sec_fetch_dest'     => 'HTTP_SEC_FETCH_DEST',
-    'sec_fetch_mode'     => 'HTTP_SEC_FETCH_MODE',
-    'sec_fetch_site'     => 'HTTP_SEC_FETCH_SITE',
-    'sec_ch_ua_platform' => 'HTTP_SEC_CH_UA_PLATFORM',
+    'sec_fetch_dest' => 'HTTP_SEC_FETCH_DEST',
+    'sec_fetch_mode' => 'HTTP_SEC_FETCH_MODE',
+    'sec_fetch_site' => 'HTTP_SEC_FETCH_SITE',
+    'sec_ch_ua'      => 'HTTP_SEC_CH_UA',
   }.freeze
 
   # Faceting on a literal reads better in NRQL than `WHERE x IS NULL`, and
@@ -91,7 +92,13 @@ class ClientFingerprint
 
   # Fingerprinting is observability and must never be a reason to fail a
   # request, so anything raised here is swallowed after being logged.
+  #
+  # Only HTML page requests are fingerprinted. They are the traffic under
+  # investigation, and every attribute is stored on every Transaction event,
+  # which is most of what New Relic ingests; images and JSON would add the
+  # bytes without the signal.
   def record(env)
+    return unless env['HTTP_ACCEPT']&.start_with?('text/html')
     names = header_names(env)
     NewRelic::Agent.add_custom_attributes(attributes(env, names)) if defined?(NewRelic::Agent)
     log_sample(env, names)
@@ -106,7 +113,7 @@ class ClientFingerprint
       'ja4h_b_sorted' => digest(names.sort.join(',')),
     }
     SEC_HEADERS.each { |attr, key| attrs[attr] = env[key].presence || ABSENT }
-    attrs['has_sec_ch_ua'] = env.key?('HTTP_SEC_CH_UA')
+    attrs['scraper_signal'] = AnonLoadShed.scraper_signal(env) || ABSENT
     attrs
   end
 

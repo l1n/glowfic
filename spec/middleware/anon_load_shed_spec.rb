@@ -64,11 +64,16 @@ RSpec.describe AnonLoadShed do
   # A shed is counted, not traced: a Transaction event per 503 was a large
   # share of New Relic ingest during saturation.
   it "counts a shed request by reason instead of recording a transaction" do
-    expect(NewRelic::Agent).to receive(:ignore_transaction).twice
-    expect(NewRelic::Agent).to receive(:increment_metric).with('Custom/AnonLoadShed/reader')
-    expect(NewRelic::Agent).to receive(:increment_metric).with('Custom/AnonLoadShed/no_sxg')
+    AnonLoadShed.flush_shed_counts
+    expect(NewRelic::Agent).to receive(:ignore_transaction).exactly(3).times
+    middleware.call(env(wait: 10.0))
     middleware.call(env(wait: 10.0))
     middleware.call(scraper_env(wait: between_thresholds))
+
+    # Recorded outside the request's transaction, which the agent discards.
+    expect(NewRelic::Agent).to receive(:increment_metric).with('Custom/AnonLoadShed/reader', 2)
+    expect(NewRelic::Agent).to receive(:increment_metric).with('Custom/AnonLoadShed/no_sxg', 1)
+    AnonLoadShed.flush_shed_counts
   end
 
   it "leaves a served request's transaction alone" do

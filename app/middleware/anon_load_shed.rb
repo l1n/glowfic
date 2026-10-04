@@ -132,13 +132,53 @@ class AnonLoadShed
     nil
   end
 
+  # The agent keeps a metric recorded inside a transaction with that
+  # transaction, and discards both when the transaction is ignored. So shed
+  # counts are held here and handed to the agent every `FLUSH_SECONDS` from a
+  # thread that is not inside a transaction.
+  FLUSH_SECONDS = 60
+
+  @shed_counts = Hash.new(0)
+  @shed_lock = Mutex.new
+
+  def self.count_shed(name)
+    @shed_lock.synchronize do
+      start_flusher unless @flusher_pid == Process.pid
+      @shed_counts[name] += 1
+    end
+  end
+
+  def self.flush_shed_counts
+    counts = @shed_lock.synchronize do
+      taken = @shed_counts
+      @shed_counts = Hash.new(0)
+      taken
+    end
+    counts.each { |name, count| NewRelic::Agent.increment_metric(name, count) }
+  end
+
+  # Puma forks its workers after boot, and a thread does not survive a fork,
+  # so each worker starts its own flusher.
+  def self.start_flusher
+    @flusher_pid = Process.pid
+    @shed_counts = Hash.new(0)
+    Thread.new do
+      loop do
+        sleep FLUSH_SECONDS
+        flush_shed_counts
+      rescue StandardError => e
+        Rails.logger.warn("[anon_load_shed] flush failed: #{e.class}: #{e.message}")
+      end
+    end
+  end
+  private_class_method :start_flusher
+
   private
 
   # A shed request is counted, not traced. During saturation 11-13% of all
   # requests are shed, and a full Transaction event for each one was a large
-  # share of New Relic ingest while saying nothing a counter does not. The
-  # metric is aggregated in the agent and costs the same at any volume; query
-  # it with
+  # share of New Relic ingest while saying nothing a counter does not. Query
+  # the counts with
   #
   #   SELECT sum(newrelic.timeslice.value) FROM Metric
   #   WHERE metricTimesliceName LIKE 'Custom/AnonLoadShed/%'
@@ -150,7 +190,7 @@ class AnonLoadShed
   def record_shed(env)
     return unless defined?(NewRelic::Agent)
     NewRelic::Agent.ignore_transaction
-    NewRelic::Agent.increment_metric("Custom/AnonLoadShed/#{self.class.scraper_signal(env) || 'reader'}")
+    self.class.count_shed("Custom/AnonLoadShed/#{self.class.scraper_signal(env) || 'reader'}")
   rescue StandardError
     # Telemetry must never turn a shed into a 500.
     nil

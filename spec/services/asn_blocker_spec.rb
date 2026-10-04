@@ -6,25 +6,25 @@ RSpec.describe AsnBlocker do
 
     it "blocks IPs inside a configured CIDR" do
       # 43.128.0.0/10 is one of the Tencent Cloud HK prefixes in the seeded list
-      expect(described_class.block?('43.129.207.57')).to be(true)
+      expect(AsnBlocker.block?('43.129.207.57')).to be(true)
     end
 
     it "doesn't block IPs outside the configured CIDRs" do
-      expect(described_class.block?('8.8.8.8')).to be(false) # Google DNS
-      expect(described_class.block?('1.1.1.1')).to be(false) # Cloudflare DNS
+      expect(AsnBlocker.block?('8.8.8.8')).to be(false) # Google DNS
+      expect(AsnBlocker.block?('1.1.1.1')).to be(false) # Cloudflare DNS
     end
 
     it "doesn't block IPs in deliberately excluded ASNs" do
       # AS16509 Amazon (e.g. an EC2 elastic IP) — excluded so embed traffic works
-      expect(described_class.block?('54.239.28.85')).to be(false)
+      expect(AsnBlocker.block?('54.239.28.85')).to be(false)
       # AS15169 Google — excluded so Googlebot keeps crawling
-      expect(described_class.block?('142.250.80.46')).to be(false)
+      expect(AsnBlocker.block?('142.250.80.46')).to be(false)
     end
 
     it "handles invalid IPs as not-blocked rather than raising" do
-      expect(described_class.block?('not-an-ip')).to be(false)
-      expect(described_class.block?('')).to be(false)
-      expect(described_class.block?(nil)).to be(false)
+      expect(AsnBlocker.block?('not-an-ip')).to be(false)
+      expect(AsnBlocker.block?('')).to be(false)
+      expect(AsnBlocker.block?(nil)).to be(false)
     end
   end
 

@@ -12,17 +12,8 @@
 # requests, dyno restart re-saturation). When that happens, anonymous
 # traffic gets a fast 503 + Retry-After instead of being held in queue and
 # eventually rack-timeout-aborted; logged-in traffic continues normally.
-#
-# `WAIT_THRESHOLD_SECONDS` applies to a logged-out request with no scraper
-# signal. It is kept short because logged-in users wait in the same queue:
-# with a 5s threshold, in the week to 2026-10-04, logged-in pages took 0.1-0.25s
-# to serve at the median but waited 0.7-1.6s in the queue first, and over 5s at
-# p95. Logged-in users are never shed.
-#
-# `ANON_SHED_WAIT_SECONDS` sets it without a deploy (a config change restarts
-# the dynos). It is kept between the scraper threshold and rack-timeout's wait
-# timeout.
 class AnonLoadShed
+  # Logged-out requests with no scraper signal. ANON_SHED_WAIT_SECONDS overrides it.
   WAIT_THRESHOLD_SECONDS = ENV.fetch('ANON_SHED_WAIT_SECONDS', '2.0').to_f.clamp(0.5, 15.0)
 
   # Requests that look like the distributed scrape are shed an order of
@@ -87,19 +78,8 @@ class AnonLoadShed
     (accept.start_with?('text/html') && chrome_signal(env, accept)) || cookie_signal(env)
   end
 
-  # `no_cookie`: no cookie at all. Every logged-out page sets a session
-  # cookie, so a reader sends one from their second page on. The scrape never
-  # does: on 2026-10-04, 35,559 requests in 5.5 minutes came from 32,950 IPs,
-  # 31,554 of which made one request, and 98% of logged-out HTML requests had
-  # no cookie, against 3% of logged-in ones. A reader who followed a link from
-  # another site (`Sec-Fetch-Site: cross-site`) is not counted, so a first
-  # visit from Discord or Tumblr keeps the reader threshold. A first visit
-  # typed in or from a bookmark does not; that reader is shed early only while
-  # the site is saturated, and only on that first page.
-  #
-  # This does not require an HTML Accept: most of the scrape sends
-  # `Accept: */*`, which no browser sends for a page. The API is left out: its
-  # clients authenticate with a header and send no cookie.
+  # A GET with no cookie at all, outside the API, unless it followed a link from
+  # another site. Readers send the session cookie from their second page on.
   def self.cookie_signal(env)
     return nil unless NO_COOKIE_TEST
     return nil unless env['REQUEST_METHOD'] == 'GET'
@@ -213,9 +193,7 @@ class AnonLoadShed
   # POST) wait in the long queue instead. Spamming this path to dodge the shed
   # is bounded by the rack-attack throttle on POST /login, and our threat model
   # is scraping rather than login floods.
-  # Addresses in `RACK_ATTACK_SAFE_IP`, such as the projectlawful reader proxy,
-  # which fetches on behalf of many readers and would otherwise be shed as one
-  # anonymous client. The IP is read the way Rack::Attack reads it.
+  # RACK_ATTACK_SAFE_IP addresses, read the way Rack::Attack reads them.
   def safe_ip?(env)
     $safe_ips.present? && $safe_ips.include?(Rack::Request.new(env).ip)
   end

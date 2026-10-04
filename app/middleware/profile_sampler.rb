@@ -2,39 +2,15 @@
 
 require 'securerandom'
 
-# Takes a Vernier wall-clock profile of a random sample of requests and uploads
-# it to S3, to see where request time goes in production.
-#
-# The rate is `PROFILE_SAMPLE_RATE`, a fraction of requests, and is 0 (off)
-# unless set. It is capped at `MAX_RATE`. A config change restarts the dynos,
-# so the rate can be raised or turned off without a deploy:
-#
-#   heroku config:set PROFILE_SAMPLE_RATE=0.01 -a vast-journey-9935
-#
-# Only one profile runs at a time in each Puma worker. Vernier samples every
-# thread in the process, so a second profile would measure the same threads
-# twice. A sampled request that finds a profile running is served normally
-# and is not profiled.
-#
-# Profiles are written under `profiles/<date>/` in the icon bucket. That bucket
-# is publicly readable, so each key ends in a random token and a profile holds
-# only stack frames, the controller and action, and timings. It holds no user
-# id, no query string and no header. Open one at https://profiler.firefox.com.
-#
-# Each profiled request gets a `profile_key` attribute in New Relic, so a slow
-# transaction can be matched to its profile:
-#
-#   SELECT name, duration, profile_key FROM Transaction
-#   WHERE profile_key IS NOT NULL SINCE 1 day ago
+# Profiles PROFILE_SAMPLE_RATE of requests (0 = off) with Vernier and uploads them
+# to profiles/<date>/ in the public icon bucket, so they hold no user data. The
+# transaction gets a profile_key attribute. One profile at a time per process.
 class ProfileSampler
   MAX_RATE = 0.05
 
-  # One sample per millisecond. Vernier's default of 500 microseconds doubles
-  # the overhead for detail that requests of 100ms and more do not need.
   INTERVAL_MICROSECONDS = 1000
 
-  # Uploads wait here for the background thread. When it is full, a new
-  # profile is dropped rather than letting profiles build up in memory.
+  # Profiles beyond this are dropped.
   QUEUE_SIZE = 4
 
   def self.rate
@@ -72,8 +48,6 @@ class ProfileSampler
     response
   end
 
-  # The request has its response by now. Anything that goes wrong with the
-  # profile is logged and the response is returned unchanged.
   def enqueue(env, result, status, elapsed)
     key = object_key(env, status, elapsed)
     NewRelic::Agent.add_custom_attributes(profile_key: key) if defined?(NewRelic::Agent)
@@ -95,8 +69,7 @@ class ProfileSampler
     ].join('/')
   end
 
-  # Puma forks its workers after boot, and a thread does not survive a fork,
-  # so each worker starts its own upload thread on its first profile.
+  # A thread does not survive Puma's fork, so each worker starts its own.
   def uploads
     return @uploads if @uploads_pid == Process.pid
     @uploads_pid = Process.pid

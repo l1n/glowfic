@@ -15,8 +15,6 @@ module Authentication::Api
 
     private
 
-    # Third-party applications send a Doorkeeper access token in the same
-    # Authorization header; anything Doorkeeper doesn't recognize is a JWT.
     def oauth_user
       return unless doorkeeper_token&.accessible?
       user = User.active.find_by(id: doorkeeper_token.resource_owner_id)

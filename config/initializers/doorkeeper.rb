@@ -1,16 +1,12 @@
 # frozen_string_literal: true
-# OAuth2 provider: lets third-party applications act on a user's behalf
-# through the API, after the user approves them at /oauth/authorize.
+# OAuth2 provider: lets third-party applications act on a user's behalf through the API.
 Doorkeeper.configure do
   orm :active_record
 
-  # Render the authorization pages inside the site layout, with its login
-  # and TOS checks. The token endpoints use base_metal_controller instead.
   base_controller 'ApplicationController'
 
   resource_owner_authenticator do
     next current_user if logged_in?
-    # Sign in on this URL rather than at /login, so that logging in returns here.
     session[:previous_url] = request.fullpath
     flash.now[:error] = "You must be logged in to authorize an application."
     @page_title = 'Sign In'
@@ -18,8 +14,6 @@ Doorkeeper.configure do
     nil
   end
 
-  # Applications are managed by their owners through OauthClientsController,
-  # not through Doorkeeper's admin-only applications controller.
   enable_application_owner confirmation: true
 
   grant_flows %w[authorization_code]
@@ -31,8 +25,6 @@ Doorkeeper.configure do
   hash_token_secrets
   hash_application_secrets
 
-  # The API reads the same Authorization header for its own JWTs, so only
-  # accept OAuth tokens from there and never from query parameters.
   access_token_methods :from_bearer_authorization
 
   default_scopes :api

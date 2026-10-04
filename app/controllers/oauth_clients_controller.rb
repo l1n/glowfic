@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 # Lets a user register and manage the OAuth applications they develop.
-# Applications a user has authorized are managed at oauth_authorized_applications_path.
 class OauthClientsController < ApplicationController
   before_action :login_required
   before_action :find_application, except: [:index, :new, :create]

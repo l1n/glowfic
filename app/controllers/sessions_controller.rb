@@ -2,6 +2,11 @@
 class SessionsController < ApplicationController
   before_action :logout_required, only: [:new, :create, :confirm_tos]
   before_action :login_required, only: [:destroy]
+  # The login and ToS forms appear on pages a shared cache may hold, and such a
+  # page carries no CSRF token, because making one writes the session. These
+  # two actions check where the request came from instead.
+  skip_forgery_protection only: [:create, :confirm_tos]
+  before_action :require_same_origin, only: [:create, :confirm_tos]
 
   def index
   end
@@ -42,6 +47,22 @@ class SessionsController < ApplicationController
   end
 
   private
+
+  # Blocks a form on another site from logging the reader in to an account of
+  # its choosing, or from accepting the ToS for them. Browsers send
+  # Sec-Fetch-Site on every request (Safari since 16.4, Chrome since 76,
+  # Firefox since 90); older ones send Origin on a POST. A request with
+  # neither header is not from a browser, so it is not a forged form.
+  def require_same_origin
+    site = request.headers['Sec-Fetch-Site']
+    return if site.present? ? ['same-origin', 'none'].include?(site) : same_origin_header?
+    handle_invalid_token
+  end
+
+  def same_origin_header?
+    origin = request.headers['Origin']
+    origin.blank? || origin == request.base_url
+  end
 
   def cookie_hash(value)
     return { value: value, domain: 'glowfic-staging.herokuapp.com' } if request.host.include?('staging')

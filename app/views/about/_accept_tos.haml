@@ -17,9 +17,9 @@
     = content_for :tos_form
 - else
   -# Every visitor without the ToS cookie sees this, scrapers included, so it
-  -# is on most shareable pages. Like the header form it must not bake in a
-  -# CSRF token (that writes the session), and it carries return_to because the
+  -# is on most shareable pages. Like the header form it carries no CSRF token
+  -# (making one writes the session), and it carries return_to because the
   -# session no longer remembers where a logged-out reader was.
-  = form_tag confirm_tos_path, method: :patch, id: :tos_form, authenticity_token: (false if anon_cacheable?), data: { needs_csrf: anon_cacheable? } do
+  = form_tag confirm_tos_path, method: :patch, id: :tos_form, authenticity_token: false do
     = hidden_field_tag :return_to, request.fullpath, id: nil
     = content_for :tos_form

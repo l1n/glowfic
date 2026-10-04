@@ -46,16 +46,11 @@ RSpec.describe "sharing logged-out pages" do
     end
 
     # Generating a token writes the session, so a shareable page must not
-    # carry one. csrf.js fetches it instead.
+    # carry one. SessionsController checks the origin of the POST instead.
     it "is left out, because generating it would write the session" do
       get "/posts/#{post_record.id}"
       expect(response.body).not_to include('name="csrf-token"')
       expect(response.body).not_to include('name="authenticity_token"')
-    end
-
-    it "leaves the form marked for csrf.js to fill in" do
-      get "/posts/#{post_record.id}"
-      expect(response.body).to include('data-needs-csrf="true"')
     end
 
     # Every visitor without the ToS cookie gets the ToS form, scrapers
@@ -120,18 +115,43 @@ RSpec.describe "sharing logged-out pages" do
     end
   end
 
-  describe "the csrf endpoint" do
-    it "hands out a token" do
-      get "/csrf"
-      expect(response).to have_http_status(200)
-      expect(response.parsed_body['token']).to be_present
+  describe "logging in from a page with no CSRF token" do
+    let(:user) { create(:user, password: 'testpassword') }
+
+    around(:each) do |example|
+      was = ActionController::Base.allow_forgery_protection
+      ActionController::Base.allow_forgery_protection = true
+      example.run
+      ActionController::Base.allow_forgery_protection = was
     end
 
-    # It is the one response that must never be held anywhere: a shared token
-    # would belong to whoever caused the render.
-    it "is never stored" do
-      get "/csrf"
-      expect(response.headers['Cache-Control'].to_s).to include('no-store')
+    def log_in(headers)
+      post "/login", params: { username: user.username, password: 'testpassword' }, headers: headers
+    end
+
+    it "works from the site itself" do
+      log_in('Sec-Fetch-Site' => 'same-origin')
+      expect(flash[:success]).to include('You are now logged in')
+    end
+
+    it "is refused from another site" do
+      log_in('Sec-Fetch-Site' => 'cross-site')
+      expect(flash[:success]).to be_nil
+      expect(response).to redirect_to(root_path)
+    end
+
+    it "falls back to Origin for a browser without Fetch Metadata" do
+      log_in('Origin' => 'https://evil.example')
+      expect(flash[:success]).to be_nil
+      log_in('Origin' => 'http://www.example.com')
+      expect(flash[:success]).to include('You are now logged in')
+    end
+
+    it "accepts the ToS only from the site itself" do
+      patch "/confirm_tos", headers: { 'Sec-Fetch-Site' => 'cross-site' }
+      expect(cookies[:accepted_tos]).to be_blank
+      patch "/confirm_tos", headers: { 'Sec-Fetch-Site' => 'same-origin' }
+      expect(cookies[:accepted_tos]).to be_present
     end
   end
 end

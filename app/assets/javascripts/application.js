@@ -28,4 +28,3 @@
 //= require tinymce
 //= require select2
 //= require global
-//= require csrf

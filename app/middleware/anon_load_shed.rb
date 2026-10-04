@@ -20,11 +20,14 @@
 # waited 5s. Shedding anonymous readers at 1s keeps the queue short enough
 # that logged-in users are not stuck in it. Logged-in users are never shed.
 #
+# Since `no_cookie` (below) puts nearly all of the scrape on the scraper
+# threshold, a logged-out reader who has been here before gets 2s.
+#
 # `ANON_SHED_WAIT_SECONDS` sets it without a deploy (a config change restarts
 # the dynos), e.g. back to 5 if logged-out readers are shed too often. It is
 # kept between the scraper threshold below and rack-timeout's wait timeout.
 class AnonLoadShed
-  WAIT_THRESHOLD_SECONDS = ENV.fetch('ANON_SHED_WAIT_SECONDS', '1.0').to_f.clamp(0.5, 15.0)
+  WAIT_THRESHOLD_SECONDS = ENV.fetch('ANON_SHED_WAIT_SECONDS', '2.0').to_f.clamp(0.5, 15.0)
 
   # Requests that look like the distributed scrape are shed an order of
   # magnitude sooner, so that when the queue does back up it is the scraper
@@ -46,6 +49,10 @@ class AnonLoadShed
   # off. Setting `ANON_SHED_SEC_FETCH=off` falls back to the signed-exchange
   # test alone, without a deploy (a config change restarts the dynos).
   SEC_FETCH_TEST = ENV.fetch('ANON_SHED_SEC_FETCH', 'on') != 'off'
+
+  # Turns the `no_cookie` signal on or off. `ANON_SHED_NO_COOKIE=off` turns it
+  # off without a deploy.
+  NO_COOKIE_TEST = ENV.fetch('ANON_SHED_NO_COOKIE', 'on') != 'off'
 
   # Chrome has sent `Sec-CH-UA` on every secure request since 89. Older
   # builds are left to the Fetch Metadata check only.
@@ -71,6 +78,7 @@ class AnonLoadShed
     return @app.call(env) if waited.nil? || waited < SCRAPER_WAIT_THRESHOLD_SECONDS
     return @app.call(env) if waited < WAIT_THRESHOLD_SECONDS && !self.class.scraper_signal(env)
     return @app.call(env) if login_request?(env)
+    return @app.call(env) if safe_ip?(env)
     return @app.call(env) if logged_in?(env)
     record_shed(env)
     [
@@ -119,6 +127,26 @@ class AnonLoadShed
   def self.scraper_signal(env)
     accept = env['HTTP_ACCEPT']
     return nil unless accept&.start_with?('text/html')
+    chrome_signal(env, accept) || cookie_signal(env)
+  end
+
+  # `no_cookie`: no cookie at all. Every logged-out page sets a session
+  # cookie, so a reader sends one from their second page on. The scrape never
+  # does: on 2026-10-04, 35,559 requests in 5.5 minutes came from 32,950 IPs,
+  # 31,554 of which made one request, and 98% of logged-out HTML requests had
+  # no cookie, against 3% of logged-in ones. A reader who followed a link from
+  # another site (`Sec-Fetch-Site: cross-site`) is not counted, so a first
+  # visit from Discord or Tumblr keeps the reader threshold. A first visit
+  # typed in or from a bookmark does not; that reader is shed early only while
+  # the site is saturated, and only on that first page.
+  def self.cookie_signal(env)
+    return nil unless NO_COOKIE_TEST
+    return nil if env['HTTP_COOKIE'].present?
+    return nil if env['HTTP_SEC_FETCH_SITE'] == 'cross-site'
+    'no_cookie'
+  end
+
+  def self.chrome_signal(env, accept)
     user_agent = env['HTTP_USER_AGENT'].to_s
     major = user_agent[/Chrome\/(\d+)/, 1]
     return nil unless major
@@ -171,7 +199,7 @@ class AnonLoadShed
       end
     end
   end
-  private_class_method :start_flusher
+  private_class_method :start_flusher, :chrome_signal, :cookie_signal
 
   private
 
@@ -235,6 +263,14 @@ class AnonLoadShed
   # POST) wait in the long queue instead. Spamming this path to dodge the shed
   # is bounded by the rack-attack throttle on POST /login, and our threat model
   # is scraping rather than login floods.
+  # Addresses in `RACK_ATTACK_SAFE_IP` (see config/initializers/rack_attack.rb),
+  # such as the projectlawful reader proxy, which fetches on behalf of
+  # readers and was being shed as one anonymous client. The IP is read the way
+  # Rack::Attack reads it.
+  def safe_ip?(env)
+    $safe_ips.present? && $safe_ips.include?(Rack::Request.new(env).ip)
+  end
+
   def login_request?(env)
     env['PATH_INFO'] == '/login'
   end

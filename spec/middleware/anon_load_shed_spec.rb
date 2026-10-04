@@ -88,8 +88,8 @@ RSpec.describe AnonLoadShed do
     expect(body.first).to match(/busy/i)
   end
 
-  it "sheds anonymous readers after one second by default" do
-    expect(AnonLoadShed::WAIT_THRESHOLD_SECONDS).to eq(1.0)
+  it "sheds anonymous readers after two seconds by default" do
+    expect(AnonLoadShed::WAIT_THRESHOLD_SECONDS).to eq(2.0)
   end
 
   it "still passes through anonymous users right at the threshold boundary" do
@@ -133,6 +133,9 @@ RSpec.describe AnonLoadShed do
   # now loses its thread slot an order of magnitude sooner, which is what makes
   # the difference to whoever is queued behind it.
   describe "shedding the scrape before its readers" do
+    # These examples are about the browser-header signals alone.
+    before(:each) { stub_const('AnonLoadShed::NO_COOKIE_TEST', false) }
+
     it "sheds a scraper-shaped request at a wait a reader is still served at" do
       wait = AnonLoadShed::SCRAPER_WAIT_THRESHOLD_SECONDS + 0.1
       expect(middleware.call(env(wait: wait)).first).to eq(200)
@@ -194,6 +197,9 @@ RSpec.describe AnonLoadShed do
   # so the signed-exchange token no longer told it apart. These are the
   # signals that replaced it.
   describe "classifying a scraper that copies Chrome's Accept" do
+    # These examples are about the browser-header signals alone.
+    before(:each) { stub_const('AnonLoadShed::NO_COOKIE_TEST', false) }
+
     def copied(headers={}, user_agent: chrome_ua)
       { 'HTTP_ACCEPT' => real_accept, 'HTTP_USER_AGENT' => user_agent }.merge(real_sec_headers).merge(headers)
     end
@@ -251,6 +257,63 @@ RSpec.describe AnonLoadShed do
       stub_const('AnonLoadShed::SEC_FETCH_TEST', false)
       expect(AnonLoadShed.scraper_signal(copied({ 'HTTP_SEC_FETCH_MODE' => nil }))).to be_nil
       expect(AnonLoadShed.scraper_signal(copied({ 'HTTP_ACCEPT' => forged_accept }))).to eq('no_sxg')
+    end
+  end
+
+  describe "classifying a client with no cookie" do
+    let(:reader_headers) { real_sec_headers }
+
+    def page(wait:, headers: {}, user_agent: chrome_ua)
+      env(wait: wait, accept: real_accept, user_agent: user_agent, headers: real_sec_headers.merge(headers))
+    end
+
+    it "sheds a full Chrome header set with no cookie at the scraper threshold" do
+      status, = middleware.call(page(wait: between_thresholds))
+      expect(status).to eq(503)
+      expect(AnonLoadShed.scraper_signal(page(wait: 0))).to eq('no_cookie')
+    end
+
+    it "applies to browsers that are not Chrome as well" do
+      status, = middleware.call(page(wait: between_thresholds, user_agent: firefox_ua))
+      expect(status).to eq(503)
+    end
+
+    it "gives a returning reader with a cookie the reader threshold" do
+      returning = page(wait: between_thresholds, headers: { 'HTTP_COOKIE' => '_glowfic_constellation_production=abc' })
+      expect(middleware.call(returning)).to eq([200, {}, ['ok']])
+    end
+
+    it "does not count a first visit from a link on another site" do
+      linked = page(wait: between_thresholds, headers: { 'HTTP_SEC_FETCH_SITE' => 'cross-site' })
+      expect(middleware.call(linked)).to eq([200, {}, ['ok']])
+    end
+
+    it "leaves requests that are not pages alone" do
+      expect(AnonLoadShed.scraper_signal(env(wait: 0, accept: 'image/avif,*/*', user_agent: chrome_ua))).to be_nil
+    end
+
+    it "can be switched off" do
+      stub_const('AnonLoadShed::NO_COOKIE_TEST', false)
+      expect(middleware.call(page(wait: between_thresholds))).to eq([200, {}, ['ok']])
+    end
+  end
+
+  describe "a safelisted address" do
+    around(:each) do |example|
+      was = $safe_ips
+      $safe_ips = ['45.33.77.79']
+      example.run
+      $safe_ips = was
+    end
+
+    it "is never shed, because it fetches for many readers" do
+      safe = env(wait: 30.0).merge('REMOTE_ADDR' => '45.33.77.79')
+      expect(middleware.call(safe)).to eq([200, {}, ['ok']])
+    end
+
+    it "does not protect other addresses" do
+      other = env(wait: 30.0).merge('REMOTE_ADDR' => '203.0.113.9')
+      expect(middleware.call(other).first).to eq(503)
     end
   end
 end

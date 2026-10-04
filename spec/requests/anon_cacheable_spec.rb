@@ -9,22 +9,15 @@ RSpec.describe "sharing logged-out pages" do
   describe "a logged-out reader" do
     before(:each) { get "/posts/#{post_record.id}" }
 
-    # The whole point: without this the page is never held anywhere.
     it "gets a page a shared cache may hold" do
       expect(cache_control).to include('public')
       expect(cache_control).to include("s-maxage=#{AnonCacheable::SHARED_MAX_AGE.to_i}")
     end
 
-    # A Set-Cookie in a shared cache is handed to the next reader, seating
-    # them in somebody else's session. This is the condition that made the
-    # page unshareable before, and the one most likely to come back.
     it "is sent no cookie at all" do
       expect(response.headers['Set-Cookie']).to be_blank
     end
 
-    # Belt to the Set-Cookie brace: any correct cache treats a request with a
-    # cookie as a different request, so a logged-in reader cannot be served a
-    # shared copy even if a CDN rule failed to exclude them.
     it "varies on Cookie" do
       expect(response.headers['Vary'].to_s).to include('Cookie')
     end
@@ -34,9 +27,7 @@ RSpec.describe "sharing logged-out pages" do
     end
   end
 
-  # Forgery protection is off in the test environment, so `csrf_meta_tags` and
-  # `form_tag` emit nothing at all by default and an assertion about tokens
-  # would pass vacuously. Turn it on for these, and only do GETs inside them.
+  # Forgery protection is off in tests; turn it on so token assertions mean something.
   describe "the CSRF token on a shareable page" do
     around(:each) do |example|
       was = ActionController::Base.allow_forgery_protection
@@ -45,16 +36,13 @@ RSpec.describe "sharing logged-out pages" do
       ActionController::Base.allow_forgery_protection = was
     end
 
-    # Generating a token writes the session, so a shareable page must not
-    # carry one.
     it "is left out, because generating it would write the session" do
       get "/posts/#{post_record.id}"
       expect(response.body).not_to include('name="csrf-token"')
       expect(response.body).not_to include('name="authenticity_token"')
     end
 
-    # Every visitor without the ToS cookie gets the ToS form, scrapers
-    # included. The test environment skips the ToS unless `force_tos` is set.
+    # The test environment skips the ToS unless force_tos is set.
     it "is left out of the ToS form a cookieless visitor sees" do
       get "/posts/#{post_record.id}", params: { force_tos: 1 }
       expect(response.body).to include('id="tos_form"')
@@ -63,7 +51,6 @@ RSpec.describe "sharing logged-out pages" do
       expect(cache_control).to include('public')
     end
 
-    # A page that is not shareable keeps the token inline as it always did.
     it "is still inline on a page that is not shareable" do
       get "/login"
       expect(response.body).to include('csrf-token')
@@ -76,7 +63,6 @@ RSpec.describe "sharing logged-out pages" do
       get "/posts/#{post_record.id}"
     end
 
-    # If this ever says public, one reader's page can be served to another.
     it "is never given a shareable page" do
       expect(cache_control).not_to include('public')
       expect(cache_control).not_to include('s-maxage')
@@ -89,14 +75,11 @@ RSpec.describe "sharing logged-out pages" do
       expect(response).to redirect_to("/posts/#{post_record.id}")
     end
 
-    # `return_to` rides in a form that may have come from a shared cache, so
-    # it is attacker-controlled input and must never leave the site.
     it "refuses an absolute url" do
       post "/login", params: { username: user.username, password: 'testpassword', return_to: 'https://evil.example/phish' }
       expect(response).to redirect_to(root_url)
     end
 
-    # A browser reads a scheme-relative path as another host.
     it "refuses a scheme-relative path" do
       post "/login", params: { username: user.username, password: 'testpassword', return_to: '//evil.example/phish' }
       expect(response).to redirect_to(root_url)

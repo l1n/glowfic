@@ -95,11 +95,7 @@ module Glowfic
     # sees the exception before that renders a 500.
     # See app/middleware/database_unavailable.rb.
     config.middleware.use DatabaseUnavailable
-    # Must sit OUTSIDE ActionDispatch::Cookies, not just the session store: the
-    # session only writes to the cookie jar, and it is the Cookies middleware
-    # that turns the jar into a Set-Cookie header on the way back out. Anywhere
-    # further in, this never sees the cookie.
-    # See app/middleware/shared_cache_guard.rb.
+    # Outside ActionDispatch::Cookies, so it sees Set-Cookie.
     config.middleware.insert_before ActionDispatch::Cookies, SharedCacheGuard
 
     # Setting enables YJIT as of Ruby 3.3, to bring sizeable performance improvements. We are

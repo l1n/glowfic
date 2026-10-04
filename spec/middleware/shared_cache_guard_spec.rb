@@ -7,8 +7,6 @@ RSpec.describe SharedCacheGuard do
     guard(headers).call({})
   end
 
-  # The case the middleware exists for. A response that both invites sharing
-  # and carries a cookie would put the next reader into this reader's session.
   it "withdraws sharing from a response that sets a cookie" do
     _status, headers, = call({ 'cache-control' => 'max-age=0, public, s-maxage=300', 'set-cookie' => '_glowfic=abc' })
     expect(headers['cache-control']).to eq('private, no-store')
@@ -19,8 +17,6 @@ RSpec.describe SharedCacheGuard do
     expect(headers['cache-control']).to eq('max-age=0, public, s-maxage=300')
   end
 
-  # A private response with a cookie is the ordinary logged-in case and must
-  # not be rewritten — it is already correct.
   it "leaves an ordinary private response alone" do
     _status, headers, = call({ 'cache-control' => 'max-age=0, private, must-revalidate', 'set-cookie' => '_glowfic=abc' })
     expect(headers['cache-control']).to eq('max-age=0, private, must-revalidate')
@@ -31,8 +27,6 @@ RSpec.describe SharedCacheGuard do
     expect([status, headers, body]).to eq([200, {}, ['body']])
   end
 
-  # Rack 3 wants lowercase, but this sits among middleware written before that
-  # and the session store's spelling is not ours to assume.
   it "reads capitalised header names too" do
     _status, headers, = call({ 'Cache-Control' => 'public, s-maxage=300', 'Set-Cookie' => '_glowfic=abc' })
     expect(headers['cache-control']).to eq('private, no-store')
@@ -43,9 +37,6 @@ RSpec.describe SharedCacheGuard do
     expect(headers).not_to have_key('Cache-Control')
   end
 
-  # The session store only fills the cookie jar; ActionDispatch::Cookies is
-  # what writes Set-Cookie. Placed anywhere inside it, the guard never sees the
-  # header and every check above passes while protecting nothing.
   it "sits outside the middleware that writes Set-Cookie" do
     stack = Rails.application.middleware.map(&:klass)
     expect(stack.index(SharedCacheGuard)).to be < stack.index(ActionDispatch::Cookies)

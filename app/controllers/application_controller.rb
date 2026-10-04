@@ -205,33 +205,14 @@ class ApplicationController < ActionController::Base
     flash.now[:error] = "Because Marri accidentally made passwords a bit too secure, you must log back in to continue using the site."
   end
 
-  # Only logged-in readers get their location remembered in the session.
-  #
-  # Writing the session emits `Set-Cookie`, and a response carrying one can
-  # never be held in a shared cache — it would seat the next reader in this
-  # reader's session. For a logged-out reader the session is otherwise empty,
-  # so this one line was the only thing making their page unshareable.
-  #
-  # They do not lose the "send me back where I was" behaviour: the login and
-  # signup forms carry the path in a `return_to` field instead, which travels
-  # with the page rather than with the person. See
-  # `ApplicationController#return_path` and `AnonCacheable`.
+  # Logged-out pages must not write the session, or they set a cookie and cannot be shared.
   def store_location
     return unless standard_request?
     return unless logged_in?
     session[:previous_url] = request.fullpath
   end
 
-  # Where to send someone after they log in, sign up, or accept the terms.
-  #
-  # `return_to` arrives from a form that may have been rendered into a shared
-  # cache, so it is attacker-supplied and must be treated as such: only a path
-  # on this site is accepted. A leading `//` or `/\` is rejected because a
-  # browser reads those as scheme-relative, which would make this an open
-  # redirect to another host.
-  # `url_from` is Rails' own same-host check, and the explicit checks before it
-  # keep relative paths only. A param that is not a String (`return_to[]=`)
-  # falls back rather than raising.
+  # return_to can come from a cached page, so only same-site paths are accepted.
   def return_path(param=params[:return_to])
     fallback = session[:previous_url] || root_url
     return fallback unless param.is_a?(String) && param.start_with?('/')

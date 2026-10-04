@@ -6,8 +6,6 @@
     / Meta
     %meta{charset: 'utf-8'}
     %meta{name: 'viewport', content: 'width=device-width'}
-    -# Generating a CSRF token writes it to the session, and writing the
-    -# session emits Set-Cookie, which makes the page unshareable.
     - unless anon_cacheable?
       = csrf_meta_tags
 
@@ -103,11 +101,7 @@
               = link_to logout_path, method: :delete, id: :"header-logout", data: { confirm: 'Press OK to confirm logout' } do
                 = button_tag "Log out", class: 'button'
             - elsif !current_page?(login_path)
-              -# No token: generating one writes the session, which would make
-              -# the page unshareable.
               = form_tag login_path, method: :post, id: 'header-form', authenticity_token: false do
-                -# Travels with the page instead of the session, so a shared
-                -# copy still returns each reader to the page they logged in from.
                 = hidden_field_tag :return_to, request.fullpath
                 #header-forms
                   = text_field_tag :username, params[:username], placeholder: "Username", id: 'header-username', autocomplete: 'username'

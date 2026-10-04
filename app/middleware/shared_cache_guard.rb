@@ -1,24 +1,6 @@
 # frozen_string_literal: true
 
-# Withdraws shared caching from any response that turned out to identify
-# somebody.
-#
-# `AnonCacheable` lets an action declare its logged-out rendering shareable.
-# The action cannot keep that promise on its own: the session is committed by
-# `ActionDispatch::Session::CookieStore`, which runs after every controller
-# callback has finished. A controller `after_action` asking whether a cookie
-# is going out is therefore always told no, however late it is registered.
-#
-# So the check runs here instead, and this middleware is inserted *before*
-# `ActionDispatch::Cookies`. The session store only
-# writes to the cookie jar; the Cookies middleware is what turns the jar into a
-# `Set-Cookie` header on the way back out, so this must sit outside it to see
-# the header at all.
-#
-# The rule it enforces: a response carrying a cookie describes one particular
-# person, and a shared cache would hand that response — and that cookie — to
-# whoever asks next. Caching such a response would seat a stranger in
-# somebody else's session, so the caching is removed rather than the cookie.
+# Removes public caching from any response that sets a cookie.
 class SharedCacheGuard
   def initialize(app)
     @app = app
@@ -32,8 +14,6 @@ class SharedCacheGuard
 
   private
 
-  # Rack 3 specifies lowercase header names, but this sits among middleware
-  # that predates that, so read both spellings rather than trust either.
   def header(headers, name)
     headers[name] || headers[name.split('-').map(&:capitalize).join('-')]
   end

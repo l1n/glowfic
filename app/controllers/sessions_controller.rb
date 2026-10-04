@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 class SessionsController < ApplicationController
-  # Actions that accept a same-origin request without a CSRF token.
   TOKENLESS_ACTIONS = ['create', 'confirm_tos'].freeze
 
   before_action :logout_required, only: [:new, :create, :confirm_tos]
@@ -46,20 +45,12 @@ class SessionsController < ApplicationController
 
   private
 
-  # The login and ToS forms appear on pages a shared cache may hold, and such a
-  # page carries no CSRF token, because making one writes the session. For
-  # these two actions a request from this site is accepted in place of a token.
-  # Forgery protection stays on: anything else still needs a valid token, and a
-  # failure goes through the usual InvalidAuthenticityToken handling.
+  # Shareable pages carry no CSRF token, so login and ToS accept a same-origin request instead.
   def verified_request?
     super || (TOKENLESS_ACTIONS.include?(action_name) && same_origin_request?)
   end
 
-  # Blocks a form on another site from logging the reader in to an account of
-  # its choosing, or from accepting the ToS for them. Browsers send
-  # Sec-Fetch-Site on every request (Safari since 16.4, Chrome since 76,
-  # Firefox since 90); older ones send Origin on a POST. A request with
-  # neither header is not from a browser, so it is not a forged form.
+  # A request with neither header is not from a browser.
   def same_origin_request?
     site = request.headers['Sec-Fetch-Site']
     return ['same-origin', 'none'].include?(site) if site.present?

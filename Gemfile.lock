@@ -158,6 +158,8 @@ GEM
     database_cleaner-core (2.1.0)
     date (3.5.1)
     diff-lcs (1.6.2)
+    doorkeeper (5.9.9)
+      railties (>= 5)
     dotenv (3.2.0)
     drb (2.2.3)
     erb (6.0.7)
@@ -613,6 +615,7 @@ DEPENDENCIES
   connection_pool (~> 2.0)
   dartsass-sprockets
   database_cleaner
+  doorkeeper (~> 5.8)
   dotenv
   exception_notification
   factory_bot_rails

@@ -31,6 +31,9 @@
 
 en:
   hello: "Hello world"
+  doorkeeper:
+    scopes:
+      api: "Read and write anything you can through the Glowfic API, as you"
   will_paginate:
     previous_label: "&lsaquo; Previous"
     next_label: "Next &rsaquo;"

@@ -10,10 +10,18 @@ module Authentication::Api
     end
 
     def current_user
-      @current_user ||= user_from_token
+      @current_user ||= oauth_user || user_from_token
     end
 
     private
+
+    # Third-party applications send a Doorkeeper access token in the same
+    # Authorization header; anything Doorkeeper doesn't recognize is a JWT.
+    def oauth_user
+      return unless doorkeeper_token&.accessible?
+      user = User.active.find_by(id: doorkeeper_token.resource_owner_id)
+      user unless user&.suspended?
+    end
 
     def user_from_token
       user_id = decoded_api_token[:user_id]

@@ -125,9 +125,8 @@ class AnonLoadShed
   # is. It sets a threshold rather than a block for that reason: a client
   # that copies a full, consistent header set gets the reader threshold.
   def self.scraper_signal(env)
-    accept = env['HTTP_ACCEPT']
-    return nil unless accept&.start_with?('text/html')
-    chrome_signal(env, accept) || cookie_signal(env)
+    accept = env['HTTP_ACCEPT'].to_s
+    (accept.start_with?('text/html') && chrome_signal(env, accept)) || cookie_signal(env)
   end
 
   # `no_cookie`: no cookie at all. Every logged-out page sets a session
@@ -139,8 +138,15 @@ class AnonLoadShed
   # visit from Discord or Tumblr keeps the reader threshold. A first visit
   # typed in or from a bookmark does not; that reader is shed early only while
   # the site is saturated, and only on that first page.
+  #
+  # Unlike the browser-header signals, this does not require an HTML Accept.
+  # Most of the scrape sends `Accept: */*`, which no browser sends for a page,
+  # and that let it pass every other signal as a reader. The API is left out:
+  # its clients authenticate with a header and send no cookie.
   def self.cookie_signal(env)
     return nil unless NO_COOKIE_TEST
+    return nil unless env['REQUEST_METHOD'] == 'GET'
+    return nil if env['PATH_INFO'].to_s.start_with?('/api/')
     return nil if env['HTTP_COOKIE'].present?
     return nil if env['HTTP_SEC_FETCH_SITE'] == 'cross-site'
     'no_cookie'

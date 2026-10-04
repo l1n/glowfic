@@ -264,7 +264,7 @@ RSpec.describe AnonLoadShed do
     let(:reader_headers) { real_sec_headers }
 
     def page(wait:, headers: {}, user_agent: chrome_ua)
-      env(wait: wait, accept: real_accept, user_agent: user_agent, headers: real_sec_headers.merge(headers))
+      env(wait: wait, accept: real_accept, user_agent: user_agent, headers: real_sec_headers.merge(headers)).merge('REQUEST_METHOD' => 'GET')
     end
 
     it "sheds a full Chrome header set with no cookie at the scraper threshold" do
@@ -288,8 +288,19 @@ RSpec.describe AnonLoadShed do
       expect(middleware.call(linked)).to eq([200, {}, ['ok']])
     end
 
-    it "leaves requests that are not pages alone" do
-      expect(AnonLoadShed.scraper_signal(env(wait: 0, accept: 'image/avif,*/*', user_agent: chrome_ua))).to be_nil
+    it "catches a page load that accepts anything, as most of the scrape does" do
+      any = env(wait: 0, accept: '*/*', user_agent: chrome_ua).merge('REQUEST_METHOD' => 'GET')
+      expect(AnonLoadShed.scraper_signal(any)).to eq('no_cookie')
+    end
+
+    it "leaves the API alone, whose clients send no cookie" do
+      api = env(wait: 0, accept: '*/*', path: '/api/v1/posts').merge('REQUEST_METHOD' => 'GET')
+      expect(AnonLoadShed.scraper_signal(api)).to be_nil
+    end
+
+    it "leaves requests that are not GETs alone" do
+      post = env(wait: 0, accept: real_accept).merge('REQUEST_METHOD' => 'POST')
+      expect(AnonLoadShed.scraper_signal(post)).to be_nil
     end
 
     it "can be switched off" do

@@ -89,7 +89,7 @@ module Glowfic
     config.middleware.use Rack::Deflater
     # Ordered ahead of AnonLoadShed so shed requests are still fingerprinted:
     # traffic arriving during saturation is the traffic we most want to
-    # identify. See app/middleware/client_fingerprint.rb.
+    # identify.
     config.middleware.use ClientFingerprint
     # Sheds anonymous traffic with deep queue wait so logged-in users keep
     # getting served during saturation. See app/middleware/anon_load_shed.rb.

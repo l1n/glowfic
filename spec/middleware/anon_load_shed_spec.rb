@@ -184,9 +184,9 @@ RSpec.describe AnonLoadShed do
     end
   end
 
-  # By 2026-10-01 the scrape sent real Chrome's Accept header byte for byte,
-  # so the signed-exchange token no longer told it apart. These are the
-  # signals that replaced it.
+  # Most of the scrape sends real Chrome's Accept header byte for byte, so
+  # the signed-exchange token does not tell it apart. These examples cover the
+  # other signals.
   describe "classifying a scraper that copies Chrome's Accept" do
     def copied(headers={}, user_agent: chrome_ua)
       { 'HTTP_ACCEPT' => real_accept, 'HTTP_USER_AGENT' => user_agent }.merge(real_sec_headers).merge(headers)

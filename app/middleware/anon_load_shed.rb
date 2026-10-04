@@ -92,7 +92,7 @@ class AnonLoadShed
   #   120-141 sent it on 95-100% of navigations; the scrape's forged UAs on
   #   0.0-0.3%. By 2026-10-01 the scrape had copied a real Chrome Accept
   #   byte for byte (1.3M of 1.84M requests on one Chrome/145 Mac UA string in
-  #   a week), so this signal alone no longer catches most of it.
+  #   a week), so this signal alone does not catch most of it.
   # - `no_sec_fetch`: no `Sec-Fetch-Mode`. Chromium has sent Fetch Metadata on
   #   every request since 76. These headers are specified behaviour, so they
   #   are less likely to change under us than the Accept token was.

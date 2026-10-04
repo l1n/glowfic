@@ -13,13 +13,18 @@
 # traffic gets a fast 503 + Retry-After instead of being held in queue and
 # eventually rack-timeout-aborted; logged-in traffic continues normally.
 #
-# `WAIT_THRESHOLD_SECONDS` is deliberately well above normal latency and
-# well below `RACK_TIMEOUT_WAIT_TIMEOUT`, so anonymous users still get fast
-# service in steady state, and only shed when the queue is actually deep
-# enough that rack-timeout would have failed them in another few seconds
-# anyway.
+# `WAIT_THRESHOLD_SECONDS` was 5s until 2026-10. At 5s the queue never had to
+# drain for anyone: in the week to 2026-10-04, logged-in pages took 0.1-0.25s
+# to serve at the median but waited 0.7-1.6s in the queue first, and over 5s
+# at p95, behind anonymous traffic that was never shed until it had already
+# waited 5s. Shedding anonymous readers at 1s keeps the queue short enough
+# that logged-in users are not stuck in it. Logged-in users are never shed.
+#
+# `ANON_SHED_WAIT_SECONDS` sets it without a deploy (a config change restarts
+# the dynos), e.g. back to 5 if logged-out readers are shed too often. It is
+# kept between the scraper threshold below and rack-timeout's wait timeout.
 class AnonLoadShed
-  WAIT_THRESHOLD_SECONDS = 5.0
+  WAIT_THRESHOLD_SECONDS = ENV.fetch('ANON_SHED_WAIT_SECONDS', '1.0').to_f.clamp(0.5, 15.0)
 
   # Requests that look like the distributed scrape are shed an order of
   # magnitude sooner, so that when the queue does back up it is the scraper

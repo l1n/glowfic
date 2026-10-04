@@ -9,6 +9,8 @@ RSpec.describe AnonLoadShed do
 
   let(:downstream) { ->(_env) { [200, {}, ['ok']] } }
   let(:middleware) { AnonLoadShed.new(downstream) }
+  # Long enough to shed a scraper-shaped request, not long enough to shed a reader.
+  let(:between_thresholds) { (AnonLoadShed::SCRAPER_WAIT_THRESHOLD_SECONDS + AnonLoadShed::WAIT_THRESHOLD_SECONDS) / 2 }
 
   # Headers as the two populations actually send them. Real Chrome announces
   # signed-exchange on navigations; the scrape's forged Chrome UAs do not.
@@ -52,7 +54,7 @@ RSpec.describe AnonLoadShed do
   end
 
   it "passes through when wait is under the threshold" do
-    expect(middleware.call(env(wait: 1.0))).to eq([200, {}, ['ok']])
+    expect(middleware.call(env(wait: between_thresholds))).to eq([200, {}, ['ok']])
   end
 
   it "passes through logged-in users even when the wait is large" do
@@ -66,12 +68,12 @@ RSpec.describe AnonLoadShed do
     expect(NewRelic::Agent).to receive(:increment_metric).with('Custom/AnonLoadShed/reader')
     expect(NewRelic::Agent).to receive(:increment_metric).with('Custom/AnonLoadShed/no_sxg')
     middleware.call(env(wait: 10.0))
-    middleware.call(scraper_env(wait: 3.0))
+    middleware.call(scraper_env(wait: between_thresholds))
   end
 
   it "leaves a served request's transaction alone" do
     expect(NewRelic::Agent).not_to receive(:ignore_transaction)
-    middleware.call(env(wait: 1.0))
+    middleware.call(env(wait: between_thresholds))
   end
 
   it "sheds anonymous users whose request waited longer than the threshold" do
@@ -79,6 +81,10 @@ RSpec.describe AnonLoadShed do
     expect(status).to eq(503)
     expect(headers).to include('Retry-After' => '30')
     expect(body.first).to match(/busy/i)
+  end
+
+  it "sheds anonymous readers after one second by default" do
+    expect(AnonLoadShed::WAIT_THRESHOLD_SECONDS).to eq(1.0)
   end
 
   it "still passes through anonymous users right at the threshold boundary" do
@@ -141,7 +147,7 @@ RSpec.describe AnonLoadShed do
 
     # Real Chrome sends the token, so it is never classified by the UA alone.
     it "does not shed real Chrome early" do
-      real = env(wait: 3.0, accept: real_accept, user_agent: chrome_ua, headers: real_sec_headers)
+      real = env(wait: between_thresholds, accept: real_accept, user_agent: chrome_ua, headers: real_sec_headers)
       expect(middleware.call(real)).to eq([200, {}, ['ok']])
     end
 
@@ -149,33 +155,33 @@ RSpec.describe AnonLoadShed do
     # classify every one of their users as a scraper, which is why the Chrome
     # claim is required too.
     it "does not shed browsers that never send the token" do
-      firefox = env(wait: 3.0, accept: forged_accept, user_agent: firefox_ua)
+      firefox = env(wait: between_thresholds, accept: forged_accept, user_agent: firefox_ua)
       expect(middleware.call(firefox)).to eq([200, {}, ['ok']])
     end
 
     # Subresources carry a different Accept and are not navigations; a page's
     # images should not be judged apart from the page.
     it "does not classify subresource requests" do
-      image = env(wait: 3.0, accept: 'image/avif,image/webp,*/*', user_agent: chrome_ua)
+      image = env(wait: between_thresholds, accept: 'image/avif,image/webp,*/*', user_agent: chrome_ua)
       expect(middleware.call(image)).to eq([200, {}, ['ok']])
     end
 
     it "passes through a bare env with no headers at all" do
-      expect(middleware.call(env(wait: 3.0))).to eq([200, {}, ['ok']])
+      expect(middleware.call(env(wait: between_thresholds))).to eq([200, {}, ['ok']])
     end
 
     # A logged-in reader on a Chrome build that omits the token is a reader,
     # not a scraper, and the login checks still run after the shape check.
     it "never sheds a logged-in user early, whatever shape their request is" do
-      expect(middleware.call(scraper_env(wait: 3.0, user_id: 1))).to eq([200, {}, ['ok']])
+      expect(middleware.call(scraper_env(wait: between_thresholds, user_id: 1))).to eq([200, {}, ['ok']])
     end
 
     it "never sheds a remembered user early either" do
-      expect(middleware.call(scraper_env(wait: 3.0, remembered: 7))).to eq([200, {}, ['ok']])
+      expect(middleware.call(scraper_env(wait: between_thresholds, remembered: 7))).to eq([200, {}, ['ok']])
     end
 
     it "never sheds a scraper-shaped login request" do
-      expect(middleware.call(scraper_env(wait: 3.0, path: '/login')).first).to eq(200)
+      expect(middleware.call(scraper_env(wait: between_thresholds, path: '/login')).first).to eq(200)
     end
   end
 
@@ -188,7 +194,7 @@ RSpec.describe AnonLoadShed do
     end
 
     def shed_early?(headers)
-      env_hash = env(wait: 3.0).merge(headers)
+      env_hash = env(wait: between_thresholds).merge(headers)
       middleware.call(env_hash).first == 503
     end
 

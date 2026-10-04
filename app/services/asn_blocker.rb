@@ -8,7 +8,7 @@
 # ~10k IPv4 prefixes typical for the configured ASN set. IPv6 prefixes
 # fall through to a linear scan (smaller list, less frequent traffic).
 class AsnBlocker
-  CIDR_FILE = Rails.root.join('config/blocked_asn_cidrs.yml').freeze
+  CIDR_FILE = Rails.root.join('config', "blocked_asn_cidrs.yml").freeze
 
   CIDRS = begin
     data = YAML.load_file(CIDR_FILE)
@@ -28,13 +28,13 @@ class AsnBlocker
 
   IPV6_CIDRS = CIDRS.reject(&:ipv4?).freeze
 
-  def self.block?(ip)
-    return false if ip.blank?
+  def self.block?(address)
+    return false if address.blank?
 
-    addr = IPAddr.new(ip.to_s)
+    addr = IPAddr.new(address.to_s)
     if addr.ipv4?
       bucket = IPV4_BY_FIRST_OCTET[(addr.to_i >> 24) & 0xff]
-      bucket && bucket.any? { |cidr| cidr.include?(addr) }
+      bucket&.any? { |cidr| cidr.include?(addr) }
     else
       IPV6_CIDRS.any? { |cidr| cidr.include?(addr) }
     end

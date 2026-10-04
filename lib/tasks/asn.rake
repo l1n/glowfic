@@ -1,12 +1,13 @@
+# frozen_string_literal: true
 require 'net/http'
 require 'json'
 require 'yaml'
 
 namespace :asn do
   desc "Resolve config/blocked_asns.yml to CIDR ranges via RIPEstat and rewrite config/blocked_asn_cidrs.yml"
-  task :refresh do
-    asn_file = Rails.root.join('config/blocked_asns.yml')
-    out_file = Rails.root.join('config/blocked_asn_cidrs.yml')
+  task refresh: :environment do
+    asn_file = Rails.root.join('config', "blocked_asns.yml")
+    out_file = Rails.root.join('config', "blocked_asn_cidrs.yml")
 
     config = YAML.load_file(asn_file)
     asns = (config['asns'] || []).map { |a| a.is_a?(Hash) ? a['asn'] : a }

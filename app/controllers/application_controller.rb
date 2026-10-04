@@ -229,11 +229,14 @@ class ApplicationController < ActionController::Base
   # on this site is accepted. A leading `//` or `/\` is rejected because a
   # browser reads those as scheme-relative, which would make this an open
   # redirect to another host.
+  # `url_from` is Rails' own same-host check, and the explicit checks before it
+  # keep relative paths only. A param that is not a String (`return_to[]=`)
+  # falls back rather than raising.
   def return_path(param=params[:return_to])
-    return session[:previous_url] || root_url if param.blank?
-    return session[:previous_url] || root_url unless param.start_with?('/')
-    return session[:previous_url] || root_url if param.start_with?('//', '/\\')
-    param
+    fallback = session[:previous_url] || root_url
+    return fallback unless param.is_a?(String) && param.start_with?('/')
+    return fallback if param.start_with?('//', '/\\')
+    url_from(param) || fallback
   end
 
   def set_login_gon

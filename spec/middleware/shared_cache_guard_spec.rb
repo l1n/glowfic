@@ -42,4 +42,12 @@ RSpec.describe SharedCacheGuard do
     _status, headers, = call({ 'Cache-Control' => 'public, s-maxage=300', 'Set-Cookie' => '_glowfic=abc' })
     expect(headers).not_to have_key('Cache-Control')
   end
+
+  # The session store only fills the cookie jar; ActionDispatch::Cookies is
+  # what writes Set-Cookie. Placed anywhere inside it, the guard never sees the
+  # header and every check above passes while protecting nothing.
+  it "sits outside the middleware that writes Set-Cookie" do
+    stack = Rails.application.middleware.map(&:klass)
+    expect(stack.index(SharedCacheGuard)).to be < stack.index(ActionDispatch::Cookies)
+  end
 end

@@ -10,7 +10,7 @@
  * far longer than the request takes.
  */
 $(document).ready(function() {
-  var forms = $('form[data-needs-csrf="true"]');
+  const forms = $('form[data-needs-csrf="true"]');
   if (forms.length === 0) { return; }
 
   $.ajax({
@@ -21,7 +21,7 @@ $(document).ready(function() {
     success: function(data) {
       if (!data || !data.token) { return; }
       forms.each(function() {
-        var form = $(this);
+        const form = $(this);
         // Guard against a double insert if this ever runs twice.
         if (form.find('input[name="authenticity_token"]').length > 0) { return; }
         $('<input>').attr({

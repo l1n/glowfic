@@ -58,6 +58,18 @@ RSpec.describe "sharing logged-out pages" do
       expect(response.body).to include('data-needs-csrf="true"')
     end
 
+    # Every visitor without the ToS cookie gets the ToS form, scrapers
+    # included. The test environment skips the ToS unless `force_tos` is set,
+    # which hid this: the form baked in a token, wrote the session, and so no
+    # cookieless visitor's page was ever shareable.
+    it "is left out of the ToS form a cookieless visitor sees" do
+      get "/posts/#{post_record.id}", params: { force_tos: 1 }
+      expect(response.body).to include('id="tos_form"')
+      expect(response.body).not_to include('name="authenticity_token"')
+      expect(response.headers['Set-Cookie']).to be_blank
+      expect(cache_control).to include('public')
+    end
+
     # A page that is not shareable keeps the token inline as it always did.
     it "is still inline on a page that is not shareable" do
       get "/login"
@@ -99,6 +111,11 @@ RSpec.describe "sharing logged-out pages" do
 
     it "refuses a backslash-escaped path" do
       post "/login", params: { username: user.username, password: 'testpassword', return_to: '/\\evil.example' }
+      expect(response).to redirect_to(root_url)
+    end
+
+    it "falls back when return_to is not a string" do
+      post "/login", params: { username: user.username, password: 'testpassword', return_to: ['/posts'] }
       expect(response).to redirect_to(root_url)
     end
   end

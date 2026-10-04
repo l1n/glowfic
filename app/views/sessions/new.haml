@@ -1,4 +1,6 @@
 = form_tag login_path, method: :post do
+  -# Logging in from this page lands on the boards list; see SessionsController#create.
+  = hidden_field_tag :return_to, login_path
   .form-table
     .editor-title Sign In
     #username-row

@@ -9,9 +9,11 @@
 # callback has finished. A controller `after_action` asking whether a cookie
 # is going out is therefore always told no, however late it is registered.
 #
-# So the check runs here instead, and this middleware is inserted *before* the
-# session store (see config/application.rb) so that on the way back out the
-# session has already written its `Set-Cookie` and this can see it.
+# So the check runs here instead, and this middleware is inserted *before*
+# `ActionDispatch::Cookies` (see config/application.rb). The session store only
+# writes to the cookie jar; the Cookies middleware is what turns the jar into a
+# `Set-Cookie` header on the way back out, so this must sit outside it to see
+# the header at all.
 #
 # The rule it enforces: a response carrying a cookie describes one particular
 # person, and a shared cache would hand that response — and that cookie — to

@@ -13,19 +13,15 @@
 # traffic gets a fast 503 + Retry-After instead of being held in queue and
 # eventually rack-timeout-aborted; logged-in traffic continues normally.
 #
-# `WAIT_THRESHOLD_SECONDS` was 5s until 2026-10. At 5s the queue never had to
-# drain for anyone: in the week to 2026-10-04, logged-in pages took 0.1-0.25s
-# to serve at the median but waited 0.7-1.6s in the queue first, and over 5s
-# at p95, behind anonymous traffic that was never shed until it had already
-# waited 5s. Shedding anonymous readers at 1s keeps the queue short enough
-# that logged-in users are not stuck in it. Logged-in users are never shed.
-#
-# Since `no_cookie` (below) puts nearly all of the scrape on the scraper
-# threshold, a logged-out reader who has been here before gets 2s.
+# `WAIT_THRESHOLD_SECONDS` applies to a logged-out request with no scraper
+# signal. It is kept short because logged-in users wait in the same queue:
+# with a 5s threshold, in the week to 2026-10-04, logged-in pages took 0.1-0.25s
+# to serve at the median but waited 0.7-1.6s in the queue first, and over 5s at
+# p95. Logged-in users are never shed.
 #
 # `ANON_SHED_WAIT_SECONDS` sets it without a deploy (a config change restarts
-# the dynos), e.g. back to 5 if logged-out readers are shed too often. It is
-# kept between the scraper threshold below and rack-timeout's wait timeout.
+# the dynos). It is kept between the scraper threshold and rack-timeout's wait
+# timeout.
 class AnonLoadShed
   WAIT_THRESHOLD_SECONDS = ENV.fetch('ANON_SHED_WAIT_SECONDS', '2.0').to_f.clamp(0.5, 15.0)
 
@@ -101,10 +97,9 @@ class AnonLoadShed
   # typed in or from a bookmark does not; that reader is shed early only while
   # the site is saturated, and only on that first page.
   #
-  # Unlike the browser-header signals, this does not require an HTML Accept.
-  # Most of the scrape sends `Accept: */*`, which no browser sends for a page,
-  # and that let it pass every other signal as a reader. The API is left out:
-  # its clients authenticate with a header and send no cookie.
+  # This does not require an HTML Accept: most of the scrape sends
+  # `Accept: */*`, which no browser sends for a page. The API is left out: its
+  # clients authenticate with a header and send no cookie.
   def self.cookie_signal(env)
     return nil unless NO_COOKIE_TEST
     return nil unless env['REQUEST_METHOD'] == 'GET'
@@ -218,10 +213,9 @@ class AnonLoadShed
   # POST) wait in the long queue instead. Spamming this path to dodge the shed
   # is bounded by the rack-attack throttle on POST /login, and our threat model
   # is scraping rather than login floods.
-  # Addresses in `RACK_ATTACK_SAFE_IP` (see config/initializers/rack_attack.rb),
-  # such as the projectlawful reader proxy, which fetches on behalf of
-  # readers and was being shed as one anonymous client. The IP is read the way
-  # Rack::Attack reads it.
+  # Addresses in `RACK_ATTACK_SAFE_IP`, such as the projectlawful reader proxy,
+  # which fetches on behalf of many readers and would otherwise be shed as one
+  # anonymous client. The IP is read the way Rack::Attack reads it.
   def safe_ip?(env)
     $safe_ips.present? && $safe_ips.include?(Rack::Request.new(env).ip)
   end

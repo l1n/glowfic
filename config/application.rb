@@ -94,7 +94,6 @@ module Glowfic
     # getting served during saturation. See app/middleware/anon_load_shed.rb.
     config.middleware.use AnonLoadShed
     # After AnonLoadShed, so shed requests are not profiled.
-    # See app/middleware/profile_sampler.rb.
     config.middleware.use ProfileSampler
     # Answers with 503 rather than 500 while Postgres is restarting or failing
     # over. Appended last so it sits inside ActionDispatch::ShowExceptions and

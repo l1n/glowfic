@@ -46,7 +46,7 @@ RSpec.describe "sharing logged-out pages" do
     end
 
     # Generating a token writes the session, so a shareable page must not
-    # carry one. SessionsController checks the origin of the POST instead.
+    # carry one.
     it "is left out, because generating it would write the session" do
       get "/posts/#{post_record.id}"
       expect(response.body).not_to include('name="csrf-token"')
@@ -54,9 +54,7 @@ RSpec.describe "sharing logged-out pages" do
     end
 
     # Every visitor without the ToS cookie gets the ToS form, scrapers
-    # included. The test environment skips the ToS unless `force_tos` is set,
-    # which hid this: the form baked in a token, wrote the session, and so no
-    # cookieless visitor's page was ever shareable.
+    # included. The test environment skips the ToS unless `force_tos` is set.
     it "is left out of the ToS form a cookieless visitor sees" do
       get "/posts/#{post_record.id}", params: { force_tos: 1 }
       expect(response.body).to include('id="tos_form"')

@@ -10,7 +10,7 @@
 # is going out is therefore always told no, however late it is registered.
 #
 # So the check runs here instead, and this middleware is inserted *before*
-# `ActionDispatch::Cookies` (see config/application.rb). The session store only
+# `ActionDispatch::Cookies`. The session store only
 # writes to the cookie jar; the Cookies middleware is what turns the jar into a
 # `Set-Cookie` header on the way back out, so this must sit outside it to see
 # the header at all.

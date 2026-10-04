@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class SessionsController < ApplicationController
-  # Actions that accept a same-origin request without a CSRF token; see verified_request?.
+  # Actions that accept a same-origin request without a CSRF token.
   TOKENLESS_ACTIONS = ['create', 'confirm_tos'].freeze
 
   before_action :logout_required, only: [:new, :create, :confirm_tos]

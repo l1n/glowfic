@@ -25,11 +25,6 @@
 # to the session, and writing to the session emits `Set-Cookie`. It is checked
 # again at response time rather than assumed, because the cost of being wrong
 # is serving one reader's session to another.
-#
-# AnonLoadShed tells readers from the scrape by whether a request carries any
-# cookie, and these pages no longer set one from the server. So
-# app/assets/javascripts/seen_cookie.js sets a cookie in the browser, which a
-# shared cache never sees.
 module AnonCacheable
   extend ActiveSupport::Concern
 

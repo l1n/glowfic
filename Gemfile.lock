@@ -615,7 +615,7 @@ DEPENDENCIES
   connection_pool (~> 2.0)
   dartsass-sprockets
   database_cleaner
-  doorkeeper (~> 5.8)
+  doorkeeper (~> 5.9)
   dotenv
   exception_notification
   factory_bot_rails

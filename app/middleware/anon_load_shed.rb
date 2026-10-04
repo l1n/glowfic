@@ -12,17 +12,8 @@
 # requests, dyno restart re-saturation). When that happens, anonymous
 # traffic gets a fast 503 + Retry-After instead of being held in queue and
 # eventually rack-timeout-aborted; logged-in traffic continues normally.
-#
-# `WAIT_THRESHOLD_SECONDS` applies to a logged-out request with no scraper
-# signal. It is kept short because logged-in users wait in the same queue:
-# with a 5s threshold, in the week to 2026-10-04, logged-in pages took 0.1-0.25s
-# to serve at the median but waited 0.7-1.6s in the queue first, and over 5s at
-# p95. Logged-in users are never shed.
-#
-# `ANON_SHED_WAIT_SECONDS` sets it without a deploy (a config change restarts
-# the dynos). It is kept between the scraper threshold and rack-timeout's wait
-# timeout.
 class AnonLoadShed
+  # Logged-out requests with no scraper signal. ANON_SHED_WAIT_SECONDS overrides it.
   WAIT_THRESHOLD_SECONDS = ENV.fetch('ANON_SHED_WAIT_SECONDS', '2.0').to_f.clamp(0.5, 15.0)
 
   # Requests that look like the distributed scrape are shed an order of
@@ -41,17 +32,13 @@ class AnonLoadShed
   # enough that somebody is going to be shed regardless, and it decides who.
   SCRAPER_WAIT_THRESHOLD_SECONDS = 0.5
 
-  # Turns the Fetch Metadata and client-hint checks in `scraper_signal` on or
-  # off. Setting `ANON_SHED_SEC_FETCH=off` falls back to the signed-exchange
-  # test alone, without a deploy (a config change restarts the dynos).
+  # ANON_SHED_SEC_FETCH=off leaves only the signed-exchange check.
   SEC_FETCH_TEST = ENV.fetch('ANON_SHED_SEC_FETCH', 'on') != 'off'
 
-  # Turns the `no_cookie` signal on or off. `ANON_SHED_NO_COOKIE=off` turns it
-  # off without a deploy.
+  # ANON_SHED_NO_COOKIE=off turns off the no_cookie signal.
   NO_COOKIE_TEST = ENV.fetch('ANON_SHED_NO_COOKIE', 'on') != 'off'
 
-  # Chrome has sent `Sec-CH-UA` on every secure request since 89. Older
-  # builds are left to the Fetch Metadata check only.
+  # Chrome sends Sec-CH-UA from version 89.
   CLIENT_HINTS_SINCE = 90
 
   def initialize(app)
@@ -84,60 +71,15 @@ class AnonLoadShed
     ]
   end
 
-  # Returns why a request looks like the distributed scrape, or nil if it
-  # does not. It is a class method so that `ClientFingerprint` can record the
-  # verdict on every request, not only on those that waited long enough for
-  # this middleware to ask.
-  #
-  # The test applies only to HTML navigations from a client that says it is
-  # Chrome (or another Chromium browser, which all carry `Chrome/` in the UA).
-  # Firefox and Safari send none of the headers checked below, so a request
-  # that does not claim Chrome is never classified. Subresources carry a
-  # different Accept and are judged with their page, not apart from it.
-  #
-  # The signals, in order:
-  #
-  # - `no_sxg`: no `application/signed-exchange` in Accept. Genuine Chrome
-  #   120-141 sent it on 95-100% of navigations; the scrape's forged UAs on
-  #   0.0-0.3%. By 2026-10-01 the scrape had copied a real Chrome Accept
-  #   byte for byte (1.3M of 1.84M requests on one Chrome/145 Mac UA string in
-  #   a week), so this signal alone does not catch most of it.
-  # - `no_sec_fetch`: no `Sec-Fetch-Mode`. Chromium has sent Fetch Metadata on
-  #   every request since 76. These headers are specified behaviour, so they
-  #   are less likely to change under us than the Accept token was.
-  # - `no_ch_ua`: no `Sec-CH-UA`. Chromium sends this low-entropy client hint
-  #   on every secure request since 89.
-  # - `ch_ua_mismatch`: `Sec-CH-UA` names a Chromium version other than the
-  #   one in the UA. The scrape rotates its UA across many Chrome versions; a
-  #   client that copied one browser's header set keeps that browser's hint.
-  #   Every Chromium browser lists a `"Chromium"` brand whose major version
-  #   matches the `Chrome/` token in its UA.
-  #
-  # Android WebView (`; wv)` in the UA) is held only to the Fetch Metadata
-  # check. Readers arrive in it from in-app browsers, and older WebView builds
-  # did not send client hints.
-  #
-  # This is a header-level heuristic, which is the most forgeable tier there
-  # is. It sets a threshold rather than a block for that reason: a client
-  # that copies a full, consistent header set gets the reader threshold.
+  # Why a request looks like the scrape, or nil. A class method so ClientFingerprint
+  # can record it on every request.
   def self.scraper_signal(env)
     accept = env['HTTP_ACCEPT'].to_s
     (accept.start_with?('text/html') && chrome_signal(env, accept)) || cookie_signal(env)
   end
 
-  # `no_cookie`: no cookie at all. Every logged-out page sets a session
-  # cookie, so a reader sends one from their second page on. The scrape never
-  # does: on 2026-10-04, 35,559 requests in 5.5 minutes came from 32,950 IPs,
-  # 31,554 of which made one request, and 98% of logged-out HTML requests had
-  # no cookie, against 3% of logged-in ones. A reader who followed a link from
-  # another site (`Sec-Fetch-Site: cross-site`) is not counted, so a first
-  # visit from Discord or Tumblr keeps the reader threshold. A first visit
-  # typed in or from a bookmark does not; that reader is shed early only while
-  # the site is saturated, and only on that first page.
-  #
-  # This does not require an HTML Accept: most of the scrape sends
-  # `Accept: */*`, which no browser sends for a page. The API is left out: its
-  # clients authenticate with a header and send no cookie.
+  # A GET with no cookie at all, outside the API, unless it followed a link from
+  # another site. Readers send the session cookie from their second page on.
   def self.cookie_signal(env)
     return nil unless NO_COOKIE_TEST
     return nil unless env['REQUEST_METHOD'] == 'GET'
@@ -161,10 +103,8 @@ class AnonLoadShed
     nil
   end
 
-  # The agent keeps a metric recorded inside a transaction with that
-  # transaction, and discards both when the transaction is ignored. So shed
-  # counts are held here and handed to the agent every `FLUSH_SECONDS` from a
-  # thread that is not inside a transaction.
+  # The agent drops metrics recorded inside an ignored transaction, so sheds are
+  # counted here and flushed from a thread outside any transaction.
   FLUSH_SECONDS = 60
 
   @shed_counts = Hash.new(0)
@@ -186,8 +126,7 @@ class AnonLoadShed
     counts.each { |name, count| NewRelic::Agent.increment_metric(name, count) }
   end
 
-  # Puma forks its workers after boot, and a thread does not survive a fork,
-  # so each worker starts its own flusher.
+  # A thread does not survive Puma's fork, so each worker starts its own.
   def self.start_flusher
     @flusher_pid = Process.pid
     @shed_counts = Hash.new(0)
@@ -204,18 +143,7 @@ class AnonLoadShed
 
   private
 
-  # A shed request is counted, not traced. During saturation 11-13% of all
-  # requests are shed, and a full Transaction event for each one was a large
-  # share of New Relic ingest while saying nothing a counter does not. Query
-  # the counts with
-  #
-  #   SELECT sum(newrelic.timeslice.value) FROM Metric
-  #   WHERE metricTimesliceName LIKE 'Custom/AnonLoadShed/%'
-  #   FACET metricTimesliceName TIMESERIES
-  #
-  # The name says why the request was shed: a scraper signal from
-  # `scraper_signal`, or `reader` for one that waited past the reader
-  # threshold.
+  # Counted, not traced. Query count(newrelic.timeslice.value) for Custom/AnonLoadShed/%.
   def record_shed(env)
     return unless defined?(NewRelic::Agent)
     NewRelic::Agent.ignore_transaction
@@ -264,9 +192,7 @@ class AnonLoadShed
   # POST) wait in the long queue instead. Spamming this path to dodge the shed
   # is bounded by the rack-attack throttle on POST /login, and our threat model
   # is scraping rather than login floods.
-  # Addresses in `RACK_ATTACK_SAFE_IP`, such as the projectlawful reader proxy,
-  # which fetches on behalf of many readers and would otherwise be shed as one
-  # anonymous client. The IP is read the way Rack::Attack reads it.
+  # RACK_ATTACK_SAFE_IP addresses, read the way Rack::Attack reads them.
   def safe_ip?(env)
     $safe_ips.present? && $safe_ips.include?(Rack::Request.new(env).ip)
   end

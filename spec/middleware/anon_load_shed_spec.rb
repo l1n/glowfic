@@ -61,8 +61,6 @@ RSpec.describe AnonLoadShed do
     expect(middleware.call(env(wait: 30.0, user_id: 1))).to eq([200, {}, ['ok']])
   end
 
-  # A shed is counted, not traced: a Transaction event per 503 was a large
-  # share of New Relic ingest during saturation.
   it "counts a shed request by reason instead of recording a transaction" do
     AnonLoadShed.flush_shed_counts
     expect(NewRelic::Agent).to receive(:ignore_transaction).exactly(3).times
@@ -70,7 +68,6 @@ RSpec.describe AnonLoadShed do
     middleware.call(env(wait: 10.0))
     middleware.call(scraper_env(wait: between_thresholds))
 
-    # Recorded outside the request's transaction, which the agent discards.
     expect(NewRelic::Agent).to receive(:increment_metric).with('Custom/AnonLoadShed/reader', 2)
     expect(NewRelic::Agent).to receive(:increment_metric).with('Custom/AnonLoadShed/no_sxg', 1)
     AnonLoadShed.flush_shed_counts
@@ -193,9 +190,6 @@ RSpec.describe AnonLoadShed do
     end
   end
 
-  # Most of the scrape sends real Chrome's Accept header byte for byte, so
-  # the signed-exchange token does not tell it apart. These examples cover the
-  # other signals.
   describe "classifying a scraper that copies Chrome's Accept" do
     # These examples are about the browser-header signals alone.
     before(:each) { stub_const('AnonLoadShed::NO_COOKIE_TEST', false) }
@@ -221,14 +215,11 @@ RSpec.describe AnonLoadShed do
       expect(AnonLoadShed.scraper_signal(copied({ 'HTTP_SEC_CH_UA' => nil }))).to eq('no_ch_ua')
     end
 
-    # The scrape rotates its UA; a copied header set keeps one browser's hint.
     it "flags a client hint that names another Chromium version than the UA" do
       rotated = chrome_ua.sub('Chrome/145', 'Chrome/131')
       expect(AnonLoadShed.scraper_signal(copied(user_agent: rotated))).to eq('ch_ua_mismatch')
     end
 
-    # Edge, Opera, Brave and Samsung Internet all list a Chromium brand whose
-    # version matches the Chrome/ token in their UA.
     it "passes another Chromium browser with a matching brand" do
       edge = copied(
         { 'HTTP_SEC_CH_UA' => '"Microsoft Edge";v="145", "Chromium";v="145", "Not)A;Brand";v="8"' },
@@ -237,8 +228,6 @@ RSpec.describe AnonLoadShed do
       expect(AnonLoadShed.scraper_signal(edge)).to be_nil
     end
 
-    # Readers reach the site from in-app browsers, and older WebView builds
-    # did not send client hints.
     it "holds Android WebView to the Fetch Metadata check only" do
       webview_ua = 'Mozilla/5.0 (Linux; Android 14; Pixel 8; wv) AppleWebKit/537.36 (KHTML, like Gecko) ' \
                    'Version/4.0 Chrome/145.0.0.0 Mobile Safari/537.36'
@@ -251,8 +240,6 @@ RSpec.describe AnonLoadShed do
       expect(shed_early?(copied)).to be(false)
     end
 
-    # The switch exists so the new checks can be turned off with a config
-    # change if they shed real readers.
     it "falls back to the signed-exchange test alone when switched off" do
       stub_const('AnonLoadShed::SEC_FETCH_TEST', false)
       expect(AnonLoadShed.scraper_signal(copied({ 'HTTP_SEC_FETCH_MODE' => nil }))).to be_nil
@@ -261,8 +248,6 @@ RSpec.describe AnonLoadShed do
   end
 
   describe "classifying a client with no cookie" do
-    let(:reader_headers) { real_sec_headers }
-
     def page(wait:, headers: {}, user_agent: chrome_ua)
       env(wait: wait, accept: real_accept, user_agent: user_agent, headers: real_sec_headers.merge(headers)).merge('REQUEST_METHOD' => 'GET')
     end

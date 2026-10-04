@@ -27,10 +27,7 @@ common: &default_settings
   backport_fast_active_record_connection_lookup: true
   instrumentation:
     redis: "chain"
-  # Every attribute is stored on every Transaction event, and those events are
-  # most of what New Relic ingests. These four are never queried: Content-Type
-  # is implied by the transaction name, and the lengths are better read from
-  # Heroku's router.
+  # Unqueried attributes, left out of Transaction events.
   transaction_events:
     attributes:
       exclude:

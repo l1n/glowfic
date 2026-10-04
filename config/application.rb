@@ -92,9 +92,7 @@ module Glowfic
     config.action_view.sanitized_allowed_attributes = %w(href src width height alt cite datetime title class name xml:lang abbr style target)
     config.middleware.use Rack::Pratchett
     config.middleware.use Rack::Deflater
-    # Ordered ahead of AnonLoadShed so shed requests are still fingerprinted:
-    # traffic arriving during saturation is the traffic we most want to
-    # identify.
+    # Before AnonLoadShed, so shed requests are fingerprinted too.
     config.middleware.use ClientFingerprint
     # Sheds anonymous traffic with deep queue wait so logged-in users keep
     # getting served during saturation. See app/middleware/anon_load_shed.rb.

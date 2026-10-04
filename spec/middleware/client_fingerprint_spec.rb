@@ -2,15 +2,11 @@ RSpec.describe ClientFingerprint do
   let(:downstream) { ->(_env) { [200, {}, ['ok']] } }
   let(:middleware) { ClientFingerprint.new(downstream) }
 
-  # Rack hands middleware an ordered hash and Ruby hashes preserve insertion
-  # order, so the sequence headers are written here is the sequence the
-  # ordered digest sees - the same thing Puma's parser produces from the wire.
+  # Header order here is the order the ordered digest sees.
   def env(headers={}, method: 'GET', protocol: 'HTTP/1.1')
     { 'REQUEST_METHOD' => method, 'SERVER_PROTOCOL' => protocol }.merge(headers)
   end
 
-  # Four headers, so JA4H_a's count component is a stable "04" across examples
-  # that do not deliberately add more.
   def chrome_headers
     {
       'HTTP_HOST'            => 'glowfic.com',
@@ -122,15 +118,11 @@ RSpec.describe ClientFingerprint do
     end
   end
 
-  # Every attribute lands on every Transaction event, which is most of what
-  # New Relic ingests, so only the page requests under investigation pay.
   it "does not fingerprint requests that are not HTML pages" do
     expect(NewRelic::Agent).not_to receive(:add_custom_attributes)
     middleware.call(env(chrome_headers.merge('HTTP_ACCEPT' => 'image/avif,image/webp,*/*')))
   end
 
-  # The shedder's verdict goes on every request, so its rule can be checked
-  # against all traffic and not only against what it saw during saturation.
   describe "the shedder's verdict" do
     it "records why a request looks like the scrape" do
       attrs = attributes_for(env(chrome_headers))

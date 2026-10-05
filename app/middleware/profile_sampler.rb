@@ -5,6 +5,7 @@ require 'securerandom'
 # Profiles PROFILE_SAMPLE_RATE of requests (0 = off) with Vernier and uploads them
 # to profiles/<date>/ in the public icon bucket, so they hold no user data. The
 # transaction gets a profile_key attribute. One profile at a time per process.
+# PROFILE_ALLOCATION_INTERVAL=N also records every Nth object allocation.
 class ProfileSampler
   MAX_RATE = 0.05
 
@@ -15,6 +16,10 @@ class ProfileSampler
 
   def self.rate
     ENV['PROFILE_SAMPLE_RATE'].to_f.clamp(0.0, MAX_RATE)
+  end
+
+  def self.allocation_interval
+    ENV['PROFILE_ALLOCATION_INTERVAL'].to_i.clamp(0, 1_000_000)
   end
 
   def initialize(app, rate: self.class.rate, uploader: method(:upload))
@@ -40,7 +45,7 @@ class ProfileSampler
   def profile(env)
     response = nil
     started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-    result = Vernier.profile(interval: INTERVAL_MICROSECONDS, hooks: [:rails]) do
+    result = Vernier.profile(interval: INTERVAL_MICROSECONDS, allocation_interval: self.class.allocation_interval, hooks: [:rails]) do
       response = @app.call(env)
     end
     elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started

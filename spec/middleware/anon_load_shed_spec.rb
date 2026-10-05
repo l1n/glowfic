@@ -85,6 +85,10 @@ RSpec.describe AnonLoadShed do
     expect(body.first).to match(/busy/i)
   end
 
+  it "sheds scraper-shaped requests after half a second by default" do
+    expect(AnonLoadShed::SCRAPER_WAIT_THRESHOLD_SECONDS).to eq(0.5)
+  end
+
   it "sheds anonymous readers after two seconds by default" do
     expect(AnonLoadShed::WAIT_THRESHOLD_SECONDS).to eq(2.0)
   end

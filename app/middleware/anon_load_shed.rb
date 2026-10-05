@@ -30,7 +30,8 @@ class AnonLoadShed
   # This is still a threshold and not a block: below it, scraper-shaped
   # traffic is served exactly as before. It only bites once the queue is deep
   # enough that somebody is going to be shed regardless, and it decides who.
-  SCRAPER_WAIT_THRESHOLD_SECONDS = 0.5
+  # ANON_SHED_SCRAPER_WAIT_SECONDS overrides it.
+  SCRAPER_WAIT_THRESHOLD_SECONDS = ENV.fetch('ANON_SHED_SCRAPER_WAIT_SECONDS', '0.3').to_f.clamp(0.1, 2.0)
 
   # ANON_SHED_SEC_FETCH=off leaves only the signed-exchange check.
   SEC_FETCH_TEST = ENV.fetch('ANON_SHED_SEC_FETCH', 'on') != 'off'

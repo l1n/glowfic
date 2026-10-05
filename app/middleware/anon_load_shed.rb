@@ -84,6 +84,7 @@ class AnonLoadShed
     return nil unless SEC_FETCH_TEST
     return 'no_sec_fetch' if env['HTTP_SEC_FETCH_MODE'].blank?
     return nil if user_agent.include?('; wv)') || major.to_i < CLIENT_HINTS_SINCE
+    # GREASE changes the fake brand and the order of the list, but not the Chromium entry.
     client_hint = env['HTTP_SEC_CH_UA']
     return 'no_ch_ua' if client_hint.blank?
     return 'ch_ua_mismatch' unless client_hint.include?(%("Chromium";v="#{major}"))

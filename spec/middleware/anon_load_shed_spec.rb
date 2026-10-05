@@ -216,6 +216,16 @@ RSpec.describe AnonLoadShed do
       expect(AnonLoadShed.scraper_signal(edge)).to be_nil
     end
 
+    it "passes GREASE brand lists in any order" do
+      [
+        '"Not_A Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"',
+        '"Google Chrome";v="145", "Not/A)Brand";v="8", "Chromium";v="145"',
+        '"Chromium";v="145", "Google Chrome";v="145", "?Not:A_Brand";v="24"',
+      ].each do |client_hint|
+        expect(AnonLoadShed.scraper_signal(copied({ 'HTTP_SEC_CH_UA' => client_hint }))).to be_nil
+      end
+    end
+
     it "holds Android WebView to the Fetch Metadata check only" do
       webview_ua = 'Mozilla/5.0 (Linux; Android 14; Pixel 8; wv) AppleWebKit/537.36 (KHTML, like Gecko) ' \
                    'Version/4.0 Chrome/145.0.0.0 Mobile Safari/537.36'

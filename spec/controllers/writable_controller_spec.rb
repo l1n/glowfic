@@ -116,7 +116,7 @@ RSpec.describe WritableController do
     it "loads every template's characters in one query, however many templates there are" do
       user = create(:user)
       login_as(user)
-      Array.new(6) { create(:template, user: user) }.each { |template| create(:character, user: user, template: template) }
+      create_list(:template, 6, user: user).each { |template| create(:character, user: user, template: template) }
       queries = []
       count = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('concat_ws') }
       ActiveSupport::Notifications.subscribed(count, 'sql.active_record') do

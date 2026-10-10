@@ -15,20 +15,27 @@ RSpec.describe AnonLoadShed do
   let(:chrome_ua) { 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36' }
   let(:firefox_ua) { 'Mozilla/5.0 (X11; Linux x86_64; rv:129.0) Gecko/20100101 Firefox/129.0' }
   let(:real_accept) { 'text/html,application/xhtml+xml,application/xml;q=0.9,application/signed-exchange;v=b3;q=0.7' }
+  # What real Chrome 145 sends alongside that Accept on a navigation.
+  let(:real_sec_headers) do
+    {
+      'HTTP_SEC_FETCH_MODE' => 'navigate',
+      'HTTP_SEC_CH_UA'      => '"Chromium";v="145", "Not:A-Brand";v="24", "Google Chrome";v="145"',
+    }
+  end
   let(:forged_accept) { 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' }
 
   # `remembered` is the user id the signed `user_id` cookie verifies to, or nil
   # where the cookie is absent, forged or otherwise unverifiable — the jar
   # returns nil for all three, so they are one case from here. Omitting it
   # leaves no jar on the env at all, which is what a bare Rack env looks like.
-  def env(wait: nil, user_id: nil, path: '/posts', remembered: :no_jar, accept: nil, user_agent: nil)
-    base = {
+  def env(wait: nil, user_id: nil, path: '/posts', remembered: :no_jar, accept: nil, user_agent: nil, headers: {})
+    base = headers.merge({
       Rack::Timeout::ENV_INFO_KEY => wait && Struct.new(:wait).new(wait),
       'rack.session'              => { user_id: user_id },
       'PATH_INFO'                 => path,
       'HTTP_ACCEPT'               => accept,
       'HTTP_USER_AGENT'           => user_agent,
-    }
+    })
     return base if remembered == :no_jar
     jar = instance_double(ActionDispatch::Cookies::CookieJar, signed: { user_id: remembered })
     base.merge('action_dispatch.cookies' => jar)
@@ -50,6 +57,23 @@ RSpec.describe AnonLoadShed do
 
   it "passes through logged-in users even when the wait is large" do
     expect(middleware.call(env(wait: 30.0, user_id: 1))).to eq([200, {}, ['ok']])
+  end
+
+  it "counts a shed request by reason instead of recording a transaction" do
+    AnonLoadShed.flush_shed_counts
+    expect(NewRelic::Agent).to receive(:ignore_transaction).exactly(3).times
+    middleware.call(env(wait: 10.0))
+    middleware.call(env(wait: 10.0))
+    middleware.call(scraper_env(wait: 3.0))
+
+    expect(NewRelic::Agent).to receive(:increment_metric).with('Custom/AnonLoadShed/reader', 2)
+    expect(NewRelic::Agent).to receive(:increment_metric).with('Custom/AnonLoadShed/no_sxg', 1)
+    AnonLoadShed.flush_shed_counts
+  end
+
+  it "leaves a served request's transaction alone" do
+    expect(NewRelic::Agent).not_to receive(:ignore_transaction)
+    middleware.call(env(wait: 1.0))
   end
 
   it "sheds anonymous users whose request waited longer than the threshold" do
@@ -114,12 +138,12 @@ RSpec.describe AnonLoadShed do
     # The whole point is that the reader behind the scraper keeps their budget.
     it "leaves the reader threshold where it was" do
       wait = AnonLoadShed::WAIT_THRESHOLD_SECONDS - 0.1
-      expect(middleware.call(env(accept: real_accept, user_agent: chrome_ua, wait: wait)).first).to eq(200)
+      expect(middleware.call(env(accept: real_accept, user_agent: chrome_ua, wait: wait, headers: real_sec_headers)).first).to eq(200)
     end
 
     # Real Chrome sends the token, so it is never classified by the UA alone.
     it "does not shed real Chrome early" do
-      real = env(wait: 3.0, accept: real_accept, user_agent: chrome_ua)
+      real = env(wait: 3.0, accept: real_accept, user_agent: chrome_ua, headers: real_sec_headers)
       expect(middleware.call(real)).to eq([200, {}, ['ok']])
     end
 
@@ -154,6 +178,70 @@ RSpec.describe AnonLoadShed do
 
     it "never sheds a scraper-shaped login request" do
       expect(middleware.call(scraper_env(wait: 3.0, path: '/login')).first).to eq(200)
+    end
+  end
+
+  describe "classifying a scraper that copies Chrome's Accept" do
+    def copied(headers={}, user_agent: chrome_ua)
+      { 'HTTP_ACCEPT' => real_accept, 'HTTP_USER_AGENT' => user_agent }.merge(real_sec_headers).merge(headers)
+    end
+
+    def shed_early?(headers)
+      env_hash = env(wait: 3.0).merge(headers)
+      middleware.call(env_hash).first == 503
+    end
+
+    it "passes a full, consistent Chrome header set" do
+      expect(AnonLoadShed.scraper_signal(copied)).to be_nil
+    end
+
+    it "flags a request without Fetch Metadata" do
+      expect(AnonLoadShed.scraper_signal(copied({ 'HTTP_SEC_FETCH_MODE' => nil }))).to eq('no_sec_fetch')
+    end
+
+    it "flags a request without the Sec-CH-UA client hint" do
+      expect(AnonLoadShed.scraper_signal(copied({ 'HTTP_SEC_CH_UA' => nil }))).to eq('no_ch_ua')
+    end
+
+    it "flags a client hint that names another Chromium version than the UA" do
+      rotated = chrome_ua.sub('Chrome/145', 'Chrome/131')
+      expect(AnonLoadShed.scraper_signal(copied(user_agent: rotated))).to eq('ch_ua_mismatch')
+    end
+
+    it "passes another Chromium browser with a matching brand" do
+      edge = copied(
+        { 'HTTP_SEC_CH_UA' => '"Microsoft Edge";v="145", "Chromium";v="145", "Not)A;Brand";v="8"' },
+        user_agent: "#{chrome_ua} Edg/145.0.0.0",
+      )
+      expect(AnonLoadShed.scraper_signal(edge)).to be_nil
+    end
+
+    it "passes GREASE brand lists in any order" do
+      [
+        '"Not_A Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"',
+        '"Google Chrome";v="145", "Not/A)Brand";v="8", "Chromium";v="145"',
+        '"Chromium";v="145", "Google Chrome";v="145", "?Not:A_Brand";v="24"',
+      ].each do |client_hint|
+        expect(AnonLoadShed.scraper_signal(copied({ 'HTTP_SEC_CH_UA' => client_hint }))).to be_nil
+      end
+    end
+
+    it "holds Android WebView to the Fetch Metadata check only" do
+      webview_ua = 'Mozilla/5.0 (Linux; Android 14; Pixel 8; wv) AppleWebKit/537.36 (KHTML, like Gecko) ' \
+                   'Version/4.0 Chrome/145.0.0.0 Mobile Safari/537.36'
+      webview = copied({ 'HTTP_SEC_CH_UA' => nil }, user_agent: webview_ua)
+      expect(AnonLoadShed.scraper_signal(webview)).to be_nil
+    end
+
+    it "sheds the copied-Accept scraper at the scraper threshold" do
+      expect(shed_early?(copied({ 'HTTP_SEC_FETCH_MODE' => nil }))).to be(true)
+      expect(shed_early?(copied)).to be(false)
+    end
+
+    it "falls back to the signed-exchange test alone when switched off" do
+      stub_const('AnonLoadShed::SEC_FETCH_TEST', false)
+      expect(AnonLoadShed.scraper_signal(copied({ 'HTTP_SEC_FETCH_MODE' => nil }))).to be_nil
+      expect(AnonLoadShed.scraper_signal(copied({ 'HTTP_ACCEPT' => forged_accept }))).to eq('no_sxg')
     end
   end
 end

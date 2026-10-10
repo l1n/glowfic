@@ -37,6 +37,12 @@ class AnonLoadShed
   # enough that somebody is going to be shed regardless, and it decides who.
   SCRAPER_WAIT_THRESHOLD_SECONDS = 0.5
 
+  # ANON_SHED_SEC_FETCH=off leaves only the signed-exchange check.
+  SEC_FETCH_TEST = ENV.fetch('ANON_SHED_SEC_FETCH', 'on') != 'off'
+
+  # Chrome sends Sec-CH-UA from version 89.
+  CLIENT_HINTS_SINCE = 90
+
   def initialize(app)
     @app = app
   end
@@ -47,17 +53,18 @@ class AnonLoadShed
   #
   # The queue-wait check leads because it is both the cheapest and by far the
   # most common answer — in steady state nothing is saturated, so this costs
-  # one env lookup and returns. The shape check comes next at two header string
-  # comparisons, and only runs on requests already waiting long enough to be
-  # worth classifying. Identifying the user comes last because it means
+  # one env lookup and returns. The shape check comes next at a handful of
+  # header string comparisons, and only runs on requests already waiting long
+  # enough to be worth classifying. Identifying the user comes last because it means
   # building a cookie jar to verify a signature, which is only worth doing on
   # the rare request we are otherwise about to shed.
   def call(env)
     waited = wait_seconds(env)
     return @app.call(env) if waited.nil? || waited < SCRAPER_WAIT_THRESHOLD_SECONDS
-    return @app.call(env) if waited < WAIT_THRESHOLD_SECONDS && !scraper_shaped?(env)
+    return @app.call(env) if waited < WAIT_THRESHOLD_SECONDS && !self.class.scraper_signal(env)
     return @app.call(env) if login_request?(env)
     return @app.call(env) if logged_in?(env)
+    record_shed(env)
     [
       503,
       { 'Content-Type' => 'text/plain', 'Retry-After' => '30' },
@@ -65,33 +72,73 @@ class AnonLoadShed
     ]
   end
 
+  # Why a request looks like the scrape, or nil. A class method so ClientFingerprint
+  # can record it on every request.
+  def self.scraper_signal(env)
+    accept = env['HTTP_ACCEPT']
+    return nil unless accept&.start_with?('text/html')
+    user_agent = env['HTTP_USER_AGENT'].to_s
+    major = user_agent[/Chrome\/(\d+)/, 1]
+    return nil unless major
+    return 'no_sxg' unless accept.include?('signed-exchange')
+    return nil unless SEC_FETCH_TEST
+    return 'no_sec_fetch' if env['HTTP_SEC_FETCH_MODE'].blank?
+    return nil if user_agent.include?('; wv)') || major.to_i < CLIENT_HINTS_SINCE
+    # GREASE changes the fake brand and the order of the list, but not the Chromium entry.
+    client_hint = env['HTTP_SEC_CH_UA']
+    return 'no_ch_ua' if client_hint.blank?
+    return 'ch_ua_mismatch' unless client_hint.include?(%("Chromium";v="#{major}"))
+    nil
+  end
+
+  # The agent drops metrics recorded inside an ignored transaction, so sheds are
+  # counted here and flushed from a thread outside any transaction.
+  FLUSH_SECONDS = 60
+
+  @shed_counts = Hash.new(0)
+  @shed_lock = Mutex.new
+
+  def self.count_shed(name)
+    @shed_lock.synchronize do
+      start_flusher unless @flusher_pid == Process.pid
+      @shed_counts[name] += 1
+    end
+  end
+
+  def self.flush_shed_counts
+    counts = @shed_lock.synchronize do
+      taken = @shed_counts
+      @shed_counts = Hash.new(0)
+      taken
+    end
+    counts.each { |name, count| NewRelic::Agent.increment_metric(name, count) }
+  end
+
+  # A thread does not survive Puma's fork, so each worker starts its own.
+  def self.start_flusher
+    @flusher_pid = Process.pid
+    @shed_counts = Hash.new(0)
+    Thread.new do
+      loop do
+        sleep FLUSH_SECONDS
+        flush_shed_counts
+      rescue StandardError => e
+        Rails.logger.warn("[anon_load_shed] flush failed: #{e.class}: #{e.message}")
+      end
+    end
+  end
+  private_class_method :start_flusher
+
   private
 
-  # Chrome announces `application/signed-exchange;v=b3;q=0.7` on HTML
-  # navigations. Measured across glowfic traffic by Chrome major version, every
-  # genuine release from 120 to 141 sits at 95-100%; the scrape's rotating
-  # forged UA strings sit at 0.0-0.3%, alongside self-declared crawlers. Over
-  # the seven days to 2026-09-09 the pair of conditions split HTML navigations
-  # 9,745,482 scraper-shaped against 2,744,787 real.
-  #
-  # Both halves of the test matter. Requiring the Chrome claim is what makes it
-  # safe: Firefox and Safari never send the token either, so testing on Accept
-  # alone would classify every one of their users as a scraper. Requiring the
-  # missing token is what makes it useful, since the UA strings themselves are
-  # forged and are shared with real readers.
-  #
-  # Restricting to `text/html` keeps this to navigations. Subresource requests
-  # are not classified here — they carry a different Accept, and a page's
-  # images should not be judged separately from the page.
-  #
-  # This is a header-level heuristic, which is the most forgeable tier there
-  # is; it informs a threshold rather than a block precisely because it can be
-  # defeated the moment anyone cares to.
-  def scraper_shaped?(env)
-    accept = env['HTTP_ACCEPT']
-    return false unless accept&.start_with?('text/html')
-    return false if accept.include?('signed-exchange')
-    env['HTTP_USER_AGENT'].to_s.include?('Chrome/')
+  # Counted, not traced. Query count(newrelic.timeslice.value) for Custom/AnonLoadShed/%.
+  def record_shed(env)
+    return unless defined?(NewRelic::Agent)
+    NewRelic::Agent.ignore_transaction
+    self.class.count_shed("Custom/AnonLoadShed/#{self.class.scraper_signal(env) || 'reader'}")
+  rescue StandardError
+    # Telemetry must never turn a shed into a 500.
+    nil
   end
 
   def logged_in?(env)

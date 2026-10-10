@@ -4,41 +4,68 @@
 # traffic to glowfic is overwhelmingly automated.
 #
 # The CIDR list (config/blocked_asn_cidrs.yml) is loaded once at boot and
-# bucketed by IPv4 first-octet for sub-millisecond lookups against the
-# ~10k IPv4 prefixes typical for the configured ASN set. IPv6 prefixes
-# fall through to a linear scan (smaller list, less frequent traffic).
+# merged into sorted, non-overlapping integer ranges per address family, so a
+# lookup is a single binary search for both IPv4 and IPv6.
 class AsnBlocker
   CIDR_FILE = Rails.root.join('config', "blocked_asn_cidrs.yml").freeze
 
+  class << self
+    def block?(address)
+      return false if address.blank?
+
+      addr = IPAddr.new(address.to_s)
+      ranges = addr.ipv4? ? IPV4_RANGES : IPV6_RANGES
+      ip = addr.to_i
+      # the only range that can contain ip is the last one starting at or before it
+      index = (ranges.bsearch_index { |lo, _hi| lo > ip } || ranges.size) - 1
+      index >= 0 && ip <= ranges[index][1]
+    rescue IPAddr::InvalidAddressError
+      false
+    end
+
+    # Reduces a list of prefixes to the minimal set of CIDRs covering the same
+    # addresses, sorted numerically with IPv4 before IPv6. RIPEstat returns many
+    # overlapping and adjacent more-specifics, so this shrinks the list a lot.
+    def collapse(prefixes)
+      ipv4, ipv6 = prefixes.map { |p| IPAddr.new(p) }.partition(&:ipv4?)
+      merge_ranges(ipv4).flat_map { |lo, hi| range_to_cidrs(lo, hi, Socket::AF_INET) } +
+        merge_ranges(ipv6).flat_map { |lo, hi| range_to_cidrs(lo, hi, Socket::AF_INET6) }
+    end
+
+    private
+
+    def merge_ranges(nets)
+      nets.map { |net| [net.to_range.first.to_i, net.to_range.last.to_i] }.sort.each_with_object([]) do |(lo, hi), merged|
+        if merged.any? && lo <= merged.last[1] + 1
+          merged.last[1] = [merged.last[1], hi].max
+        else
+          merged << [lo, hi]
+        end
+      end
+    end
+
+    def range_to_cidrs(first, last, family)
+      max_bits = family == Socket::AF_INET ? 32 : 128
+      cidrs = []
+      while first <= last
+        # largest block aligned at first (trailing zero bits) that doesn't overrun last
+        size = first.zero? ? max_bits : (first & -first).bit_length - 1
+        size -= 1 while first + (1 << size) - 1 > last
+        cidrs << "#{IPAddr.new(first, family)}/#{max_bits - size}"
+        first += 1 << size
+      end
+      cidrs
+    end
+  end
+
   CIDRS = begin
     data = YAML.load_file(CIDR_FILE)
-    (data['prefixes'] || []).map { |p| IPAddr.new(p) }.freeze
+    (data['prefixes'] || []).map { |p| IPAddr.new(p) }
   rescue Errno::ENOENT
-    [].freeze
+    []
   end
 
-  # All IPv4 prefixes in the seeded snapshot are >= /13, so each CIDR fits
-  # entirely within one first-octet bucket and a single Hash lookup narrows
-  # the candidate set from ~10k to typically <100 before the per-CIDR check.
-  IPV4_BY_FIRST_OCTET = CIDRS
-    .select(&:ipv4?)
-    .group_by { |cidr| (cidr.to_i >> 24) & 0xff }
-    .each_value(&:freeze)
-    .freeze
-
-  IPV6_CIDRS = CIDRS.reject(&:ipv4?).freeze
-
-  def self.block?(address)
-    return false if address.blank?
-
-    addr = IPAddr.new(address.to_s)
-    if addr.ipv4?
-      bucket = IPV4_BY_FIRST_OCTET[(addr.to_i >> 24) & 0xff]
-      bucket&.any? { |cidr| cidr.include?(addr) }
-    else
-      IPV6_CIDRS.any? { |cidr| cidr.include?(addr) }
-    end
-  rescue IPAddr::InvalidAddressError
-    false
-  end
+  IPV4_RANGES = merge_ranges(CIDRS.select(&:ipv4?)).each(&:freeze).freeze
+  IPV6_RANGES = merge_ranges(CIDRS.reject(&:ipv4?)).each(&:freeze).freeze
+  private_constant :CIDRS
 end

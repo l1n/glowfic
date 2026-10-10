@@ -28,15 +28,49 @@ RSpec.describe AsnBlocker do
     end
   end
 
-  describe "loaded data" do
-    it "loaded at least 1000 prefixes from the seeded snapshot" do
-      expect(described_class::CIDRS.size).to be > 1000
+  describe ".block? range boundaries" do
+    before(:each) do
+      stub_const("AsnBlocker::IPV4_RANGES", [[IPAddr.new('10.0.0.0').to_i, IPAddr.new('10.0.0.255').to_i]])
+      stub_const("AsnBlocker::IPV6_RANGES", [[IPAddr.new('2001:db8::').to_i, IPAddr.new('2001:db8::ffff').to_i]])
     end
 
-    it "bucketed IPv4 prefixes by first octet" do
-      expect(described_class::IPV4_BY_FIRST_OCTET).to be_a(Hash)
-      # 43.x range — Tencent — should have entries
-      expect(described_class::IPV4_BY_FIRST_OCTET[43]).to be_present
+    it "blocks the first and last address of a range" do
+      expect(AsnBlocker.block?('10.0.0.0')).to be(true)
+      expect(AsnBlocker.block?('10.0.0.255')).to be(true)
+      expect(AsnBlocker.block?('2001:db8::')).to be(true)
+      expect(AsnBlocker.block?('2001:db8::ffff')).to be(true)
+    end
+
+    it "doesn't block addresses just outside a range" do
+      expect(AsnBlocker.block?('9.255.255.255')).to be(false)
+      expect(AsnBlocker.block?('10.0.1.0')).to be(false)
+      expect(AsnBlocker.block?('2001:db8::1:0')).to be(false)
+    end
+  end
+
+  describe ".collapse" do
+    it "drops prefixes contained in others" do
+      expect(AsnBlocker.collapse(['10.0.0.0/8', '10.1.0.0/16'])).to eq(['10.0.0.0/8'])
+    end
+
+    it "merges adjacent prefixes into their supernet" do
+      expect(AsnBlocker.collapse(['10.0.1.0/24', '10.0.0.0/24'])).to eq(['10.0.0.0/23'])
+    end
+
+    it "splits merged ranges that don't align to a single CIDR" do
+      expect(AsnBlocker.collapse(['10.0.1.0/24', '10.0.2.0/24'])).to eq(['10.0.1.0/24', '10.0.2.0/24'])
+    end
+
+    it "sorts numerically with IPv4 before IPv6" do
+      prefixes = ['2001:db8::/32', '100.0.0.0/8', '9.0.0.0/8']
+      expect(AsnBlocker.collapse(prefixes)).to eq(['9.0.0.0/8', '100.0.0.0/8', '2001:db8::/32'])
+    end
+  end
+
+  describe "loaded data" do
+    it "loaded ranges from the seeded snapshot" do
+      expect(described_class::IPV4_RANGES.size).to be > 1000
+      expect(described_class::IPV6_RANGES).to be_present
     end
   end
 end

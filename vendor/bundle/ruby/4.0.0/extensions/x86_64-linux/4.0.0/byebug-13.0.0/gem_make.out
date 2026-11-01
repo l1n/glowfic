@@ -1,0 +1,22 @@
+current directory: /home/runner/work/glowfic/glowfic/vendor/bundle/ruby/4.0.0/gems/byebug-13.0.0/ext/byebug
+/opt/hostedtoolcache/Ruby/4.0.6/x64/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/runner/work/glowfic/glowfic/vendor/bundle/ruby/4.0.0/gems/byebug-13.0.0/ext/byebug
+make DESTDIR\= sitearchdir\=./.gem.20261101-2193-wgbqbb sitelibdir\=./.gem.20261101-2193-wgbqbb clean
+
+current directory: /home/runner/work/glowfic/glowfic/vendor/bundle/ruby/4.0.0/gems/byebug-13.0.0/ext/byebug
+make DESTDIR\= sitearchdir\=./.gem.20261101-2193-wgbqbb sitelibdir\=./.gem.20261101-2193-wgbqbb
+compiling breakpoint.c
+compiling byebug.c
+compiling context.c
+compiling locker.c
+compiling threads.c
+linking shared-object byebug/byebug.so
+
+current directory: /home/runner/work/glowfic/glowfic/vendor/bundle/ruby/4.0.0/gems/byebug-13.0.0/ext/byebug
+make DESTDIR\= sitearchdir\=./.gem.20261101-2193-wgbqbb sitelibdir\=./.gem.20261101-2193-wgbqbb install
+/usr/bin/install -c -m 0755 byebug.so ./.gem.20261101-2193-wgbqbb/byebug
+
+current directory: /home/runner/work/glowfic/glowfic/vendor/bundle/ruby/4.0.0/gems/byebug-13.0.0/ext/byebug
+make DESTDIR\= sitearchdir\=./.gem.20261101-2193-wgbqbb sitelibdir\=./.gem.20261101-2193-wgbqbb clean
